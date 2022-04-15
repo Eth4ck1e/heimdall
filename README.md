@@ -49,7 +49,12 @@ Project is built using gradle
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+Please make sure to update test builds as appropriate.
+
+The first version 0.1.0 has been completed.  From this point forward all future updates need to use the appropriate versioning.
+New features update minor version x as 0.x+1.0
+New major version (breaks compatibility with previous versions) update x as x+1.0.0
+Bug fixes update x as 0.0.x+1
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
