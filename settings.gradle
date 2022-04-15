@@ -1,0 +1,3 @@
+rootProject.name = 'heimdall'
+
+include 'heimdall-common', 'heimdall-paper', 'heimdall-velocity'

@@ -1,0 +1,14 @@
+#This is the main plugin configuration file
+#debug mode
+debug: false
+
+#Server Name (REQUIRED!)
+server: default
+
+#MySQL database connection info
+database:
+  host: dynanode.bloom.host # host of your database
+  port: 3306 # default port for MariaDB and MySQL
+  database: s15445_whitelist # name of your database. A database server can contain multiple databases
+  user: u15445_6WTcwtustf
+  password: 8mejQK^gEt5HHsAoY=L!nhia

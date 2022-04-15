@@ -1,0 +1,7 @@
+name: Heimdall
+version: '${version}'
+main: com.bifrostsmp.heimdall.HeimdallPaper
+api-version: 1.18
+authors: [ Eth4ck1e, HunnaG ]
+description: Backend server helper for Velocity
+website: bifrostsmp.com
