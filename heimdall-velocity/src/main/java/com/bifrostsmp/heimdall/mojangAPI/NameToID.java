@@ -35,7 +35,12 @@ public class NameToID {
 
     String json = response.body(); // convert response to string
     JSONObject obj = (JSONObject) JSONValue.parse(json); // parse string
-    String id = addChar((String) obj.get("id"));  //gets id from get request and sends to addChar to correct the format for whitelist.json
+    String id =
+        addChar(
+            (String)
+                obj.get(
+                    "id")); // gets id from get request and sends to addChar to correct the format
+                            // for whitelist.json
     // END Mojang api
     return id;
   }
@@ -54,5 +59,4 @@ public class NameToID {
 
     return newString;
   }
-
 }

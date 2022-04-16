@@ -6,15 +6,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class AsyncBukkitTask extends BukkitRunnable {
 
-    private final JavaPlugin plugin;
+  private final JavaPlugin plugin;
 
-    public AsyncBukkitTask(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+  public AsyncBukkitTask(JavaPlugin plugin) {
+    this.plugin = plugin;
+  }
 
-    @Override
-    public void run() {
-        //task goes here
-        plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "whitelist reload");
-    }
+  @Override
+  public void run() {
+    // task goes here
+    plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "whitelist reload");
+  }
 }

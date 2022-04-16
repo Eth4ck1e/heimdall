@@ -5,6 +5,7 @@ import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,20 +22,17 @@ public final class HeimdallPaper extends JavaPlugin {
   private final String user = getConfig().getString("database.user");
   private final String password = getConfig().getString("database.password");
   private final String url =
-          "jdbc:mysql://"
-                  + getConfig().getString("database.host")
-                  + ":"
-                  + getConfig().getString("database.port")
-                  + "/"
-                  + getConfig().getString("database.database");
+      "jdbc:mysql://"
+          + getConfig().getString("database.host")
+          + ":"
+          + getConfig().getString("database.port")
+          + "/"
+          + getConfig().getString("database.database");
   private final String server = getConfig().getString("server");
   public static HeimdallPaper instance;
 
   @Override
   public void onEnable() {
-    if (Objects.equals(firstRun, "true")) {
-      FirstRunWhitelistParser.parser();
-    }
     // Plugin startup logic
     super.onEnable();
     instance = this;
@@ -50,13 +48,23 @@ public final class HeimdallPaper extends JavaPlugin {
     if (Query.insert(server)) {
       getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
     } else {
-      getLogger().warning(ChatColor.RED + "Could not insert into database. Please make sure you have updated the config and changed your server name from default to a unique identifier(different from any other server you have connected to the database");
+      getLogger()
+          .warning(
+              ChatColor.RED
+                  + "Could not insert into database. Please make sure you have updated the config and changed your server name from default to a unique identifier(different from any other server you have connected to the database");
+    }
+
+    if (Objects.equals(firstRun, "true")) {
+      FirstRunWhitelistParser.parser();
+      getConfig().options().copyDefaults(true);
+      getConfig().set("firstRun", false);
+      saveConfig();
+      getServer().dispatchCommand(Bukkit.getConsoleSender(), "whitelist reload");
     }
 
     Timer time = new Timer();
     ScheduledTask st = new ScheduledTask(server);
     time.schedule(st, 0, 30000);
-
   }
 
   @Override
@@ -70,10 +78,9 @@ public final class HeimdallPaper extends JavaPlugin {
         connection.close(); // closes the connection
       }
     } catch (Exception e) {
-      //getLogger().log(INFO, ChatColor.YELLOW + "Error onDisable");
+      // getLogger().log(INFO, ChatColor.YELLOW + "Error onDisable");
       e.printStackTrace();
     }
     getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[Heimdall] Plugin is disabled");
   }
-
 }

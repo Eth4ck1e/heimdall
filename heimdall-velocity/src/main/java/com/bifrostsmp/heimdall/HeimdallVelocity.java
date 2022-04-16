@@ -70,7 +70,7 @@ public class HeimdallVelocity {
 
     logger.info(
         "Starting Discord Bot"); // send message to console with plugin name, logger tags with
-                                 // plugin name
+    // plugin name
     final String discordToken = Parse.getDiscordToken(); // get discord token from config.yml
 
     if (discordToken == null) { // check if token exists, if token exists try to initiate bot

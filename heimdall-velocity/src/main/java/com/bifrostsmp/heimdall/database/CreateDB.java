@@ -14,7 +14,8 @@ public class CreateDB {
             + "uuid varchar(64) NOT NULL,"
             + "PRIMARY KEY(uuid)"
             + ");";
-    String servers = "CREATE TABLE IF NOT EXISTS servers(server varchar(64) NOT NULL, JSONUpdated boolean DEFAULT true, PRIMARY KEY(server));";
+    String servers =
+        "CREATE TABLE IF NOT EXISTS servers(server varchar(64) NOT NULL, JSONUpdated boolean DEFAULT true, PRIMARY KEY(server));";
     //  prepare the statements to be executed
     try {
       PreparedStatement playersDB = HeimdallVelocity.connection.prepareStatement(players);

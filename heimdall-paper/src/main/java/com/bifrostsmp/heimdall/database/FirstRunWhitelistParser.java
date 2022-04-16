@@ -1,29 +1,43 @@
 package com.bifrostsmp.heimdall.database;
 
-import com.google.gson.Gson;
+import org.bukkit.ChatColor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
+
+import static java.util.logging.Level.INFO;
+import static org.bukkit.Bukkit.getLogger;
 
 public class FirstRunWhitelistParser {
-    public static String name;
-    public static String uuid;
-    public static void parser() {
-        try {
-            Gson gson = new Gson();
+  static String path = "./whitelist.json";
 
-            Reader reader = Files.newBufferedReader(Paths.get("./whitelist.json"));
+  public static void parser() {
+    String str = readFileAsString(path);
+    JSONArray array = new JSONArray(str);
+    getLogger()
+        .log(INFO, ChatColor.YELLOW + "Doing FirstRun task, adding whitelist.json to database...");
 
-            Map<?,?> map = gson.fromJson(reader, Map.class);
-
-            for (Map.Entry<?,?> entry : map.entrySet()) {
-                //insertPlayers(String.valueOf(entry.getValue()));
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    for (int i = 0; i < array.length(); i++) {
+      JSONObject object = array.getJSONObject(i);
+      String name = object.getString("name");
+      String uuid = object.getString("uuid");
+      Query.insertPlayers(name, uuid);
+      // getLogger().log(INFO, ChatColor.GREEN + "Player: " + name + " " + uuid + " has been added
+      // to database");
     }
+  }
+
+  public static String readFileAsString(String path) {
+    String str = null;
+    try {
+      str = new String(Files.readAllBytes(Paths.get(path)));
+    } catch (IOException e) {
+      System.out.println("error at FirstRunWhitelistParser.readFileAsString");
+      e.printStackTrace();
+    }
+    return str;
+  }
 }
