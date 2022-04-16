@@ -4,22 +4,36 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.sql.*;
+import java.util.Objects;
 
 public class Query {
     public static boolean insert(String server) {
-        //  Insert statement to add server name from config, will be ignored if server name exists in database
-        String insertSQL = "INSERT IGNORE INTO servers(server) VALUE ('" +server+ "');";
-        //  prepare the statements to be executed
-        try {
-            Connection connection = ConnectDB.connection;
-            PreparedStatement insertServer = connection.prepareStatement(insertSQL);
-            insertServer.executeUpdate();
-            return true;
-            // use executeUpdate() to update the database table
-        } catch (SQLException e) {
+        if (Objects.equals(server, "default")) {
             return false;
+        } else {
+            //  Insert statement to add server name from config, will be ignored if server name exists in database
+            String insertSQL = "INSERT IGNORE INTO servers(server) VALUE ('" +server+ "');";
+            //  prepare the statements to be executed
+            try {
+                Connection connection = ConnectDB.connection;
+                PreparedStatement insertServer = connection.prepareStatement(insertSQL);
+                insertServer.executeUpdate();
+                return true;
+                // use executeUpdate() to update the database table
+            } catch (SQLException e) {
+                return false;
+            }
         }
     }
+
+    public static void insertPlayers(String name, String id) throws SQLException {
+        String insertSQL = "INSERT INTO players(name, uuid) VALUES (?,?);";
+        PreparedStatement insertUser = ConnectDB.connection.prepareStatement(insertSQL);
+        insertUser.setString(1, name);
+        insertUser.setString(2, id);
+        insertUser.executeUpdate();
+    }
+
     public static boolean check(String server) {
         boolean value = false;
         String query = "SELECT JSONUpdated FROM servers WHERE server = \'" + server + "\';";

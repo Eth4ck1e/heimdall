@@ -1,6 +1,7 @@
 #This is the main plugin configuration file
 #debug mode
 debug: false
+firstRun: true
 
 #Server Name (REQUIRED!)
 server: default

@@ -2,6 +2,7 @@ package com.bifrostsmp.heimdall;
 
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
+import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.ChatColor;
@@ -9,11 +10,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
+import java.util.Objects;
 import java.util.Timer;
 
 public final class HeimdallPaper extends JavaPlugin {
 
   public static Plugin plugin;
+  private String firstRun = getConfig().getString("firstRun");
 
   private final String user = getConfig().getString("database.user");
   private final String password = getConfig().getString("database.password");
@@ -29,6 +32,9 @@ public final class HeimdallPaper extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    if (Objects.equals(firstRun, "true")) {
+      FirstRunWhitelistParser.parser();
+    }
     // Plugin startup logic
     super.onEnable();
     instance = this;
@@ -44,7 +50,7 @@ public final class HeimdallPaper extends JavaPlugin {
     if (Query.insert(server)) {
       getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
     } else {
-      getLogger().warning(ChatColor.RED + "Could not insert into database");
+      getLogger().warning(ChatColor.RED + "Could not insert into database. Please make sure you have updated the config and changed your server name from default to a unique identifier(different from any other server you have connected to the database");
     }
 
     Timer time = new Timer();
