@@ -54,7 +54,7 @@ public class WhitelistAdd extends ListenerAdapter {
           MessageChannel channel = event.getChannel(); // get message channel
           channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
           info.clear(); // clear embed from memory
-          // System.out.println("Success");
+          //getLogger().log(INFO, ChatColor.YELLOW + "Success");
         }
         // END MySQL query
 

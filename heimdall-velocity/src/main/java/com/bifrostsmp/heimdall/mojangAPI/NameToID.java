@@ -35,8 +35,24 @@ public class NameToID {
 
     String json = response.body(); // convert response to string
     JSONObject obj = (JSONObject) JSONValue.parse(json); // parse string
-    String id = (String) obj.get("id"); // get id
+    String id = addChar((String) obj.get("id"));  //gets id from get request and sends to addChar to correct the format for whitelist.json
     // END Mojang api
     return id;
   }
+
+  private static String addChar(String str) {
+    char ch = '-';
+    int position1 = 8;
+    int position2 = 13;
+    int position3 = 18;
+    int position4 = 23;
+
+    String newString = str.substring(0, position1) + ch + str.substring(position1);
+    newString = newString.substring(0, position2) + ch + newString.substring(position2);
+    newString = newString.substring(0, position3) + ch + newString.substring(position3);
+    newString = newString.substring(0, position4) + ch + newString.substring(position4);
+
+    return newString;
+  }
+
 }

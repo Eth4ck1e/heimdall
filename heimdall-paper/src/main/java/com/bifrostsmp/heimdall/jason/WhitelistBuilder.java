@@ -1,21 +1,29 @@
 package com.bifrostsmp.heimdall.jason;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.json.simple.JSONArray;
 
 import java.io.FileWriter;
-import java.io.PrintWriter;
 
 public class WhitelistBuilder {
     public static void whitelistBuilder(JSONArray result) {
         //FileWriter file = new FileWriter(new File("./whitelist.json").getAbsolutePath(),false);
         String path = "./whitelist.json";
-        System.out.println("Printing JSON variable:");
-        System.out.println(result);
-        System.out.println("Writing file");
-        try (PrintWriter out = new PrintWriter(new FileWriter(path))) {
-            out.write(result.toJSONString());
+        //getLogger().log(INFO, ChatColor.YELLOW + "JSON variable: " + result);
+        //getLogger().log(INFO, ChatColor.YELLOW + "Writing file");
+
+
+        try (FileWriter out = new FileWriter(path)) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jp = new JsonParser();
+            JsonElement je = jp.parse(result.toJSONString());
+            String prettyJsonString = gson.toJson(je);
+            out.write(prettyJsonString);
         } catch (Exception e) {
-            System.out.println("error writing/writing-to whitelist.json");
+            //getLogger().log(INFO, ChatColor.YELLOW + "error writing/writing-to whitelist.json");
             e.printStackTrace();
         }
     }

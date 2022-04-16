@@ -5,12 +5,15 @@ import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.Timer;
 
 public final class HeimdallPaper extends JavaPlugin {
+
+  public static Plugin plugin;
 
   private final String user = getConfig().getString("database.user");
   private final String password = getConfig().getString("database.password");
@@ -22,12 +25,13 @@ public final class HeimdallPaper extends JavaPlugin {
                   + "/"
                   + getConfig().getString("database.database");
   private final String server = getConfig().getString("server");
-
+  public static HeimdallPaper instance;
 
   @Override
   public void onEnable() {
     // Plugin startup logic
     super.onEnable();
+    instance = this;
 
     saveDefaultConfig();
 
@@ -60,9 +64,10 @@ public final class HeimdallPaper extends JavaPlugin {
         connection.close(); // closes the connection
       }
     } catch (Exception e) {
-      System.out.println("Error onDisable");
+      //getLogger().log(INFO, ChatColor.YELLOW + "Error onDisable");
       e.printStackTrace();
     }
     getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[Heimdall] Plugin is disabled");
   }
+
 }

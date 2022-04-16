@@ -4,7 +4,6 @@ plugins {
 }
 
 group = 'com.bifrostsmp'
-version = '0.1.0'
 
 subprojects {
     apply plugin: 'java-library'

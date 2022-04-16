@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 public class ConnectDB extends JavaPlugin {
 
-
     public static Connection connection; // This is the variable used to connect to the DB
     public final String serverName = getConfig().getString("server");
 

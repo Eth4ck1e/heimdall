@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
     implementation 'org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT'
     compileOnly 'net.luckperms:api:5.4'
+    implementation group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

@@ -22,7 +22,7 @@ public class CreateDB {
             PreparedStatement serversDB = connection.prepareStatement(servers);
             serversDB.executeUpdate();
         } catch (SQLException throwables) {
-            System.out.println("Error at CreateDB");
+            //getLogger().log(INFO, ChatColor.YELLOW + "Error at CreateDB");
             throwables.printStackTrace();
         }
     }
