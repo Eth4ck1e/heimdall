@@ -27,10 +27,9 @@ public class Query {
             ResultSet result = stmt.executeQuery(query);
             result.next();
             value = result.getObject(1,Boolean.class);
-            System.out.println("current JSONUpdated value from check:");
-            System.out.println(value);
+            //getLogger().log(INFO, ChatColor.YELLOW + "[Heimdall] current JSONUpdated value from check: " + value);
         } catch (SQLException throwables) {
-            System.out.println("Error at Query.check");
+            //getLogger().log(INFO, ChatColor.YELLOW + "Error at Query.check");
             throwables.printStackTrace();
         }
         return value;
@@ -43,7 +42,7 @@ public class Query {
             preparedStatement.setString(1,server);
             preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
-            System.out.println("Error at Query.updated");
+            //getLogger().log(INFO, ChatColor.YELLOW + "Error at Query.updated");
             throwables.printStackTrace();
         }
     }
@@ -64,7 +63,7 @@ public class Query {
                 array.add(obj);
             }
         } catch (SQLException throwables) {
-            System.out.println("Error at Query.dump");
+            //getLogger().log(INFO, ChatColor.YELLOW + "Error at Query.dump");
             throwables.printStackTrace();
         }
         return array;
