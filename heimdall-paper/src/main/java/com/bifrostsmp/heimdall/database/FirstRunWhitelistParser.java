@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static com.bifrostsmp.heimdall.database.Query.insertPlayers;
-
 public class FirstRunWhitelistParser {
     public static String name;
     public static String uuid;
@@ -22,7 +20,7 @@ public class FirstRunWhitelistParser {
             Map<?,?> map = gson.fromJson(reader, Map.class);
 
             for (Map.Entry<?,?> entry : map.entrySet()) {
-                insertPlayers(String.valueOf(entry.getValue()));
+                //insertPlayers(String.valueOf(entry.getValue()));
             }
         } catch (IOException exception) {
             exception.printStackTrace();
