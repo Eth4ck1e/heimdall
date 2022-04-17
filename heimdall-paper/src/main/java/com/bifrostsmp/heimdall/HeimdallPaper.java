@@ -7,6 +7,7 @@ import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,7 +18,7 @@ import java.util.Timer;
 public final class HeimdallPaper extends JavaPlugin {
 
   public static Plugin plugin;
-  private String firstRun = getConfig().getString("firstRun");
+  private final String firstRun = getConfig().getString("firstRun");
 
   private final String user = getConfig().getString("database.user");
   private final String password = getConfig().getString("database.password");
@@ -59,7 +60,20 @@ public final class HeimdallPaper extends JavaPlugin {
       getConfig().options().copyDefaults(true);
       getConfig().set("firstRun", false);
       saveConfig();
-      getServer().dispatchCommand(Bukkit.getConsoleSender(), "whitelist reload");
+
+      Bukkit.getScheduler()
+          .scheduleSyncDelayedTask(
+              instance,
+              new Runnable() {
+                @Override
+                public void run() {
+                  ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                  String command = "whitelist reload";
+                  Bukkit.dispatchCommand(console, "whitelist reload");
+                  Bukkit.dispatchCommand(console, "whitelist on");
+                }
+              },
+              20L); // 20 Tick (1 Second) delay before run() is called
     }
 
     Timer time = new Timer();
