@@ -1,7 +1,7 @@
 ## This is the main plugin configuration file
 
 DISCORD_TOKEN: "NzM1NjU5MTMxODEzNDk0ODc1.Xxjd9A.ttC54q9JhB7vMHoEMnRRWoNo6CQ"
-#Discord roll id for adding perms.  Only members with this roll will be able to interact with the bot
+#Discord roll name for adding perms.  Only members with this roll will be able to interact with the bot
 ROLE: "Staff"
 
 ## MySQL database connection info
