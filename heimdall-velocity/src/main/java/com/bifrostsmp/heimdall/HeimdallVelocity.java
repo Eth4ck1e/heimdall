@@ -45,9 +45,9 @@ public class HeimdallVelocity {
   public static Logger logger;
   public static Connection connection; // This is the variable used to connect to the DB
 
-  @Getter private JDA discordBot;
+  @Getter private static JDA discordBot;
 
-  private final Path dataDirectory;
+  @Getter private final Path dataDirectory;
 
   @Inject
   public HeimdallVelocity(

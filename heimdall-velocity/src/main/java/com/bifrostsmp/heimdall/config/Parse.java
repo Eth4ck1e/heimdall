@@ -16,6 +16,7 @@ public class Parse {
   private static String url;
   private static String discordToken;
   private static InputStream inputStream;
+  private static String role;
 
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
@@ -38,6 +39,7 @@ public class Parse {
             + "/"
             + getData.get("database");
     discordToken = (String) getData.get("DISCORD_TOKEN");
+    role = (String) getData.get("ROLE");
   }
 
   public static String getUser() {
@@ -54,5 +56,9 @@ public class Parse {
 
   public static String getDiscordToken() {
     return discordToken;
+  }
+
+  public static String getRole() {
+    return role;
   }
 }

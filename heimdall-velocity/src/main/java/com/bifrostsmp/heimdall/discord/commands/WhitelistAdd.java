@@ -1,6 +1,7 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
 import com.bifrostsmp.heimdall.HeimdallVelocity;
+import com.bifrostsmp.heimdall.config.Parse;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import lombok.SneakyThrows;
@@ -15,10 +16,14 @@ import java.sql.ResultSet;
 
 public class WhitelistAdd extends ListenerAdapter {
 
+  boolean hasRole;
+
   @SneakyThrows
   @Override
   public void onMessageReceived(MessageReceivedEvent event) {
-    if (event.getAuthor().isBot()) return;
+    //Guild guild = event.getGuild();
+    //Role role = guild.getRoleById("960690838894166096");
+    if (event.getAuthor().isBot() || !hasRole(event.getAuthor().getId(), event.getGuild().getIdLong())) return;
     // We don't want to respond to other bot accounts, including ourselves
     Message message = event.getMessage();
     String[] content = message.getContentRaw().split("\\s+");
@@ -70,5 +75,21 @@ public class WhitelistAdd extends ListenerAdapter {
         info.clear(); // clear embed from memory
       }
     }
+  }
+
+  boolean hasRole(String userId, Long guild) {
+    for (int i = 0; i < HeimdallVelocity.getDiscordBot().getGuildById(guild).getMemberById(userId).getRoles().size(); i++) {
+      if (Parse.getRole()
+          .equalsIgnoreCase(
+              HeimdallVelocity.getDiscordBot()
+                  .getGuildById(guild)
+                  .getMemberById(userId)
+                  .getRoles()
+                  .get(i)
+                  .getName())) {
+        hasRole = true;
+      }
+    }
+    return hasRole;
   }
 }
