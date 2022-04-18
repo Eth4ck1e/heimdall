@@ -30,7 +30,7 @@ public class WhitelistAdd extends ListenerAdapter {
     // We don't want to respond to other bot accounts, including ourselves
     Message message = event.getMessage();
     String[] content = message.getContentRaw().split("\\s+");
-    if (content.length == 1 || content.length == 2) {
+    if ((content.length == 1 || content.length == 2) && message.getContentRaw().contains("whitelist")) {
       // failed embed block
       EmbedBuilder info = new EmbedBuilder();
       info.setTitle("Whitelist");
