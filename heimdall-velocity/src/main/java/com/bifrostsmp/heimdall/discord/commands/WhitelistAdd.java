@@ -61,7 +61,7 @@ public class WhitelistAdd extends ListenerAdapter {
             // success embed block
             EmbedBuilder info = new EmbedBuilder();
             info.setTitle("Whitelist");
-            info.setDescription(nameNew + " " + id + " has been added to the whitelist");
+            info.setDescription(name + " " + id + " has been added to the whitelist");
             info.setColor(Color.GREEN);
             MessageChannel channel = event.getChannel(); // get message channel
             channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
@@ -71,7 +71,7 @@ public class WhitelistAdd extends ListenerAdapter {
             // success embed block
             EmbedBuilder info = new EmbedBuilder();
             info.setTitle("Whitelist");
-            info.setDescription(nameNew + " " + id + " is already whitelisted");
+            info.setDescription(name + " " + id + " is already whitelisted");
             info.setColor(Color.RED);
             MessageChannel channel = event.getChannel(); // get message channel
             channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
