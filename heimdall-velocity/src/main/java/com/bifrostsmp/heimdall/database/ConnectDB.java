@@ -25,7 +25,7 @@ public class ConnectDB {
 
     // Init mysql db connection
     try { // try catch to get any SQL errors
-      HeimdallVelocity.connection = DriverManager.getConnection(url, user, password);
+      HeimdallVelocity.connection = DriverManager.getConnection(url + "?autoReconnect=true", user, password);
       HeimdallVelocity.logger.info("mySQL database connection successful!");
       // with the method getConnection() from DriverManager, we're trying to set
       // the connection's url, username, password to the variables we made earlier and

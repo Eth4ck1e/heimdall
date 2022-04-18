@@ -18,6 +18,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
@@ -80,7 +82,10 @@ public class HeimdallVelocity {
     }
 
     try { // try catch to get any errors
-      discordBot = JDABuilder.createDefault(discordToken).build();
+      discordBot = JDABuilder.createDefault(discordToken)
+              .enableIntents(GatewayIntent.GUILD_MEMBERS)
+              .setMemberCachePolicy(MemberCachePolicy.ALL)
+              .build();
     } catch (LoginException e) {
       e.printStackTrace();
     }

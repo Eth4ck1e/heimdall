@@ -23,7 +23,10 @@ public class WhitelistAdd extends ListenerAdapter {
   public void onMessageReceived(MessageReceivedEvent event) {
     //Guild guild = event.getGuild();
     //Role role = guild.getRoleById("960690838894166096");
-    if (event.getAuthor().isBot() || !hasRole(event.getAuthor().getId(), event.getGuild().getIdLong())) return;
+    long memberID = event.getMember().getIdLong();
+    long guildID = event.getGuild().getIdLong();
+    //event.getGuild().retrieveMemberById(event.getAuthor().getId()).queue();
+    if (event.getAuthor().isBot() || !hasRole(memberID, guildID)) return;
     // We don't want to respond to other bot accounts, including ourselves
     Message message = event.getMessage();
     String[] content = message.getContentRaw().split("\\s+");
@@ -77,7 +80,7 @@ public class WhitelistAdd extends ListenerAdapter {
     }
   }
 
-  boolean hasRole(String userId, Long guild) {
+  boolean hasRole(Long userId, Long guild) {
     for (int i = 0; i < HeimdallVelocity.getDiscordBot().getGuildById(guild).getMemberById(userId).getRoles().size(); i++) {
       if (Parse.getRole()
           .equalsIgnoreCase(
