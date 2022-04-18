@@ -30,52 +30,56 @@ public class WhitelistAdd extends ListenerAdapter {
     // We don't want to respond to other bot accounts, including ourselves
     Message message = event.getMessage();
     String[] content = message.getContentRaw().split("\\s+");
-    // Checks for proper /whitelist add syntax
-    if (content[0].equalsIgnoreCase(HeimdallVelocity.prefix + "whitelist")
-        && content[1].equalsIgnoreCase("add")) {
-      // checks for player name
-      if (content[2] != null) {
-        String name = content[2];
-        String id = NameToID.nameToID((name));
+    if (content.length == 1 || content.length == 2) {
+      // failed embed block
+      EmbedBuilder info = new EmbedBuilder();
+      info.setTitle("Whitelist");
+      info.setDescription("Proper command syntax is /whitelist add ign \n If the ign has underscores use \\ as in \\_ign_ ");
+      info.setColor(Color.RED);
+      MessageChannel channel = event.getChannel(); // get message channel
+      channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+      info.clear(); // clear embed from memory
+      return;
+    }
+    if (content[0].equalsIgnoreCase(HeimdallVelocity.prefix + "whitelist")) {
 
-        if (id != null) {}
+      if (content[1].equalsIgnoreCase("add")) {
+        // checks for player name
+        if (content[2] != null) {
+          String name = content[2];
+          String nameNew = name.replaceAll("\\\\", "");
+          String id = NameToID.nameToID((nameNew));
 
-        ResultSet result = Query.checkPlayers(id);
-        if (!result.next()) {
-          Query.insertPlayers(name, id);
-          Query.updateTrigger();
-          // success embed block
-          EmbedBuilder info = new EmbedBuilder();
-          info.setTitle("Whitelist");
-          info.setDescription(name + " " + id + " has been added to the whitelist");
-          info.setColor(Color.GREEN);
-          MessageChannel channel = event.getChannel(); // get message channel
-          channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
-          info.clear(); // clear embed from memory
+          if (id != null) {
+            //TODO add code for handling a null return from mojang (no ID)
+          }
 
-        } else {
-          // success embed block
-          EmbedBuilder info = new EmbedBuilder();
-          info.setTitle("Whitelist");
-          info.setDescription(name + " " + id + " is already whitelisted");
-          info.setColor(Color.RED);
-          MessageChannel channel = event.getChannel(); // get message channel
-          channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
-          info.clear(); // clear embed from memory
-          // getLogger().log(INFO, ChatColor.YELLOW + "Success");
+          ResultSet result = Query.checkPlayers(id);
+          if (!result.next()) {
+            Query.insertPlayers(nameNew, id);
+            Query.updateTrigger();
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(nameNew + " " + id + " has been added to the whitelist");
+            info.setColor(Color.GREEN);
+            MessageChannel channel = event.getChannel(); // get message channel
+            channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+            info.clear(); // clear embed from memory
+
+          } else {
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(nameNew + " " + id + " is already whitelisted");
+            info.setColor(Color.RED);
+            MessageChannel channel = event.getChannel(); // get message channel
+            channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+            info.clear(); // clear embed from memory
+            // getLogger().log(INFO, ChatColor.YELLOW + "Success");
+          }
+          // END MySQL query
         }
-        // END MySQL query
-
-        // if syntax error the following will run
-      } else {
-        // failed embed block
-        EmbedBuilder info = new EmbedBuilder();
-        info.setTitle("Whitelist");
-        info.setDescription("You must add an IGN such as /whitelist add playerName");
-        info.setColor(Color.RED);
-        MessageChannel channel = event.getChannel(); // get message channel
-        channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
-        info.clear(); // clear embed from memory
       }
     }
   }

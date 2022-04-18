@@ -6,6 +6,7 @@ import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.commands.Info;
 import com.bifrostsmp.heimdall.discord.commands.PingPong;
+import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.commands.WhitelistAdd;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
@@ -52,8 +53,7 @@ public class HeimdallVelocity {
   @Getter private final Path dataDirectory;
 
   @Inject
-  public HeimdallVelocity(
-      ProxyServer proxy, Logger logger, @DataDirectory final Path dataDirectory) {
+  public HeimdallVelocity(ProxyServer proxy, Logger logger, @DataDirectory final Path dataDirectory) {
     this.proxy = proxy;
     HeimdallVelocity.logger = logger;
     config = CreateConfig.loadConfig(dataDirectory);
@@ -90,7 +90,7 @@ public class HeimdallVelocity {
       e.printStackTrace();
     }
     // Event listeners for commands
-    discordBot.addEventListener(new Info(), new PingPong(), new WhitelistAdd());
+    discordBot.addEventListener(new Info(), new PingPong(), new WhitelistAdd(), new SlashCommands());
   }
 
   @Subscribe(order = PostOrder.LATE)
