@@ -14,7 +14,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.awt.*;
 import java.sql.ResultSet;
 
-public class WhitelistAdd extends ListenerAdapter {
+import static com.bifrostsmp.heimdall.database.Query.removePlayer;
+import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
+
+public class Whitelist extends ListenerAdapter {
 
   boolean hasRole;
 
@@ -30,18 +33,53 @@ public class WhitelistAdd extends ListenerAdapter {
     // We don't want to respond to other bot accounts, including ourselves
     Message message = event.getMessage();
     String[] content = message.getContentRaw().split("\\s+");
-    if ((content.length == 1 || content.length == 2) && message.getContentRaw().contains("whitelist")) {
+    if (((content.length == 1 || content.length == 2) && message.getContentRaw().contains("whitelist")) && !message.getContentRaw().contains("update")) {
       // failed embed block
       EmbedBuilder info = new EmbedBuilder();
       info.setTitle("Whitelist");
-      info.setDescription("Proper command syntax is /whitelist add ign \n If the ign has underscores use \\ as in \\_ign_ ");
+      info.setDescription("Proper command syntax is /whitelist add ign. \nIf the ign has underscores use \\ as in \\_ign_. \nOther sub options are update, reload, and remove.");
       info.setColor(Color.RED);
       MessageChannel channel = event.getChannel(); // get message channel
       channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
       info.clear(); // clear embed from memory
       return;
     }
+
     if (content[0].equalsIgnoreCase(HeimdallVelocity.prefix + "whitelist")) {
+
+      if (content[1].equalsIgnoreCase("remove")) {
+        String name = content[2];
+        String nameNew = name.replaceAll("\\\\", "");
+        String id = NameToID.nameToID((nameNew));
+        ResultSet result = Query.checkPlayers(id);
+        if (result.next()) {
+          removePlayer(id);
+          updateTrigger();
+          // success embed block
+          EmbedBuilder info = new EmbedBuilder();
+          info.setTitle("Whitelist");
+          info.setDescription(name + " " + id + " has been removed from the whitelist");
+          info.setColor(Color.GREEN);
+          MessageChannel channel = event.getChannel(); // get message channel
+          channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+          info.clear(); // clear embed from memory
+        }
+      }
+
+      if (content[1].equalsIgnoreCase("update")) {
+        updateTrigger();
+        EmbedBuilder info = new EmbedBuilder();
+        info.setTitle("Whitelist");
+        info.setDescription("Whitelist update started");
+        info.setColor(Color.GREEN);
+        MessageChannel channel = event.getChannel(); // get message channel
+        channel.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+        info.clear(); // clear embed from memory
+      }
+
+      if (content[1].equalsIgnoreCase("reload")) {
+        //TODO add whitelist reload logic
+      }
 
       if (content[1].equalsIgnoreCase("add")) {
         // checks for player name
@@ -57,7 +95,7 @@ public class WhitelistAdd extends ListenerAdapter {
           ResultSet result = Query.checkPlayers(id);
           if (!result.next()) {
             Query.insertPlayers(nameNew, id);
-            Query.updateTrigger();
+            updateTrigger();
             // success embed block
             EmbedBuilder info = new EmbedBuilder();
             info.setTitle("Whitelist");

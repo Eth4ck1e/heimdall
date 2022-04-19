@@ -6,8 +6,7 @@ import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.commands.Info;
 import com.bifrostsmp.heimdall.discord.commands.PingPong;
-import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
-import com.bifrostsmp.heimdall.discord.commands.WhitelistAdd;
+import com.bifrostsmp.heimdall.discord.commands.Whitelist;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -19,7 +18,9 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.Yaml;
@@ -27,6 +28,8 @@ import org.yaml.snakeyaml.Yaml;
 import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 import java.sql.Connection;
+
+import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 
 @Plugin(
     id = "heimdall-velocity",
@@ -89,8 +92,22 @@ public class HeimdallVelocity {
     } catch (LoginException e) {
       e.printStackTrace();
     }
-    // Event listeners for commands
-    discordBot.addEventListener(new Info(), new PingPong(), new WhitelistAdd(), new SlashCommands());
+    // Event listeners for commands these are standard commands Slash commands are below
+    discordBot.addEventListener(new Info(), new PingPong(), new Whitelist());
+
+    // These commands take up to an hour to be activated after creation/update/delete
+    CommandListUpdateAction commands = discordBot.updateCommands();
+
+    // Simple reply commands
+    commands.addCommands(
+            Commands.slash("say", "Makes the bot say what you tell it to")
+                    .addOption(STRING, "content", "What the bot should say", true) // you can add required options like this too
+    );
+
+    // Send the new set of commands to discord, this will override any existing global commands with the new set provided here
+    commands.queue();
+
+
   }
 
   @Subscribe(order = PostOrder.LATE)

@@ -32,6 +32,17 @@ public class Query {
     insertUser.executeUpdate();
   }
 
+  public static void removePlayer(String id) {
+    String deleteSQL = "DELETE FROM players WHERE uuid  = \'" + id + "\'";
+    try {
+      PreparedStatement removeUser = HeimdallVelocity.connection.prepareStatement(deleteSQL);
+      removeUser.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("Error at Query.removePlayer");
+      e.printStackTrace();
+    }
+  }
+
   public static void insertServers(String[] servers) throws SQLException {
     for (int i = 0; i < servers.length; i++) {
       String insertSQL = "INSERT INTO servers(server) (?);";
