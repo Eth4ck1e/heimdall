@@ -18,6 +18,7 @@ public class Parse {
   private static InputStream inputStream;
   private static String role;
   private static String BOT_CLIENT_ID;
+  private static String DISCORD_ID;
 
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
@@ -42,6 +43,7 @@ public class Parse {
     discordToken = (String) getData.get("DISCORD_TOKEN");
     role = (String) getData.get("ROLE");
     BOT_CLIENT_ID = (String) getData.get("BOT_CLIENT_ID");
+    DISCORD_ID = (String) getData.get("DISCORD_ID");
   }
 
   public static String getUser() {
@@ -66,5 +68,9 @@ public class Parse {
 
   public static String getBotClientId() {
     return BOT_CLIENT_ID;
+  }
+
+  public static String getDiscordId() {
+    return DISCORD_ID;
   }
 }

@@ -6,6 +6,7 @@ import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.commands.Info;
 import com.bifrostsmp.heimdall.discord.commands.PingPong;
+import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.commands.Whitelist;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
@@ -18,7 +19,10 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -38,7 +42,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
     description = "Main plugin which includes discord bot",
     url = "bifrostsmp.com",
     authors = {"Eth4ck1e", "HunnaG"})
-public class HeimdallVelocity {
+public class HeimdallVelocity extends ListenerAdapter {
 
   private final ProxyServer proxy;
   private final Yaml config;
@@ -53,14 +57,14 @@ public class HeimdallVelocity {
 
   @Getter private static JDA discordBot;
 
-  @Getter private final Path dataDirectory;
+  private static Path dataDirectory = null;
 
   @Inject
   public HeimdallVelocity(ProxyServer proxy, Logger logger, @DataDirectory final Path dataDirectory) {
     this.proxy = proxy;
     HeimdallVelocity.logger = logger;
     config = CreateConfig.loadConfig(dataDirectory);
-    this.dataDirectory = dataDirectory;
+    HeimdallVelocity.dataDirectory = dataDirectory;
     logger.info(
         "Heimdall uses a mysql database to sync the vanilla minecraft whitelist between all servers on your network."
             + "This requires the heimdall plugin to also be installed on each backend server.");
@@ -93,20 +97,26 @@ public class HeimdallVelocity {
       e.printStackTrace();
     }
     // Event listeners for commands these are standard commands Slash commands are below
-    discordBot.addEventListener(new Info(), new PingPong(), new Whitelist());
-
+    discordBot.getGuildById(Parse.getDiscordId());
     // These commands take up to an hour to be activated after creation/update/delete
     CommandListUpdateAction commands = discordBot.updateCommands();
 
     // Simple reply commands
     commands.addCommands(
-            Commands.slash("say", "Makes the bot say what you tell it to")
-                    .addOption(STRING, "content", "What the bot should say", true) // you can add required options like this too
+            Commands.slash("repeat", "Makes the bot say what you tell it to")
+                    .addOption(STRING, "content", "What the bot should say", true)// you can add required options like this too
     );
+    commands.addCommands(
+            Commands.slash("whitelist", "Add, remove, or update the whitelist.\nSyntax is /whitelist add/remove player, /whitelist update.")
+                    .addSubcommands(new SubcommandData("add", "add player to whitelist. /whitelist add player").addOptions(new OptionData(STRING,"player","the player to be added").setRequired(true)))
+                    .addSubcommands(new SubcommandData("remove", "remove player from whitelist. /whitelist remove player").addOptions(new OptionData(STRING,"player","player to be removed").setRequired(true)))
+                    .addSubcommands(new SubcommandData("update","updates whitelist to ensure servers are in sync with database"))
+    );
+
+    discordBot.addEventListener(new Info(), new PingPong(), new Whitelist(), new SlashCommands());
 
     // Send the new set of commands to discord, this will override any existing global commands with the new set provided here
     commands.queue();
-
 
   }
 
@@ -122,4 +132,9 @@ public class HeimdallVelocity {
       e.printStackTrace();
     }
   }
+
+  public static Path getDataDirectory() {
+    return dataDirectory;
+  }
+
 }
