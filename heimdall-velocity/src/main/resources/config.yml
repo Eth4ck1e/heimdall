@@ -1,17 +1,17 @@
 ## This is the main plugin configuration file
 #This is your bot token
-DISCORD_TOKEN: "NzM1NjU5MTMxODEzNDk0ODc1.Xxjd9A.ttC54q9JhB7vMHoEMnRRWoNo6CQ"
+DISCORD_TOKEN: ""
 #This is the discord guild ID.  Get this while in dev mode by right clicking the discord server and selecting "Copy ID"
-DISCORD_ID: "814694488961974283"
-BOT_CLIENT_ID: "735659131813494875"
+DISCORD_ID: ""
+BOT_CLIENT_ID: ""
 #Discord roll name for adding perms.  Only members with this roll will be able to interact with the bot
 ROLE: "Staff"
 
 
 ## MySQL database connection info
 ## database:
-host: dynanode.bloom.host # host of your database
-port: 3306 # default port for MariaDB and MySQL
-database: s15445_whitelist # name of your database. A database server can contain multiple databases
-user: u15445_6WTcwtustf
-password: 8mejQK^gEt5HHsAoY=L!nhia
+host:  # host of your database
+port:  # default port for MariaDB and MySQL
+database:  # name of your database. A database server can contain multiple databases
+user:
+password:
