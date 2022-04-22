@@ -3,8 +3,6 @@ package com.bifrostsmp.heimdall.scheduler;
 import com.bifrostsmp.heimdall.HeimdallPaper;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.json.WhitelistBuilder;
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.json.simple.JSONArray;
 
 import java.util.Date;
@@ -23,19 +21,9 @@ public class ScheduledTask extends TimerTask {
       JSONArray result = Query.dump(); // result of query dump
       // getLogger().log(INFO, ChatColor.YELLOW + "updating whitelist");
       WhitelistBuilder.whitelistBuilder(result);
-      Bukkit.getScheduler()
-          .scheduleSyncDelayedTask(
-              HeimdallPaper.instance,
-              new Runnable() {
-                @Override
-                public void run() {
-                  ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                  String command = "whitelist reload";
-                  Bukkit.dispatchCommand(console, command);
-                }
-              },
-              20L); // 20 Tick (1 Second) delay before run() is called
+      HeimdallPaper.instance.getServer().reloadWhitelist();
       Query.updated(server); // change JSONUpdated to true
+      HeimdallPaper.instance.getServer().getConsoleSender().sendMessage("[Heimdall]Whitelist was updated and reloaded");
     } else {
       // getLogger().log(INFO, ChatColor.YELLOW + "No need to update whitelist");
       now = new Date();

@@ -5,3 +5,12 @@ api-version: 1.18
 authors: [ Eth4ck1e, HunnaG ]
 description: Backend server helper for Velocity
 website: bifrostsmp.com
+databse: true
+
+commands:
+  whitelist:
+    description: Main whitelist command
+    usage: "Syntax error! Usage: /<command> add/remove [player] or /<command> update or /<command> reload"
+    aliases: wl
+    permission: heimdall.whitelist
+    permission-message: You do not have /<permission> permissions

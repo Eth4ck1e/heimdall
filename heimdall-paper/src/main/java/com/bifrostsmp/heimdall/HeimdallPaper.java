@@ -4,6 +4,7 @@ import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
 import com.bifrostsmp.heimdall.database.Query;
+import com.bifrostsmp.heimdall.minecraft.Whitelist;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,14 +69,13 @@ public final class HeimdallPaper extends JavaPlugin {
                 @Override
                 public void run() {
                   ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                  String command = "whitelist reload";
                   Bukkit.dispatchCommand(console, "whitelist reload");
                   Bukkit.dispatchCommand(console, "whitelist on");
                 }
               },
               20L); // 20 Tick (1 Second) delay before run() is called
     }
-
+    getCommand("whitelist").setExecutor(new Whitelist());
     Timer time = new Timer();
     ScheduledTask st = new ScheduledTask(server);
     time.schedule(st, 0, 30000);
@@ -97,4 +97,25 @@ public final class HeimdallPaper extends JavaPlugin {
     }
     getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[Heimdall] Plugin is disabled");
   }
+
+  public String getUser() {
+    return user;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public static HeimdallPaper getInstance() {
+    return instance;
+  }
+
+  public static Plugin getPlugin() {
+    return plugin;
+  }
+
 }

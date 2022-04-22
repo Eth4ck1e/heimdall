@@ -31,18 +31,45 @@ public class Query {
     }
   }
 
-  public static void insertPlayers(String name, String id) {
+  public static int insertPlayers(String name, String id) {
     String insertSQL = "INSERT IGNORE INTO players(name, uuid) VALUES (?,?);";
     try {
       Connection connection = ConnectDB.connection;
       PreparedStatement insertUser = connection.prepareStatement(insertSQL);
       insertUser.setString(1, name);
       insertUser.setString(2, id);
-      insertUser.executeUpdate();
+      return insertUser.executeUpdate();
     } catch (SQLException e) {
       getLogger().log(INFO, ChatColor.YELLOW + "Error at Query.insertPlayers");
       e.printStackTrace();
     }
+    return 0;
+  }
+
+  public static int removePlayers(String id) {
+    String deleteSQL = "DELETE FROM players WHERE uuid = \'" + id + "\';";
+    try {
+      Connection connection = ConnectDB.connection;
+      PreparedStatement removeUser = connection.prepareStatement(deleteSQL);
+      return removeUser.executeUpdate();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return 0;
+  }
+
+  public static boolean checkPlayer(String id) {
+    String checkSQL = "SELECT * FROM players WHERE uuid=\'" + id + "\';";
+    boolean ResultSet;
+    try {
+      Connection connection = ConnectDB.connection;
+      PreparedStatement checkPlayer = connection.prepareStatement(checkSQL);
+      ResultSet = checkPlayer.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+    return ResultSet;
   }
 
   public static boolean check(String server) {
@@ -59,6 +86,16 @@ public class Query {
       throwables.printStackTrace();
     }
     return value;
+  }
+
+  public static void update() {
+    String query = "UPDATE servers SET JSONUpdated = false WHERE JSONUpdated = true;";
+    try {
+      PreparedStatement preparedStatement = ConnectDB.connection.prepareStatement(query);
+      preparedStatement.executeUpdate();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
   }
 
   public static void updated(String server) {
