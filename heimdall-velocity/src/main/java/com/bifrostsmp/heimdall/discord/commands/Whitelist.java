@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.database.Query.removePlayer;
 import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
@@ -17,6 +18,8 @@ import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
 public class Whitelist extends ListenerAdapter {
 
   public static void whitelist(SlashCommandInteractionEvent event) {
+    if (event.getUser().isBot()) return;
+    if (!event.getInteraction().isFromGuild()) return;
     event.deferReply().queue();
     InteractionHook hook = event.getHook();
     hook.setEphemeral(true);
@@ -36,7 +39,11 @@ public class Whitelist extends ListenerAdapter {
           info.setTitle("Whitelist");
           info.setDescription(name + " has been added to the whitelist");
           info.setColor(Color.GREEN);
-          hook.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+          hook.sendMessageEmbeds(info.build())
+              .queue(
+                  message -> {
+                    message.delete().queueAfter(30, TimeUnit.SECONDS);
+                  }); // send embed to message channel
           info.clear(); // clear embed from memory
         } else {
           // success embed block
@@ -44,7 +51,11 @@ public class Whitelist extends ListenerAdapter {
           info.setTitle("Whitelist");
           info.setDescription(name + " is already whitelisted");
           info.setColor(Color.RED);
-          hook.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+          hook.sendMessageEmbeds(info.build())
+              .queue(
+                  message -> {
+                    message.delete().queueAfter(30, TimeUnit.SECONDS);
+                  }); // send embed to message channel
           info.clear(); // clear embed from memory
         }
       } catch (SQLException e) {
@@ -64,7 +75,11 @@ public class Whitelist extends ListenerAdapter {
           info.setTitle("Whitelist");
           info.setDescription(name + " has been removed from the whitelist");
           info.setColor(Color.GREEN);
-          hook.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+          hook.sendMessageEmbeds(info.build())
+              .queue(
+                  message -> {
+                    message.delete().queueAfter(30, TimeUnit.SECONDS);
+                  }); // send embed to message channel
           info.clear(); // clear embed from memory
         }
       } catch (SQLException e) {
@@ -81,7 +96,11 @@ public class Whitelist extends ListenerAdapter {
       info.setTitle("Whitelist");
       info.setDescription("Whitelist update started");
       info.setColor(Color.GREEN);
-      hook.sendMessageEmbeds(info.build()).queue(); // send embed to message channel
+      hook.sendMessageEmbeds(info.build())
+          .queue(
+              message -> {
+                message.delete().queueAfter(30, TimeUnit.SECONDS);
+              }); // send embed to message channel
       info.clear(); // clear embed from memory
     }
   }

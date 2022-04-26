@@ -6,6 +6,10 @@ DISCORD_ID: ""
 BOT_CLIENT_ID: ""
 #Discord roll name for adding perms.  Only members with this roll will be able to interact with the bot
 ROLE: "Staff"
+#Application Channel ID's
+appPending: "967938193737527316"
+appAccepted: "967938282514153482"
+appDenied: "967938335031066634"
 
 
 ## MySQL database connection info

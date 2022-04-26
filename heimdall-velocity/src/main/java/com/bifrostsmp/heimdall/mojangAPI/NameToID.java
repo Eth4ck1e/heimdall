@@ -22,7 +22,7 @@ public class NameToID {
     Date date = new Date();
     Timestamp tsd = new Timestamp(date.getTime());
     String ts = new SimpleDateFormat("HH:mm:ss").format(tsd);
-
+    String id;
     HttpClient client = HttpClient.newHttpClient(); // create get client
     HttpRequest request =
         HttpRequest.newBuilder().uri(URI.create(GET_URL + name + "?at=" + ts)).build(); // build uri
@@ -30,17 +30,21 @@ public class NameToID {
       response =
           client.send(request, HttpResponse.BodyHandlers.ofString()); // store response in variable
     } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
+      return null;
+    }
+    try {
+      String json = response.body(); // convert response to string
+      JSONObject obj = (JSONObject) JSONValue.parse(json); // parse string
+      id =
+          addChar(
+              (String)
+                  obj.get(
+                      "id")); // gets id from get request and sends to addChar to correct the format
+      // for whitelist.json
+    } catch (NullPointerException e) {
+      return null;
     }
 
-    String json = response.body(); // convert response to string
-    JSONObject obj = (JSONObject) JSONValue.parse(json); // parse string
-    String id =
-        addChar(
-            (String)
-                obj.get(
-                    "id")); // gets id from get request and sends to addChar to correct the format
-                            // for whitelist.json
     // END Mojang api
     return id;
   }

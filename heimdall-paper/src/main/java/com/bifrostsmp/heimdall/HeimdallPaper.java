@@ -117,5 +117,4 @@ public final class HeimdallPaper extends JavaPlugin {
   public static Plugin getPlugin() {
     return plugin;
   }
-
 }

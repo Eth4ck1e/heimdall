@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class Parse {
+public class Parser {
 
   private static String user;
   private static String password;
@@ -19,6 +19,9 @@ public class Parse {
   private static String role;
   private static String BOT_CLIENT_ID;
   private static String DISCORD_ID;
+  private static String appPending;
+  private static String appAccepted;
+  private static String appDenied;
 
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
@@ -44,6 +47,9 @@ public class Parse {
     role = (String) getData.get("ROLE");
     BOT_CLIENT_ID = (String) getData.get("BOT_CLIENT_ID");
     DISCORD_ID = (String) getData.get("DISCORD_ID");
+    appPending = (String) getData.get("appPending");
+    appAccepted = (String) getData.get("appAccepted");
+    appDenied = (String) getData.get("appDenied");
   }
 
   public static String getUser() {
@@ -72,5 +78,17 @@ public class Parse {
 
   public static String getDiscordId() {
     return DISCORD_ID;
+  }
+
+  public static String getAppPending() {
+    return appPending;
+  }
+
+  public static String getAppAccepted() {
+    return appAccepted;
+  }
+
+  public static String getAppDenied() {
+    return appDenied;
   }
 }

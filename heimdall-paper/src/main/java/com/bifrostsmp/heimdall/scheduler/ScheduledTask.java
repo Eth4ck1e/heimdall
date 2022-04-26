@@ -23,7 +23,10 @@ public class ScheduledTask extends TimerTask {
       WhitelistBuilder.whitelistBuilder(result);
       HeimdallPaper.instance.getServer().reloadWhitelist();
       Query.updated(server); // change JSONUpdated to true
-      HeimdallPaper.instance.getServer().getConsoleSender().sendMessage("[Heimdall]Whitelist was updated and reloaded");
+      HeimdallPaper.instance
+          .getServer()
+          .getConsoleSender()
+          .sendMessage("[Heimdall]Whitelist was updated and reloaded");
     } else {
       // getLogger().log(INFO, ChatColor.YELLOW + "No need to update whitelist");
       now = new Date();

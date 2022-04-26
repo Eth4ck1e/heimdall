@@ -1,14 +1,16 @@
 package com.bifrostsmp.heimdall;
 
 import com.bifrostsmp.heimdall.config.CreateConfig;
-import com.bifrostsmp.heimdall.config.Parse;
+import com.bifrostsmp.heimdall.config.Parser;
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
+import com.bifrostsmp.heimdall.discord.applications.AppHandler;
 import com.bifrostsmp.heimdall.discord.commands.Info;
 import com.bifrostsmp.heimdall.discord.commands.PingPong;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.commands.Whitelist;
 import com.google.inject.Inject;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -44,6 +46,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
     authors = {"Eth4ck1e", "HunnaG"})
 public class HeimdallVelocity extends ListenerAdapter {
 
+  private static final EventWaiter eventWaiter = new EventWaiter();
   private final ProxyServer proxy;
   private final Yaml config;
   Object luckPermsApi;
@@ -60,7 +63,8 @@ public class HeimdallVelocity extends ListenerAdapter {
   private static Path dataDirectory = null;
 
   @Inject
-  public HeimdallVelocity(ProxyServer proxy, Logger logger, @DataDirectory final Path dataDirectory) {
+  public HeimdallVelocity(
+      ProxyServer proxy, Logger logger, @DataDirectory final Path dataDirectory) {
     this.proxy = proxy;
     HeimdallVelocity.logger = logger;
     config = CreateConfig.loadConfig(dataDirectory);
@@ -80,7 +84,7 @@ public class HeimdallVelocity extends ListenerAdapter {
     logger.info(
         "Starting Discord Bot"); // send message to console with plugin name, logger tags with
     // plugin name
-    final String discordToken = Parse.getDiscordToken(); // get discord token from config.yml
+    final String discordToken = Parser.getDiscordToken(); // get discord token from config.yml
 
     if (discordToken == null) { // check if token exists, if token exists try to initiate bot
       logger.error(
@@ -89,7 +93,8 @@ public class HeimdallVelocity extends ListenerAdapter {
     }
 
     try { // try catch to get any errors
-      discordBot = JDABuilder.createDefault(discordToken)
+      discordBot =
+          JDABuilder.createDefault(discordToken)
               .enableIntents(GatewayIntent.GUILD_MEMBERS)
               .setMemberCachePolicy(MemberCachePolicy.ALL)
               .build();
@@ -97,27 +102,58 @@ public class HeimdallVelocity extends ListenerAdapter {
       e.printStackTrace();
     }
     // Event listeners for commands these are standard commands Slash commands are below
-    discordBot.getGuildById(Parse.getDiscordId());
+    discordBot.getGuildById(Parser.getDiscordId());
     // These commands take up to an hour to be activated after creation/update/delete
     CommandListUpdateAction commands = discordBot.updateCommands();
 
     // Simple reply commands
     commands.addCommands(
-            Commands.slash("repeat", "Makes the bot say what you tell it to")
-                    .addOption(STRING, "content", "What the bot should say", true)// you can add required options like this too
+        Commands.slash("repeat", "Makes the bot say what you tell it to")
+            .addOption(
+                STRING,
+                "content",
+                "What the bot should say",
+                true) // you can add required options like this too
+        );
+    commands.addCommands(
+        Commands.slash(
+                "whitelist",
+                "Add, remove, or update the whitelist.\nSyntax is /whitelist add/remove player, /whitelist update.")
+            .addSubcommands(
+                new SubcommandData("add", "add player to whitelist. /whitelist add player")
+                    .addOptions(
+                        new OptionData(STRING, "player", "the player to be added")
+                            .setRequired(true)))
+            .addSubcommands(
+                new SubcommandData(
+                        "remove", "remove player from whitelist. /whitelist remove player")
+                    .addOptions(
+                        new OptionData(STRING, "player", "player to be removed").setRequired(true)))
+            .addSubcommands(
+                new SubcommandData(
+                    "update", "updates whitelist to ensure servers are in sync with database")));
+    commands.addCommands(
+        Commands.slash("apply", "command to apply to the server")
+            .addSubcommands(new SubcommandData("staff", "apply for staff"))
+            .addSubcommands(new SubcommandData("whitelist", "apply for minecraft server")));
+    commands.addCommands(
+            Commands.slash("info", "replies with info about the bot")
     );
     commands.addCommands(
-            Commands.slash("whitelist", "Add, remove, or update the whitelist.\nSyntax is /whitelist add/remove player, /whitelist update.")
-                    .addSubcommands(new SubcommandData("add", "add player to whitelist. /whitelist add player").addOptions(new OptionData(STRING,"player","the player to be added").setRequired(true)))
-                    .addSubcommands(new SubcommandData("remove", "remove player from whitelist. /whitelist remove player").addOptions(new OptionData(STRING,"player","player to be removed").setRequired(true)))
-                    .addSubcommands(new SubcommandData("update","updates whitelist to ensure servers are in sync with database"))
+            Commands.slash("ping", "play Ping Pong with the Bot!")
     );
 
-    discordBot.addEventListener(new Info(), new PingPong(), new Whitelist(), new SlashCommands());
+    discordBot.addEventListener(
+        new Info(),
+        new PingPong(),
+        new Whitelist(),
+        new SlashCommands(),
+        eventWaiter,
+        new AppHandler());
 
-    // Send the new set of commands to discord, this will override any existing global commands with the new set provided here
+    // Send the new set of commands to discord, this will override any existing global commands with
+    // the new set provided here
     commands.queue();
-
   }
 
   @Subscribe(order = PostOrder.LATE)
@@ -137,4 +173,7 @@ public class HeimdallVelocity extends ListenerAdapter {
     return dataDirectory;
   }
 
+  public static EventWaiter getEventWaiter() {
+    return eventWaiter;
+  }
 }

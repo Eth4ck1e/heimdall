@@ -40,7 +40,7 @@ public class Whitelist implements CommandExecutor {
           sender.sendMessage(ChatColor.RED + name + " is already Whitelisted");
         } else {
           int result = Query.insertPlayers(name, id);
-          //System.out.println(result);
+          // System.out.println(result);
           if (result == 0) {
             sender.sendMessage(
                 ChatColor.RED + "[ERROR] " + name + " could not be added to the database");
@@ -67,6 +67,6 @@ public class Whitelist implements CommandExecutor {
     } else {
       sender.sendMessage("improper syntax");
     }
-      return true;
+    return true;
   }
 }

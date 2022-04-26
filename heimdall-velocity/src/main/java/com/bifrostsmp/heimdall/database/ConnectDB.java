@@ -1,7 +1,7 @@
 package com.bifrostsmp.heimdall.database;
 
 import com.bifrostsmp.heimdall.HeimdallVelocity;
-import com.bifrostsmp.heimdall.config.Parse;
+import com.bifrostsmp.heimdall.config.Parser;
 
 import java.nio.file.Path;
 import java.sql.DriverManager;
@@ -18,14 +18,15 @@ public class ConnectDB {
       e.printStackTrace();
     }
 
-    Parse.parse(dataDirectory);
-    String url = Parse.getUrl();
-    String user = Parse.getUser();
-    String password = Parse.getPassword();
+    Parser.parse(dataDirectory);
+    String url = Parser.getUrl();
+    String user = Parser.getUser();
+    String password = Parser.getPassword();
 
     // Init mysql db connection
     try { // try catch to get any SQL errors
-      HeimdallVelocity.connection = DriverManager.getConnection(url + "?autoReconnect=true", user, password);
+      HeimdallVelocity.connection =
+          DriverManager.getConnection(url + "?autoReconnect=true", user, password);
       HeimdallVelocity.logger.info("mySQL database connection successful!");
       // with the method getConnection() from DriverManager, we're trying to set
       // the connection's url, username, password to the variables we made earlier and
