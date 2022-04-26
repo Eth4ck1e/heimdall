@@ -31,7 +31,7 @@ public class AppHandler extends ListenerAdapter {
       event.deferReply().queue();
       MessageEmbed embed = event.getMessage().getEmbeds().get(0);
       String discordID = embed.getFooter().getText();
-      User user = event.getJDA().getUserById(discordID);
+      User user = hook.getJDA().retrieveUserById(discordID).complete();
       String IGN = embed.getFields().get(0).getValue();
       String ID = NameToID.nameToID(IGN);
       try {
@@ -88,10 +88,11 @@ public class AppHandler extends ListenerAdapter {
                 message.delete().queueAfter(30, TimeUnit.SECONDS);
               });
     } else if (event.getComponentId().equals("Deny")) {
+        event.deferReply().queue();
       MessageEmbed embed = event.getMessage().getEmbeds().get(0);
       String discordID = embed.getFooter().getText();
-      User applicant = event.getJDA().getUserById(discordID);
-      event
+      User applicant = hook.getJDA().retrieveUserById(discordID).complete();
+      hook
           .getJDA()
           .openPrivateChannelById(member.getIdLong())
           .queue(
@@ -107,7 +108,10 @@ public class AppHandler extends ListenerAdapter {
       hook.getInteraction()
           .getJDA()
           .addEventListener(new ResponseHandler(applicant.getIdLong(), member.getIdLong(), embed));
-
+      hook.sendMessage("Application denied").queue(
+              message -> {
+                  message.delete().queueAfter(30, TimeUnit.SECONDS);
+              });
       event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
     }
   }

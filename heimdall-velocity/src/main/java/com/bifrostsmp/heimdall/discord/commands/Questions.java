@@ -48,6 +48,11 @@ public class Questions extends ListenerAdapter {
         if(e.getAuthor().isBot()) return;
         if(!(e.getPrivateChannel().getIdLong() == channel)) return;
         if(!(e.getAuthor().getIdLong()==userID)) return;
+        if(e.getMessage().getContentRaw().equalsIgnoreCase("!cancel")) {
+            i=99;
+            e.getChannel().sendMessage("Your application has been canceled").queue();
+            return;
+        }
         Guild guild = e.getJDA().getGuildById(getDiscordId());
         assert guild != null;
         MessageChannel tc = guild.getTextChannelsByName("pending-applications", true).get(0);
