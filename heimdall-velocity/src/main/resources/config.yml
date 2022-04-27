@@ -5,7 +5,8 @@ DISCORD_TOKEN: ""
 DISCORD_ID: ""
 BOT_CLIENT_ID: ""
 #Discord roll name for adding perms.  Only members with this roll will be able to interact with the bot
-ROLE: "Staff"
+STAFF_ROLE: "Staff"
+APPLICANT_ROLE: "Applicant"
 #Application Channel ID's
 appPending: "967938193737527316"
 appAccepted: "967938282514153482"

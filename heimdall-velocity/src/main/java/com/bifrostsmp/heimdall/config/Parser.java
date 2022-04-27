@@ -16,7 +16,8 @@ public class Parser {
   private static String url;
   private static String discordToken;
   private static InputStream inputStream;
-  private static String role;
+  private static String staffRole;
+  private static String appRole;
   private static String BOT_CLIENT_ID;
   private static String DISCORD_ID;
   private static String appPending;
@@ -44,7 +45,8 @@ public class Parser {
             + "/"
             + getData.get("database");
     discordToken = (String) getData.get("DISCORD_TOKEN");
-    role = (String) getData.get("ROLE");
+    staffRole = (String) getData.get("STAFF_ROLE");
+    appRole = (String) getData.get("APPLICANT_ROLE");
     BOT_CLIENT_ID = (String) getData.get("BOT_CLIENT_ID");
     DISCORD_ID = (String) getData.get("DISCORD_ID");
     appPending = (String) getData.get("appPending");
@@ -68,9 +70,11 @@ public class Parser {
     return discordToken;
   }
 
-  public static String getRole() {
-    return role;
+  public static String getStaffRole() {
+    return staffRole;
   }
+
+  public static String getAppRole() { return appRole; }
 
   public static String getBotClientId() {
     return BOT_CLIENT_ID;

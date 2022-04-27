@@ -20,7 +20,7 @@ public class Apply extends ListenerAdapter {
   private final String[] aliases;
   private final String help;
   private static final ArrayList<String> appAnswers = new ArrayList<>();
-  private static int var = 0;
+  private static final int var = 0;
   private static long ch;
 
   public Apply(EventWaiter waiter) {
@@ -31,8 +31,9 @@ public class Apply extends ListenerAdapter {
   }
 
   public static void apply(SlashCommandInteractionEvent event) {
-    if (event.getUser().isBot()) return;
-    if (!event.getInteraction().isFromGuild()) return;
+    if (event.getUser().isBot()) return; // returns if the event user is a bot
+    if (!event.getInteraction().isFromGuild())
+      return; // ensures the command is issued from the guild
     event.deferReply().queue();
     InteractionHook hook = event.getHook();
     hook.setEphemeral(true);
@@ -67,9 +68,12 @@ public class Apply extends ListenerAdapter {
                 hook.getInteraction()
                     .getJDA()
                     .addEventListener(new Questions(userID, ch, getQuestionObjects));
-                Channel.sendMessage("Your application has started\nType '!cancel' at any time to cancel your application").queue(message -> {
-                    message.getChannel().sendMessage("What is your minecraft IGN").queue();
-                });
+                Channel.sendMessage(
+                        "Your application has started\nType '!cancel' at any time to cancel your application")
+                    .queue(
+                        message -> {
+                          message.getChannel().sendMessage("What is your minecraft IGN").queue();
+                        });
               });
     }
     if (event.getSubcommandName().equalsIgnoreCase("staff")) {

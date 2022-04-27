@@ -10,11 +10,12 @@ public class SlashCommands extends ListenerAdapter {
 
   @Override
   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    if (event.getGuild() == null) return;
+    if (event.getUser().isBot()) return;
     long memberID = event.getMember().getIdLong();
     long guildID = event.getGuild().getIdLong();
-    if (event.getUser().isBot() || !hasRole(memberID, guildID)) return;
     // Only accept commands from guilds
-    if (event.getGuild() == null) return;
+
     String command = event.getName().toLowerCase();
     switch (command) {
       case "repeat": {
@@ -23,9 +24,11 @@ public class SlashCommands extends ListenerAdapter {
                 event.getOption("content").getAsString()); // content is required so no null-check here
       }
       case "whitelist": {
+        if (!hasRole(memberID, guildID, Parser.getStaffRole())) return;
         Whitelist.whitelist(event);
       }
       case "apply": {
+        if (!hasRole(memberID, guildID, Parser.getAppRole())) return;
         Apply.apply(event);
       }
       case "info": {
@@ -37,7 +40,7 @@ public class SlashCommands extends ListenerAdapter {
     }
   }
 
-  boolean hasRole(Long userId, Long guild) {
+  boolean hasRole(Long userId, Long guild, String role) {
     for (int i = 0;
         i
             < HeimdallVelocity.getDiscordBot()
@@ -46,7 +49,7 @@ public class SlashCommands extends ListenerAdapter {
                 .getRoles()
                 .size();
         i++) {
-      if (Parser.getRole()
+      if (role
           .equalsIgnoreCase(
               HeimdallVelocity.getDiscordBot()
                   .getGuildById(guild)
