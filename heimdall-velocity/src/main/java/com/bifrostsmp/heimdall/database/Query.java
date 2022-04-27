@@ -10,6 +10,7 @@ import static com.bifrostsmp.heimdall.HeimdallVelocity.getDataDirectory;
 
 public class Query {
 
+  //Main class for all the database query methods
   public static ResultSet checkPlayers(String id) throws SQLException {
     // Get database connection
     ConnectDB.connection(getDataDirectory());

@@ -1,3 +1,8 @@
+//This class handles button interaction events for applications in the pending application channel.
+//There are two buttons, 'accept' and 'deny'.  The accept button gets the minecraft uuid from the ign and attempts to whitelist
+//the player if not already whitelisted.  The deny button sends a message to the button clicker asking for a reason and
+//stores the response.  Both buttons send a notification to the applicant of the result.
+
 package com.bifrostsmp.heimdall.discord.applications;
 
 import com.bifrostsmp.heimdall.database.Query;
@@ -26,12 +31,12 @@ public class AppHandler extends ListenerAdapter {
     ResultSet result;
     InteractionHook hook = event.getHook();
     hook.setEphemeral(true);
-    Member member = hook.getInteraction().getMember();
-    if (event.getComponentId().equals("Accept")) {
-      event.deferReply().queue();
-      MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-      String discordID = embed.getFooter().getText();
-      User user = hook.getJDA().retrieveUserById(discordID).complete();
+    Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
+    if (event.getComponentId().equals("Accept")) {  // checks if the accept button was clicked
+      event.deferReply().queue();  //button interactions require a reply within 3 seconds.  This defers the reply for later.  Using hook.sendmessage will close out the defered reply so the both stops thinking
+      MessageEmbed embed = event.getMessage().getEmbeds().get(0);  //stores the embed that the buttons are attached to in a variable
+      String discordID = embed.getFooter().getText();  //gets the applicants discordID from the embed footer
+      User user = hook.getJDA().retrieveUserById(discordID).complete();  //stores the applicant user data in user.  Must use retrieve do to caching.  Using complete to ensure this action completes synchronously.
       String IGN = embed.getFields().get(0).getValue();
       String ID = NameToID.nameToID(IGN);
       try {

@@ -46,7 +46,7 @@ public class Questions extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         if(i>getQuestions.size()+1) return;
         if(e.getAuthor().isBot()) return;
-        if(!(e.getPrivateChannel().getIdLong() == channel)) return;
+        if(!(e.getChannel().getIdLong() == channel)) return;
         if(!(e.getAuthor().getIdLong()==userID)) return;
         if(e.getMessage().getContentRaw().equalsIgnoreCase("!cancel")) {
             i=99;

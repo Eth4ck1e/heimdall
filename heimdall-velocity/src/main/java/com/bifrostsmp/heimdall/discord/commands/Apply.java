@@ -67,7 +67,7 @@ public class Apply extends ListenerAdapter {
                 hook.getInteraction()
                     .getJDA()
                     .addEventListener(new Questions(userID, ch, getQuestionObjects));
-                Channel.sendMessage("Your application has started\nType '!cancel at any time to cancel you application'").queue(message -> {
+                Channel.sendMessage("Your application has started\nType '!cancel' at any time to cancel your application").queue(message -> {
                     message.getChannel().sendMessage("What is your minecraft IGN").queue();
                 });
               });
