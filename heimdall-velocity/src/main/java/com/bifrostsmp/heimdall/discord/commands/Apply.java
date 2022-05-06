@@ -1,7 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
 import com.bifrostsmp.heimdall.discord.applications.Parser;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -15,20 +14,10 @@ import java.util.concurrent.TimeUnit;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getDataDirectory;
 
 public class Apply extends ListenerAdapter {
-  private final EventWaiter waiter;
-  private final String name;
-  private final String[] aliases;
-  private final String help;
+
   private static final ArrayList<String> appAnswers = new ArrayList<>();
   private static final int var = 0;
   private static long ch;
-
-  public Apply(EventWaiter waiter) {
-    this.waiter = waiter;
-    this.name = "hello";
-    this.aliases = new String[] {"hi"};
-    this.help = "says hello and waits for response";
-  }
 
   public static void apply(SlashCommandInteractionEvent event) {
     if (event.getUser().isBot()) return; // returns if the event user is a bot

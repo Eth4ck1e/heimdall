@@ -24,11 +24,17 @@ public class SlashCommands extends ListenerAdapter {
                 event.getOption("content").getAsString()); // content is required so no null-check here
       }
       case "whitelist": {
-        if (!hasRole(memberID, guildID, Parser.getStaffRole())) return;
+        if (!hasRole(memberID, guildID, Parser.getStaffRole())) {
+          event.reply("You must have Staff or above role to use this command!").queue();
+          return;
+        }
         Whitelist.whitelist(event);
       }
       case "apply": {
-        if (!hasRole(memberID, guildID, Parser.getAppRole())) return;
+        if (!hasRole(memberID, guildID, Parser.getAppRole())) {
+          event.reply("You do not have the applicant role!").queue();
+          return;
+        }
         Apply.apply(event);
       }
       case "info": {

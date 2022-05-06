@@ -8,10 +8,8 @@ package com.bifrostsmp.heimdall.discord.applications;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -29,6 +27,8 @@ public class AppHandler extends ListenerAdapter {
   @Override
   public void onButtonInteraction(ButtonInteractionEvent event) {
     ResultSet result;
+      Guild guild = event.getGuild();
+      assert guild != null;
     InteractionHook hook = event.getHook();
     hook.setEphemeral(true);
     Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
@@ -75,6 +75,28 @@ public class AppHandler extends ListenerAdapter {
       } catch (SQLException e) {
         e.printStackTrace();
       }
+
+        java.util.List<Role> guildRoles = guild.getRoles();
+        String[] addRolesStrings = new String[]{"Member", "Minecraft", "Fans", "Market", "Updates", "Events", "Polls", "Newsletter", "Gamenight", "Whitelisted"};
+
+        for (String role:addRolesStrings) {
+        if (guildRoles.stream().noneMatch(o -> role.equals(o.getName()))) {
+          guild
+              .createRole()
+              .setName(role)
+              .setHoisted(true)
+              .setMentionable(true)
+              .setPermissions(Permission.EMPTY_PERMISSIONS)
+              .complete();
+            System.out.println("Created guild role " + role);
+        }
+            if (guildRoles.stream().anyMatch(o->role.equals(o.getName()))) {
+                guild.addRoleToMember(user, guild.getRolesByName(role, true).get(0)).queue();
+            }
+        }
+
+        guild.removeRoleFromMember(user, guild.getRolesByName("Applicant", true).get(0)).queue();
+
       user.openPrivateChannel()
           .queue(
               (Channel) -> {

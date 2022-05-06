@@ -5,10 +5,8 @@ import com.bifrostsmp.heimdall.config.Parser;
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.applications.AppHandler;
-import com.bifrostsmp.heimdall.discord.commands.Info;
-import com.bifrostsmp.heimdall.discord.commands.PingPong;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
-import com.bifrostsmp.heimdall.discord.commands.Whitelist;
+import com.bifrostsmp.heimdall.discord.events.Join;
 import com.google.inject.Inject;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
@@ -21,6 +19,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -92,21 +91,22 @@ public class HeimdallVelocity extends ListenerAdapter {
       return;
     }
 
-    try { // try catch to get any errors
+    try { // Connects to the bot
       discordBot =
           JDABuilder.createDefault(discordToken)
               .enableIntents(GatewayIntent.GUILD_MEMBERS)
               .setMemberCachePolicy(MemberCachePolicy.ALL)
-              .build();
-    } catch (LoginException e) {
+                  .setActivity(Activity.watching("The Terminator"))
+              .build().awaitReady();
+    } catch (LoginException | InterruptedException e) {
       e.printStackTrace();
     }
-    // Event listeners for commands these are standard commands Slash commands are below
     discordBot.getGuildById(Parser.getDiscordId());
+    // Event listeners for commands these are standard commands Slash commands are below
     // These commands take up to an hour to be activated after creation/update/delete
     CommandListUpdateAction commands = discordBot.updateCommands();
 
-    // Simple reply commands
+    //BEGIN SLASH COMMANDS
     commands.addCommands(
         Commands.slash("repeat", "Makes the bot say what you tell it to")
             .addOption(
@@ -142,17 +142,17 @@ public class HeimdallVelocity extends ListenerAdapter {
     commands.addCommands(
             Commands.slash("ping", "play Ping Pong with the Bot!")
     );
+    //END SLASH COMMANDS
 
+    // Register event listeners
     discordBot.addEventListener(
-        new Info(),
-        new PingPong(),
-        new Whitelist(),
         new SlashCommands(),
-        eventWaiter,
-        new AppHandler());
+        new AppHandler(),
+        new Join()
+            );
 
-    // Send the new set of commands to discord, this will override any existing global commands with
-    // the new set provided here
+    // Send the new set of commands to discord,
+    // this will override any existing global commands with the new set provided here
     commands.queue();
   }
 
