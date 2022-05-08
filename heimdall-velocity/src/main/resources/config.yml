@@ -4,7 +4,7 @@ DISCORD_TOKEN: ""
 #This is the discord guild ID.  Get this while in dev mode by right clicking the discord server and selecting "Copy ID"
 DISCORD_ID: ""
 BOT_CLIENT_ID: ""
-#Discord roll name for adding perms.  These roles are required for bot permissions
+#Discord roll name for adding perms.  These roles are required for bot permissions, however, they can be changed to anything you want.
 STAFF_ROLE: "Staff"
 APPLICANT_ROLE: "Applicant"
 #Application Channel ID's

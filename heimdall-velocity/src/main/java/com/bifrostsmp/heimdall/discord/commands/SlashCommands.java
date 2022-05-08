@@ -5,6 +5,8 @@ import com.bifrostsmp.heimdall.config.Parser;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 public class SlashCommands extends ListenerAdapter {
   boolean hasRole;
 
@@ -25,14 +27,20 @@ public class SlashCommands extends ListenerAdapter {
       }
       case "whitelist" -> {
         if (!hasRole(memberID, guildID, Parser.getStaffRole())) {
-          event.reply("You must have Staff or above role to use this command!").queue();
+          event.reply("You must have Staff or above role to use this command!").queue(
+                  message -> {
+                    message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
+                  });
           return;
         }
         Whitelist.whitelist(event);
       }
       case "apply" -> {
         if (!hasRole(memberID, guildID, Parser.getAppRole())) {
-          event.reply("You do not have the applicant role!").queue();
+          event.reply("You do not have the applicant role!").queue(
+                  message -> {
+                    message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
+                  });
           return;
         }
         Apply.apply(event);
