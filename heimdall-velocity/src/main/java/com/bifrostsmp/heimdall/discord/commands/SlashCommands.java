@@ -18,29 +18,29 @@ public class SlashCommands extends ListenerAdapter {
 
     String command = event.getName().toLowerCase();
     switch (command) {
-      case "repeat": {
+      case "repeat" -> {
         Repeat.repeat(
                 event,
                 event.getOption("content").getAsString()); // content is required so no null-check here
       }
-      case "whitelist": {
+      case "whitelist" -> {
         if (!hasRole(memberID, guildID, Parser.getStaffRole())) {
           event.reply("You must have Staff or above role to use this command!").queue();
           return;
         }
         Whitelist.whitelist(event);
       }
-      case "apply": {
+      case "apply" -> {
         if (!hasRole(memberID, guildID, Parser.getAppRole())) {
           event.reply("You do not have the applicant role!").queue();
           return;
         }
         Apply.apply(event);
       }
-      case "info": {
+      case "info" -> {
         Info.info(event);
       }
-      case "ping": {
+      case "ping" -> {
         PingPong.pingPong(event);
       }
     }

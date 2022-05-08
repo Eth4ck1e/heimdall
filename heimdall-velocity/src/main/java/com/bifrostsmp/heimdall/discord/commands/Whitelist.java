@@ -22,13 +22,27 @@ public class Whitelist extends ListenerAdapter {
     if (!event.getInteraction().isFromGuild()) return;
     event.deferReply().queue();
     InteractionHook hook = event.getHook();
-    hook.setEphemeral(true);
+    hook.setEphemeral(false);
     String name;
     String id;
     ResultSet result;
     if (event.getSubcommandName().equalsIgnoreCase("add")) {
       name = event.getOption("player").getAsString();
       id = NameToID.nameToID(name);
+      if (id == null) {
+        // success embed block
+        EmbedBuilder info = new EmbedBuilder();
+        info.setTitle("Whitelist");
+        info.setDescription(name + " is not a valid IGN");
+        info.setColor(Color.RED);
+        hook.sendMessageEmbeds(info.build())
+                .queue(
+                        message -> {
+                          message.delete().queueAfter(30, TimeUnit.SECONDS);
+                        }); // send embed to message channel
+        info.clear(); // clear embed from memory
+        return;
+      }
       try {
         result = Query.checkPlayers(id);
         if (!result.next()) {
