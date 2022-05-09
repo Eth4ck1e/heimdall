@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class Parser {
+public class ConfigParser {
 
   private static String user;
   private static String password;
@@ -23,6 +23,12 @@ public class Parser {
   private static String appPending;
   private static String appAccepted;
   private static String appDenied;
+
+  private static String howdyChannel;
+
+  private static String welcomeChannel;
+
+  private static String rulesChannel;
 
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
@@ -52,6 +58,8 @@ public class Parser {
     appPending = (String) getData.get("appPending");
     appAccepted = (String) getData.get("appAccepted");
     appDenied = (String) getData.get("appDenied");
+    howdyChannel = (String) getData.get("howdyChannel");
+    welcomeChannel = (String) getData.get("welcomeChannel");
   }
 
   public static String getUser() {
@@ -94,5 +102,17 @@ public class Parser {
 
   public static String getAppDenied() {
     return appDenied;
+  }
+
+  public static String getWelcomeChannel() {
+    return welcomeChannel;
+  }
+
+  public static String getHowdyChannel() {
+    return howdyChannel;
+  }
+
+  public static String getRulesChannel() {
+    return rulesChannel;
   }
 }

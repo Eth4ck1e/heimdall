@@ -1,12 +1,14 @@
 package com.bifrostsmp.heimdall;
 
 import com.bifrostsmp.heimdall.config.CreateConfig;
-import com.bifrostsmp.heimdall.config.Parser;
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.applications.AppHandler;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.events.Join;
+import com.bifrostsmp.heimdall.discord.rules.ClickMe;
+import com.bifrostsmp.heimdall.discord.rules.PostRules;
 import com.google.inject.Inject;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
@@ -20,6 +22,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -51,15 +54,14 @@ public class HeimdallVelocity extends ListenerAdapter {
   Object luckPermsApi;
 
   static HeimdallVelocity instance;
-
-  public static String prefix = "/"; // command prefix
-
   public static Logger logger;
   public static Connection connection; // This is the variable used to connect to the DB
 
   @Getter private static JDA discordBot;
 
   private static Path dataDirectory = null;
+
+  private static Guild guild;
 
   @Inject
   public HeimdallVelocity(
@@ -83,7 +85,7 @@ public class HeimdallVelocity extends ListenerAdapter {
     logger.info(
         "Starting Discord Bot"); // send message to console with plugin name, logger tags with
     // plugin name
-    final String discordToken = Parser.getDiscordToken(); // get discord token from config.yml
+    final String discordToken = ConfigParser.getDiscordToken(); // get discord token from config.yml
 
     if (discordToken == null) { // check if token exists, if token exists try to initiate bot
       logger.error(
@@ -96,12 +98,12 @@ public class HeimdallVelocity extends ListenerAdapter {
           JDABuilder.createDefault(discordToken)
               .enableIntents(GatewayIntent.GUILD_MEMBERS)
               .setMemberCachePolicy(MemberCachePolicy.ALL)
-                  .setActivity(Activity.watching("The Terminator"))
+                  .setActivity(Activity.watching("Everything!"))
               .build().awaitReady();
     } catch (LoginException | InterruptedException e) {
       e.printStackTrace();
     }
-    discordBot.getGuildById(Parser.getDiscordId());
+    guild = discordBot.getGuildById(ConfigParser.getDiscordId());
     // Event listeners for commands these are standard commands Slash commands are below
     // These commands take up to an hour to be activated after creation/update/delete
     CommandListUpdateAction commands = discordBot.updateCommands();
@@ -148,17 +150,25 @@ public class HeimdallVelocity extends ListenerAdapter {
     discordBot.addEventListener(
         new SlashCommands(),
         new AppHandler(),
-        new Join()
+        new Join(),
+            new ClickMe()
             );
 
     // Send the new set of commands to discord,
     // this will override any existing global commands with the new set provided here
     commands.queue();
+
+    PostRules.postRules();
   }
 
   @Subscribe(order = PostOrder.LATE)
   public void onDisable(ProxyShutdownEvent event) {
     // Plugin shutdown logic
+
+    PostRules.getDiscordMessage().delete().complete();
+    PostRules.getMinecraftMessage().delete().complete();
+    PostRules.getFinalMessage().delete().complete();
+    getDiscordBot().shutdown();
     try {
       if (connection != null && !connection.isClosed()) {
         // avoid receiving a null pointer
@@ -176,4 +186,6 @@ public class HeimdallVelocity extends ListenerAdapter {
   public static EventWaiter getEventWaiter() {
     return eventWaiter;
   }
+
+  public static Guild getGuild() { return guild; }
 }

@@ -5,7 +5,9 @@
 
 package com.bifrostsmp.heimdall.discord.applications;
 
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.database.Query;
+import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -19,127 +21,130 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
+import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
 
 public class AppHandler extends ListenerAdapter {
-  private String response;
+    private String response;
 
-  @Override
-  public void onButtonInteraction(ButtonInteractionEvent event) {
-    ResultSet result;
-      Guild guild = event.getGuild();
-      assert guild != null;
-    InteractionHook hook = event.getHook();
-    hook.setEphemeral(true);
-    Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
-    if (event.getComponentId().equals("Accept")) {  // checks if the accept button was clicked
-      event.deferReply().queue();  //button interactions require a reply within 3 seconds.  This defers the reply for later.  Using hook.sendmessage will close out the defered reply so the both stops thinking
-      MessageEmbed embed = event.getMessage().getEmbeds().get(0);  //stores the embed that the buttons are attached to in a variable
-      String discordID = embed.getFooter().getText();  //gets the applicants discordID from the embed footer
-      User user = hook.getJDA().retrieveUserById(discordID).complete();  //stores the applicant user data in user.  Must use retrieve do to caching.  Using complete to ensure this action completes synchronously.
-      String IGN = embed.getFields().get(0).getValue();
-      String ID = NameToID.nameToID(IGN);
-      try {
-        result = Query.checkPlayers(ID);
-        if (!result.next()) {
-          Query.insertPlayers(IGN, ID);
-          updateTrigger();
-          // success embed block
-          EmbedBuilder info = new EmbedBuilder();
-          info.setTitle("Whitelist");
-          info.setDescription(IGN + " has been added to the whitelist");
-          info.setColor(Color.GREEN);
-          event
-              .getChannel()
-              .sendMessageEmbeds(info.build())
-              .queue(
-                  message -> {
-                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                  }); // send embed to message channel
-          info.clear(); // clear embed from memory
-        } else {
-          // success embed block
-          EmbedBuilder info = new EmbedBuilder();
-          info.setTitle("Whitelist");
-          info.setDescription(IGN + " is already whitelisted");
-          info.setColor(Color.RED);
-          event
-              .getChannel()
-              .sendMessageEmbeds(info.build())
-              .queue(
-                  message -> {
-                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                  }); // send embed to message channel
-          info.clear(); // clear embed from memory
-        }
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-
-        java.util.List<Role> guildRoles = guild.getRoles();
-        String[] addRolesStrings = new String[]{"Member", "Minecraft", "Fans", "Market", "Updates", "Events", "Polls", "Newsletter", "Gamenight", "Whitelisted"};
-
-        for (String role:addRolesStrings) {
-        if (guildRoles.stream().noneMatch(o -> role.equals(o.getName()))) {
-          guild
-              .createRole()
-              .setName(role)
-              .setHoisted(true)
-              .setMentionable(true)
-              .setPermissions(Permission.EMPTY_PERMISSIONS)
-              .complete();
-            System.out.println("Created guild role " + role);
-        }
-            if (guildRoles.stream().anyMatch(o->role.equals(o.getName()))) {
-                guild.addRoleToMember(user, guild.getRolesByName(role, true).get(0)).queue();
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (!SlashCommands.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), ConfigParser.getStaffRole()))
+            return;
+        ResultSet result;
+        Guild guild = event.getGuild();
+        assert guild != null;
+        InteractionHook hook = event.getHook();
+        hook.setEphemeral(true);
+        Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
+        if (event.getComponentId().equals("Accept")) {  // checks if the accept button was clicked
+            event.deferReply().queue();  //button interactions require a reply within 3 seconds.  This defers the reply for later.  Using hook.sendmessage will close out the defered reply so the both stops thinking
+            MessageEmbed embed = event.getMessage().getEmbeds().get(0);  //stores the embed that the buttons are attached to in a variable
+            String discordID = embed.getFooter().getText();  //gets the applicants discordID from the embed footer
+            User user = hook.getJDA().retrieveUserById(discordID).complete();  //stores the applicant user data in user.  Must use retrieve do to caching.  Using complete to ensure this action completes synchronously.
+            String IGN = embed.getFields().get(0).getValue();
+            String ID = NameToID.nameToID(IGN);
+            try {
+                result = Query.checkPlayers(ID);
+                if (!result.next()) {
+                    Query.insertPlayers(IGN, ID);
+                    updateTrigger();
+                    // success embed block
+                    EmbedBuilder info = new EmbedBuilder();
+                    info.setTitle("Whitelist");
+                    info.setDescription(IGN + " has been added to the whitelist");
+                    info.setColor(Color.GREEN);
+                    event
+                            .getChannel()
+                            .sendMessageEmbeds(info.build())
+                            .queue(
+                                    message -> {
+                                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                                    }); // send embed to message channel
+                    info.clear(); // clear embed from memory
+                } else {
+                    // success embed block
+                    EmbedBuilder info = new EmbedBuilder();
+                    info.setTitle("Whitelist");
+                    info.setDescription(IGN + " is already whitelisted");
+                    info.setColor(Color.RED);
+                    event
+                            .getChannel()
+                            .sendMessageEmbeds(info.build())
+                            .queue(
+                                    message -> {
+                                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                                    }); // send embed to message channel
+                    info.clear(); // clear embed from memory
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        }
 
-        guild.removeRoleFromMember(user, guild.getRolesByName("Applicant", true).get(0)).queue();
+            java.util.List<Role> guildRoles = guild.getRoles();
+            String[] addRolesStrings = new String[]{"Member", "Minecraft", "Fans", "Market", "Updates", "Events", "Polls", "Newsletter", "Gamenight", "Whitelisted"};
 
-      user.openPrivateChannel()
-          .queue(
-              (Channel) -> {
-                EmbedBuilder accept = new EmbedBuilder();
-                accept.setTitle("Your Bifrost Application has been Accepted!");
-                accept.addField("Server Host:", "minecraft.bifrostsmp.com", false);
-                Channel.sendMessageEmbeds(accept.build()).queue();
-              });
-      event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-      MessageChannel acceptChannel =
-          event.getGuild().getTextChannelsByName("accepted-applications", true).get(0);
-      acceptChannel.sendMessageEmbeds(embed).queue();
-      hook.sendMessage("application accepted")
-          .queue(
-              message -> {
-                message.delete().queueAfter(30, TimeUnit.SECONDS);
-              });
-    } else if (event.getComponentId().equals("Deny")) {
-        event.deferReply().queue();
-      MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-      String discordID = embed.getFooter().getText();
-      User applicant = hook.getJDA().retrieveUserById(discordID).complete();
-      hook
-          .getJDA()
-          .openPrivateChannelById(member.getIdLong())
-          .queue(
-              message -> {
-                message
-                    .sendMessage("What is the reason for the denial?")
+            for (String role : addRolesStrings) {
+                if (guildRoles.stream().noneMatch(o -> role.equals(o.getName()))) {
+                    guild
+                            .createRole()
+                            .setName(role)
+                            .setHoisted(true)
+                            .setMentionable(true)
+                            .setPermissions(Permission.EMPTY_PERMISSIONS)
+                            .complete();
+                    System.out.println("Created guild role " + role);
+                }
+                if (guildRoles.stream().anyMatch(o -> role.equals(o.getName()))) {
+                    guild.addRoleToMember(user, guild.getRolesByName(role, true).get(0)).queue();
+                }
+            }
+
+            guild.removeRoleFromMember(user, guild.getRolesByName("Applicant", true).get(0)).queue();
+
+            user.openPrivateChannel()
                     .queue(
-                        follow -> {
-                          follow.delete().queueAfter(5, TimeUnit.MINUTES);
-                        });
-              });
+                            (Channel) -> {
+                                EmbedBuilder accept = new EmbedBuilder();
+                                accept.setTitle("Your Bifrost Application has been Accepted!");
+                                accept.addField("Server Host:", "minecraft.bifrostsmp.com", false);
+                                Channel.sendMessageEmbeds(accept.build()).queue();
+                            });
+            event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
+            MessageChannel acceptChannel =
+                    event.getGuild().getTextChannelsByName(ConfigParser.getAppDenied(), true).get(0);
+            acceptChannel.sendMessageEmbeds(embed).queue();
+            hook.sendMessage("application accepted")
+                    .queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            });
+        } else if (event.getComponentId().equals("Deny")) {
+            event.deferReply().queue();
+            MessageEmbed embed = event.getMessage().getEmbeds().get(0);
+            String discordID = embed.getFooter().getText();
+            User applicant = hook.getJDA().retrieveUserById(discordID).complete();
+            hook
+                    .getJDA()
+                    .openPrivateChannelById(member.getIdLong())
+                    .queue(
+                            message -> {
+                                message
+                                        .sendMessage("What is the reason for the denial?")
+                                        .queue(
+                                                follow -> {
+                                                    follow.delete().queueAfter(5, TimeUnit.MINUTES);
+                                                });
+                            });
 
-      hook.getInteraction()
-          .getJDA()
-          .addEventListener(new ResponseHandler(applicant.getIdLong(), member.getIdLong(), embed));
-      hook.sendMessage("Application denied").queue(
-              message -> {
-                  message.delete().queueAfter(30, TimeUnit.SECONDS);
-              });
-      event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
+            hook.getInteraction()
+                    .getJDA()
+                    .addEventListener(new ResponseHandler(applicant.getIdLong(), member.getIdLong(), embed));
+            hook.sendMessage("Application denied").queue(
+                    message -> {
+                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                    });
+            event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
+        }
     }
-  }
 }

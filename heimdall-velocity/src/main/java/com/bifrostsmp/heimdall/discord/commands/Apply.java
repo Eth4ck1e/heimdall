@@ -1,6 +1,7 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
-import com.bifrostsmp.heimdall.discord.applications.Parser;
+import com.bifrostsmp.heimdall.common.YamlParser;
+import com.bifrostsmp.heimdall.discord.applications.Questions;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -49,7 +50,7 @@ public class Apply extends ListenerAdapter {
                         });
                 ch = Channel.getIdLong();
                 Map<String, Object> getApp =
-                    Parser.parse(
+                    YamlParser.parse(
                         Path.of(getDataDirectory() + "/applications/BifrostSMPApplication.yml"));
                 Map<Integer, Object> getQuestionObjects =
                     (Map<Integer, Object>) getApp.get("Questions");

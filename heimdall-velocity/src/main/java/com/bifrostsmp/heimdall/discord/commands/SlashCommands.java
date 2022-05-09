@@ -1,14 +1,14 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
 import com.bifrostsmp.heimdall.HeimdallVelocity;
-import com.bifrostsmp.heimdall.config.Parser;
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
 public class SlashCommands extends ListenerAdapter {
-  boolean hasRole;
+  static boolean hasRole;
 
   @Override
   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -26,7 +26,7 @@ public class SlashCommands extends ListenerAdapter {
                 event.getOption("content").getAsString()); // content is required so no null-check here
       }
       case "whitelist" -> {
-        if (!hasRole(memberID, guildID, Parser.getStaffRole())) {
+        if (!hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
           event.reply("You must have Staff or above role to use this command!").queue(
                   message -> {
                     message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
@@ -36,14 +36,15 @@ public class SlashCommands extends ListenerAdapter {
         Whitelist.whitelist(event);
       }
       case "apply" -> {
-        if (!hasRole(memberID, guildID, Parser.getAppRole())) {
+        if (hasRole(memberID, guildID, ConfigParser.getAppRole()) || hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
+          Apply.apply(event);
+        } else {
           event.reply("You do not have the applicant role!").queue(
                   message -> {
                     message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                   });
-          return;
         }
-        Apply.apply(event);
+
       }
       case "info" -> {
         Info.info(event);
@@ -54,7 +55,7 @@ public class SlashCommands extends ListenerAdapter {
     }
   }
 
-  boolean hasRole(Long userId, Long guild, String role) {
+  public static boolean hasRole(Long userId, Long guild, String role) {
     for (int i = 0;
         i
             < HeimdallVelocity.getDiscordBot()

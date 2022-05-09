@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.applications;
 
-import com.bifrostsmp.heimdall.config.Parser;
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -31,8 +31,8 @@ public class ResponseHandler extends ListenerAdapter {
 
     MessageChannel denyChannel =
         e.getJDA()
-            .getGuildById(Parser.getDiscordId())
-            .getTextChannelsByName("denied-applications", true)
+            .getGuildById(ConfigParser.getDiscordId())
+            .getTextChannelsByName(ConfigParser.getAppDenied(), true)
             .get(0);
     String response = e.getMessage().getContentRaw();
     e.getMessage()

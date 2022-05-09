@@ -1,7 +1,7 @@
 package com.bifrostsmp.heimdall.database;
 
 import com.bifrostsmp.heimdall.HeimdallVelocity;
-import com.bifrostsmp.heimdall.config.Parser;
+import com.bifrostsmp.heimdall.config.ConfigParser;
 
 import java.nio.file.Path;
 import java.sql.DriverManager;
@@ -18,10 +18,10 @@ public class ConnectDB {
       e.printStackTrace();
     }
 
-    Parser.parse(dataDirectory);
-    String url = Parser.getUrl();
-    String user = Parser.getUser();
-    String password = Parser.getPassword();
+    ConfigParser.parse(dataDirectory);
+    String url = ConfigParser.getUrl();
+    String user = ConfigParser.getUser();
+    String password = ConfigParser.getPassword();
 
     // Init mysql db connection
     try { // try catch to get any SQL errors

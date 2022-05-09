@@ -1,7 +1,7 @@
 package com.bifrostsmp.heimdall.discord.events;
 
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -12,8 +12,7 @@ import java.util.Random;
 
 public class Join extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        TextChannel channel = event.getGuild().getTextChannelsByName("howdy", true).get(0);
-        Guild guild = event.getGuild();
+        TextChannel channel = event.getGuild().getTextChannelsByName(ConfigParser.getHowdyChannel(), true).get(0);
         Member member = event.getMember();
         String[] greeting = {
                 "[member] just joined the server - glhf!",
@@ -32,17 +31,28 @@ public class Join extends ListenerAdapter {
                 "Greetings [member].",
                 "Is that [member]? Anyone know [member]?",
                 "Hello [member], business or pleasure?",
-                "Hey [member]. What's in the bag?"
+                "Hey [member]. What's in the bag?",
+                "Hey, [member] let's do \"get help\"!",
+                "Oh no. [member] is here. Or is it Loki in disguise?",
+                "Heimdall, summon the Bifrost. [member] is here!",
+                "Welcome, [member]. Watch your step on the rainbow bridge.",
+                "The Allfather greets you, [member], *whisper* this the where you bow...",
+                "Frigg predicted your arrival, [member]. Welcome.",
+                "Welcome, traveller [member]. May Brage soon tell your tale.",
+                "Oh hey [member]! We were just talking about you.",
+                "A new hand touches the beacon. Welcome [member]!",
+                "New challenger approaching! [member] smashes onto the server",
+                "Ohgodohfuck it’s [member]. Act natural.",
+                "[member]’s here to chew gum and kick butt. They still got a lot of gum left tho",
+                "[Member] is here to kick bubblegum and chew ass...and we're all out of bubblegum...\nwait..."
         };
         Random rand = new Random();
         int number = rand.nextInt(greeting.length);
 
         EmbedBuilder join = new EmbedBuilder();
         join.setColor(Color.yellow);
-        join.setDescription(greeting[number].replace("member",event.getMember().getAsMention()));
+        join.setDescription(greeting[number].replace("member",member.getAsMention()));
 
-        //TODO add the roles to be added to players when they join
         channel.sendMessageEmbeds(join.build()).queue();
-        guild.addRoleToMember(member, guild.getRolesByName("applicant", true).get(0)).queue();
     }
 }

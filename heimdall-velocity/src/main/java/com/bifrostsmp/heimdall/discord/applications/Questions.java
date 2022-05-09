@@ -1,5 +1,6 @@
-package com.bifrostsmp.heimdall.discord.commands;
+package com.bifrostsmp.heimdall.discord.applications;
 
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.bifrostsmp.heimdall.config.Parser.getDiscordId;
+import static com.bifrostsmp.heimdall.config.ConfigParser.getDiscordId;
 
 public class Questions extends ListenerAdapter {
     private final Long userID;
@@ -55,7 +56,7 @@ public class Questions extends ListenerAdapter {
         }
         Guild guild = e.getJDA().getGuildById(getDiscordId());
         assert guild != null;
-        MessageChannel tc = guild.getTextChannelsByName("pending-applications", true).get(0);
+        MessageChannel tc = guild.getTextChannelsByName(ConfigParser.getAppPending(), true).get(0);
         User author = e.getAuthor();
         switch (checkIGN) {
             case 0 -> {

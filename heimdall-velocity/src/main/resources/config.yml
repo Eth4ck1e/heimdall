@@ -5,12 +5,18 @@ DISCORD_TOKEN: ""
 DISCORD_ID: ""
 BOT_CLIENT_ID: ""
 #Discord roll name for adding perms.  These roles are required for bot permissions, however, they can be changed to anything you want.
-STAFF_ROLE: "Staff"
-APPLICANT_ROLE: "Applicant"
-#Application Channel ID's
-appPending: "967938193737527316"
-appAccepted: "967938282514153482"
-appDenied: "967938335031066634"
+STAFF_ROLE: "Staff"  ##Members with this role can use all discord commands
+APPLICANT_ROLE: "Applicant"   ##Only members with this role can use the apply command
+#Application Channel names, these can be changed to whatever channel(s) you've created in your discord, they just can't be blank.
+appPending: "pending-applications"
+appAccepted: "accepted-applications"
+appDenied: "denied-applications"
+#Welcome Channel name
+welcomeChannel: "welcome"
+#Howdy Channel name
+howdyChannel: "howdy"
+#rules Channel name
+rulesChannel: "rules"
 
 
 ## MySQL database connection info
