@@ -46,7 +46,7 @@ public class PostRules {
             }
         }
         channel.sendMessageEmbeds(discord.build()).queue(
-                PostRules::setdiscordMessage);
+                PostRules::setDiscordMessage);
         discord.clear();
 
         EmbedBuilder minecraft = new EmbedBuilder();
@@ -82,7 +82,7 @@ public class PostRules {
         );
     }
 
-    private static void setdiscordMessage(Message message) {
+    private static void setDiscordMessage(Message message) {
         PostRules.discordMessage = message;
     }
 

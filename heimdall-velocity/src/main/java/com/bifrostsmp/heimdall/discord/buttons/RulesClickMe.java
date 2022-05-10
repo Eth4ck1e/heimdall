@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.discord.rules;
+package com.bifrostsmp.heimdall.discord.buttons;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 
-public class ClickMe extends ListenerAdapter {
+public class RulesClickMe extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getButton().getLabel().equalsIgnoreCase("click me")) return;

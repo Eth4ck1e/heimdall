@@ -51,7 +51,7 @@ public class Join extends ListenerAdapter {
 
         EmbedBuilder join = new EmbedBuilder();
         join.setColor(Color.yellow);
-        join.setDescription(greeting[number].replace("member",member.getAsMention()));
+        join.setDescription(greeting[number].replace("[member]",member.getAsMention()));
 
         channel.sendMessageEmbeds(join.build()).queue();
     }

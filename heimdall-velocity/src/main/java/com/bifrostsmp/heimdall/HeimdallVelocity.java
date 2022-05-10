@@ -4,10 +4,11 @@ import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.config.CreateConfig;
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
-import com.bifrostsmp.heimdall.discord.applications.AppHandler;
+import com.bifrostsmp.heimdall.discord.buttons.AppAcceptDeny;
+import com.bifrostsmp.heimdall.discord.buttons.TicketClose;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.events.Join;
-import com.bifrostsmp.heimdall.discord.rules.ClickMe;
+import com.bifrostsmp.heimdall.discord.buttons.RulesClickMe;
 import com.google.inject.Inject;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
@@ -51,16 +52,12 @@ public class HeimdallVelocity extends ListenerAdapter {
   private static final EventWaiter eventWaiter = new EventWaiter();
   private final ProxyServer proxy;
   private final Yaml config;
-  Object luckPermsApi;
 
   static HeimdallVelocity instance;
   public static Logger logger;
   public static Connection connection; // This is the variable used to connect to the DB
-
   @Getter private static JDA discordBot;
-
   private static Path dataDirectory = null;
-
   private static Guild guild;
 
   @Inject
@@ -144,13 +141,17 @@ public class HeimdallVelocity extends ListenerAdapter {
     commands.addCommands(
             Commands.slash("ping", "play Ping Pong with the Bot!")
     );
+    commands.addCommands(
+            Commands.slash("ticket", "command to open a new ticket")
+    );
     //END SLASH COMMANDS
 
     // Register event listeners
     discordBot.addEventListener(
         new SlashCommands(),
-        new AppHandler(),
-            new ClickMe()
+        new AppAcceptDeny(),
+            new RulesClickMe(),
+            new TicketClose()
             );
     if (getWelcomeMessages()) {
       discordBot.addEventListener(

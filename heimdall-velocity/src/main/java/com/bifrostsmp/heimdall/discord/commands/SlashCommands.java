@@ -52,6 +52,9 @@ public class SlashCommands extends ListenerAdapter {
       case "ping" -> {
         PingPong.pingPong(event);
       }
+      case "ticket" -> {
+        Ticket.ticket(event);
+      }
     }
   }
 

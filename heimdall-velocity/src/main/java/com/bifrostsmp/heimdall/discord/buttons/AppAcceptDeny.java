@@ -3,10 +3,11 @@
 //the player if not already whitelisted.  The deny button sends a message to the button clicker asking for a reason and
 //stores the response.  Both buttons send a notification to the applicant of the result.
 
-package com.bifrostsmp.heimdall.discord.applications;
+package com.bifrostsmp.heimdall.discord.buttons;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.database.Query;
+import com.bifrostsmp.heimdall.discord.applications.ResponseHandler;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,13 +25,14 @@ import java.util.concurrent.TimeUnit;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
 
-public class AppHandler extends ListenerAdapter {
+public class AppAcceptDeny extends ListenerAdapter {
     private String response;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!SlashCommands.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), ConfigParser.getStaffRole()))
             return;
+        if(!event.getButton().getLabel().equalsIgnoreCase("accept") || !event.getButton().getLabel().equalsIgnoreCase("deny")) return;
         ResultSet result;
         Guild guild = event.getGuild();
         assert guild != null;
