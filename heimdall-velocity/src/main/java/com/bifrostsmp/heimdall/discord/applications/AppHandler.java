@@ -112,7 +112,7 @@ public class AppHandler extends ListenerAdapter {
                             });
             event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
             MessageChannel acceptChannel =
-                    event.getGuild().getTextChannelsByName(ConfigParser.getAppDenied(), true).get(0);
+                    event.getGuild().getTextChannelsByName(ConfigParser.getAppAccepted(), true).get(0);
             acceptChannel.sendMessageEmbeds(embed).queue();
             hook.sendMessage("application accepted")
                     .queue(

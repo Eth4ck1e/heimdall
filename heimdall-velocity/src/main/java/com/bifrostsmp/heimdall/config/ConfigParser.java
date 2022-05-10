@@ -30,6 +30,8 @@ public class ConfigParser {
 
   private static String rulesChannel;
 
+  private static boolean welcomeMessages;
+
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
     try {
@@ -60,6 +62,8 @@ public class ConfigParser {
     appDenied = (String) getData.get("appDenied");
     howdyChannel = (String) getData.get("howdyChannel");
     welcomeChannel = (String) getData.get("welcomeChannel");
+    rulesChannel = (String) getData.get("rulesChannel");
+    welcomeMessages = (boolean) getData.get("WelcomeMessages");
   }
 
   public static String getUser() {
@@ -114,5 +118,9 @@ public class ConfigParser {
 
   public static String getRulesChannel() {
     return rulesChannel;
+  }
+
+  public static boolean getWelcomeMessages() {
+    return welcomeMessages;
   }
 }

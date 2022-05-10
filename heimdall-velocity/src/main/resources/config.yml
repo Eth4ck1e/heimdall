@@ -17,6 +17,8 @@ welcomeChannel: "welcome"
 howdyChannel: "howdy"
 #rules Channel name
 rulesChannel: "rules"
+#Set whether you want Heimdall to welcome members to your server (default: true)
+WelcomeMessages: true
 
 
 ## MySQL database connection info

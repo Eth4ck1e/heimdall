@@ -1,14 +1,13 @@
 package com.bifrostsmp.heimdall;
 
-import com.bifrostsmp.heimdall.config.CreateConfig;
 import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.CreateConfig;
 import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.discord.applications.AppHandler;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.events.Join;
 import com.bifrostsmp.heimdall.discord.rules.ClickMe;
-import com.bifrostsmp.heimdall.discord.rules.PostRules;
 import com.google.inject.Inject;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
@@ -37,6 +36,7 @@ import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 import java.sql.Connection;
 
+import static com.bifrostsmp.heimdall.config.ConfigParser.getWelcomeMessages;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 
 @Plugin(
@@ -150,24 +150,30 @@ public class HeimdallVelocity extends ListenerAdapter {
     discordBot.addEventListener(
         new SlashCommands(),
         new AppHandler(),
-        new Join(),
             new ClickMe()
             );
+    if (getWelcomeMessages()) {
+      discordBot.addEventListener(
+              new Join()
+      );
+    }
 
     // Send the new set of commands to discord,
     // this will override any existing global commands with the new set provided here
     commands.queue();
 
-    PostRules.postRules();
+//    PostWelcome.postWelcome();
+//    PostRules.postRules();
   }
 
   @Subscribe(order = PostOrder.LATE)
   public void onDisable(ProxyShutdownEvent event) {
     // Plugin shutdown logic
 
-    PostRules.getDiscordMessage().delete().complete();
-    PostRules.getMinecraftMessage().delete().complete();
-    PostRules.getFinalMessage().delete().complete();
+//    PostRules.getDiscordMessage().delete().complete();
+//    PostRules.getMinecraftMessage().delete().complete();
+//    PostRules.getFinalMessage().delete().complete();
+//    PostWelcome.getWelcomeMessage().delete().complete();
     getDiscordBot().shutdown();
     try {
       if (connection != null && !connection.isClosed()) {
