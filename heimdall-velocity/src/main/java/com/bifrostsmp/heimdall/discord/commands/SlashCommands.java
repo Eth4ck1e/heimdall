@@ -55,6 +55,16 @@ public class SlashCommands extends ListenerAdapter {
       case "ticket" -> {
         Ticket.ticket(event);
       }
+      case "invite" -> {
+        if (!hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
+          event.reply("You must have Staff or above role to use this command!").queue(
+                  message -> {
+                    message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
+                  });
+          return;
+        }
+        Invite.invite(event);
+      }
     }
   }
 

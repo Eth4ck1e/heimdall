@@ -39,6 +39,7 @@ import java.sql.Connection;
 
 import static com.bifrostsmp.heimdall.config.ConfigParser.getWelcomeMessages;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
+import static net.dv8tion.jda.api.interactions.commands.OptionType.USER;
 
 @Plugin(
     id = "heimdall-velocity",
@@ -59,6 +60,8 @@ public class HeimdallVelocity extends ListenerAdapter {
   @Getter private static JDA discordBot;
   private static Path dataDirectory = null;
   private static Guild guild;
+
+  private static int ticketNumber=0;
 
   @Inject
   public HeimdallVelocity(
@@ -144,6 +147,10 @@ public class HeimdallVelocity extends ListenerAdapter {
     commands.addCommands(
             Commands.slash("ticket", "command to open a new ticket")
     );
+    commands.addCommands(
+            Commands.slash("invite", "grants specified member perms to the current channel")
+                    .addOption(USER, "user", "the mentioned user to be invited to the channel")
+    );
     //END SLASH COMMANDS
 
     // Register event listeners
@@ -195,4 +202,12 @@ public class HeimdallVelocity extends ListenerAdapter {
   }
 
   public static Guild getGuild() { return guild; }
+
+  public static void setTicketNumber(int ticketNumber) {
+    HeimdallVelocity.ticketNumber = ticketNumber;
+  }
+
+  public static int getTicketNumber() {
+    return ticketNumber;
+  }
 }
