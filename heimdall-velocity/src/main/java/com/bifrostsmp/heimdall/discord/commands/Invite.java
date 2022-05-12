@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 public class Invite extends ListenerAdapter {
     public static void invite(SlashCommandInteractionEvent event) {
@@ -22,7 +22,10 @@ public class Invite extends ListenerAdapter {
                 .setAllow(Permission.MESSAGE_HISTORY)
                 .setAllow(Permission.MESSAGE_SEND)
                 .queue();
-        event.isAcknowledged();
+        event.reply(event.getOption("user").getAsMember().getAsMention() + " has been added to the ticket!").queue(
+                message -> {
+                    message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
+                });
 //        hook.getJDA().getEventManager().unregister(hook.getJDA());
 //        event.getJDA().removeEventListener(event);
     }

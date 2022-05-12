@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ResponseHandler extends ListenerAdapter {
@@ -54,15 +55,17 @@ public class ResponseHandler extends ListenerAdapter {
               message.sendMessageEmbeds(deny.build()).queue();
             });
 
+      List<MessageEmbed.Field> fields = embed.getFields();
+      EmbedBuilder denyEmbed = new EmbedBuilder();
+      denyEmbed.setTitle(embed.getTitle());
+      for (MessageEmbed.Field field : fields) {
+          denyEmbed.addField(field);
+      }
+      denyEmbed.setFooter("Denied by " + e.getAuthor().getName() + ".\nReason: " + response);
+
     denyChannel
-        .sendMessageEmbeds(embed)
-        .queue(
-            message -> {
-              message
-                  .getChannel()
-                  .sendMessage("Application Denied for reason: " + response)
-                  .queue();
-            });
+        .sendMessageEmbeds(denyEmbed.build())
+        .queue();
     i++;
   }
 }

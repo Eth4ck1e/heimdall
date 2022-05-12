@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
@@ -30,17 +31,22 @@ public class AppAcceptDeny extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!SlashCommands.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), ConfigParser.getStaffRole()))
-            return;
-        if(!event.getButton().getLabel().equalsIgnoreCase("accept") || !event.getButton().getLabel().equalsIgnoreCase("deny")) return;
+        event.deferReply().queue();
+        InteractionHook hook = event.getHook();
+        hook.setEphemeral(true);
         ResultSet result;
         Guild guild = event.getGuild();
         assert guild != null;
-        InteractionHook hook = event.getHook();
-        hook.setEphemeral(true);
         Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
+        if (!SlashCommands.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), ConfigParser.getStaffRole())){
+            hook.sendMessage("You do not have the Staff role!").queue(
+                    message -> {
+                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                    });
+            return;
+        }
+
         if (event.getComponentId().equals("Accept")) {  // checks if the accept button was clicked
-            event.deferReply().queue();  //button interactions require a reply within 3 seconds.  This defers the reply for later.  Using hook.sendmessage will close out the defered reply so the both stops thinking
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);  //stores the embed that the buttons are attached to in a variable
             String discordID = embed.getFooter().getText();  //gets the applicants discordID from the embed footer
             User user = hook.getJDA().retrieveUserById(discordID).complete();  //stores the applicant user data in user.  Must use retrieve do to caching.  Using complete to ensure this action completes synchronously.
@@ -115,14 +121,22 @@ public class AppAcceptDeny extends ListenerAdapter {
             event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
             MessageChannel acceptChannel =
                     event.getGuild().getTextChannelsByName(ConfigParser.getAppAccepted(), true).get(0);
-            acceptChannel.sendMessageEmbeds(embed).queue();
+            List<MessageEmbed.Field> fields = embed.getFields();
+            EmbedBuilder acceptEmbed = new EmbedBuilder();
+            acceptEmbed.setTitle(embed.getTitle());
+            for (MessageEmbed.Field field : fields) {
+                acceptEmbed.addField(field);
+            }
+            acceptEmbed.setFooter("Accepted by " + member.getEffectiveName());
+
+            acceptChannel.sendMessageEmbeds(acceptEmbed.build()).queue();
+
             hook.sendMessage("application accepted")
                     .queue(
                             message -> {
                                 message.delete().queueAfter(30, TimeUnit.SECONDS);
                             });
         } else if (event.getComponentId().equals("Deny")) {
-            event.deferReply().queue();
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             String discordID = embed.getFooter().getText();
             User applicant = hook.getJDA().retrieveUserById(discordID).complete();
