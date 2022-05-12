@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getTicketNumber;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.setTicketNumber;
+import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffCategory;
 
 public class Ticket extends ListenerAdapter {
     static DecimalFormat df = new DecimalFormat("0000");
@@ -30,7 +31,7 @@ public class Ticket extends ListenerAdapter {
         String channelName = "Ticket-" + df.format(ticketNumber);
         event
                 .getGuild()
-                .createTextChannel(channelName, event.getGuild().getCategoriesByName("staff", true).get(0))
+                .createTextChannel(channelName, event.getGuild().getCategoriesByName(getStaffCategory(), true).get(0))
                 .syncPermissionOverrides()
                 .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL), null)
                 .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_HISTORY), null)
@@ -41,7 +42,6 @@ public class Ticket extends ListenerAdapter {
         ticket.setTitle("Ticket");
         ticket.setColor(Color.ORANGE);
         ticket.addField("Welcome", event.getUser().getAsMention() + "\nPlease give us a brief explanation of your issue\nand support will be with you shortly", false);
-        ticket.setFooter(event.getUser().getId());
         hook.sendMessage("Your Ticket has been created look for channel " + channelName).queue(
                 message -> {
                     message.delete().queueAfter(30, TimeUnit.SECONDS);

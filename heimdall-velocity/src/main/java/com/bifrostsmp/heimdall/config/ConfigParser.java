@@ -32,6 +32,8 @@ public class ConfigParser {
 
   private static boolean welcomeMessages;
 
+  private static String staffCategory;
+
   public static void parse(Path dataDirectory) {
     // yaml parser for config.yml
     try {
@@ -64,6 +66,7 @@ public class ConfigParser {
     welcomeChannel = (String) getData.get("welcomeChannel");
     rulesChannel = (String) getData.get("rulesChannel");
     welcomeMessages = (boolean) getData.get("WelcomeMessages");
+    staffCategory = (String) getData.get("staffCategory");
   }
 
   public static String getUser() {
@@ -122,5 +125,9 @@ public class ConfigParser {
 
   public static boolean getWelcomeMessages() {
     return welcomeMessages;
+  }
+
+  public static String getStaffCategory() {
+    return staffCategory;
   }
 }

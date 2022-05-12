@@ -8,6 +8,8 @@ BOT_CLIENT_ID: ""
 STAFF_ROLE: "Staff"  ##Members with this role can use all discord commands
 APPLICANT_ROLE: "Applicant"   ##Only members with this role can use the apply command
 #Application Channel names, these can be changed to whatever channel(s) you've created in your discord, they just can't be blank.
+
+##CHANNELS##
 appPending: "pending-applications"
 appAccepted: "accepted-applications"
 appDenied: "denied-applications"
@@ -18,7 +20,12 @@ howdyChannel: "howdy"
 #rules Channel name
 rulesChannel: "rules"
 #Set whether you want Heimdall to welcome members to your server (default: true)
+
+##CATEGORIES##
+staffCategory: "═══════  Staff   ═══════"
 WelcomeMessages: true
+
+
 
 
 ## MySQL database connection info
