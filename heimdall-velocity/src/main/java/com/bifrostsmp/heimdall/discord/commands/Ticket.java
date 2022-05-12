@@ -2,7 +2,6 @@ package com.bifrostsmp.heimdall.discord.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -14,7 +13,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.EnumSet;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getTicketNumber;
@@ -33,6 +31,7 @@ public class Ticket extends ListenerAdapter {
         event
                 .getGuild()
                 .createTextChannel(channelName, event.getGuild().getCategoriesByName("staff", true).get(0))
+                .syncPermissionOverrides()
                 .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL), null)
                 .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_HISTORY), null)
                 .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_SEND), null)
