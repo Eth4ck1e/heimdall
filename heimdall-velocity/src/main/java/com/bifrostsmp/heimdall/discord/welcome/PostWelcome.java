@@ -16,8 +16,9 @@ import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 public class PostWelcome {
 
     private static Message welcomeMessage;
+
     public static void postWelcome() {
-        TextChannel channel = getGuild().getTextChannelsByName(ConfigParser.getWelcomeChannel(), true).get(0);
+        TextChannel channel = getGuild().getTextChannelById(ConfigParser.getWelcomeChannel());
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.ORANGE);
         embed.setTitle("Welcome!");

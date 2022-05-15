@@ -15,14 +15,13 @@ import java.text.DecimalFormat;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
-import static com.bifrostsmp.heimdall.HeimdallVelocity.getTicketNumber;
-import static com.bifrostsmp.heimdall.HeimdallVelocity.setTicketNumber;
+import static com.bifrostsmp.heimdall.HeimdallVelocity.*;
 import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffCategory;
 
-public class Ticket extends ListenerAdapter {
+public class TicketCommand extends ListenerAdapter {
     static DecimalFormat df = new DecimalFormat("0000");
+
     public static void ticket(SlashCommandInteractionEvent event) {
-        if (event.getUser().isBot()) return;
         if (!event.getName().equalsIgnoreCase("ticket")) return;
         event.deferReply().queue();
         Member member = event.getMember();
@@ -31,13 +30,13 @@ public class Ticket extends ListenerAdapter {
         String channelName = "Ticket-" + df.format(ticketNumber);
         event
                 .getGuild()
-                .createTextChannel(channelName, event.getGuild().getCategoriesByName(getStaffCategory(), true).get(0))
+                .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
                 .syncPermissionOverrides()
                 .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL), null)
                 .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_HISTORY), null)
                 .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_SEND), null)
                 .complete();
-        TextChannel channel = event.getGuild().getTextChannelsByName(channelName,true).get(0);
+        TextChannel channel = event.getGuild().getTextChannelsByName(channelName, true).get(0);
         EmbedBuilder ticket = new EmbedBuilder();
         ticket.setTitle("Ticket");
         ticket.setColor(Color.ORANGE);
@@ -48,6 +47,6 @@ public class Ticket extends ListenerAdapter {
                 });
         channel.sendMessageEmbeds(ticket.build()).setActionRow(Button.primary("Close", "Close").withEmoji(Emoji.fromUnicode("U+1F512"))).queue();
         ticket.clear();
-        setTicketNumber(ticketNumber+1);
+        setTicketNumber(ticketNumber + 1);
     }
 }

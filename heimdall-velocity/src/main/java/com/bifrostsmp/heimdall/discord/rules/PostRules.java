@@ -31,17 +31,17 @@ public class PostRules {
     private static Message finalMessage;
 
     public static void postRules() {
-        TextChannel channel = getGuild().getTextChannelsByName(ConfigParser.getRulesChannel(), true).get(0);
+        TextChannel channel = getGuild().getTextChannelById(ConfigParser.getRulesChannel());
         EmbedBuilder discord = new EmbedBuilder();
         discord.setTitle("DISCORD RULES");
         discord.setColor(Color.BLUE);
         Map<String, Object> discordRules = (Map<String, Object>) getDiscordRules.get("rules");
-        for (int i = 0 ; i < discordRules.size() ; i++) {
+        for (int i = 0; i < discordRules.size(); i++) {
             ArrayList nestedArray = (ArrayList) discordRules.get(i);
             Map<String, Object> rule = (Map<String, Object>) nestedArray.get(0);
-            discord.addField("","#"+(i+1) + " " + rule.get("name").toString(), true);
+            discord.addField("", "#" + (i + 1) + " " + rule.get("name").toString(), true);
             Map<Integer, String> details = (Map<Integer, String>) rule.get("details");
-            for (int x = 1 ; x <= details.size() ; x++) {
+            for (int x = 1; x <= details.size(); x++) {
                 discord.addField("", "* " + details.get(x), false);
             }
         }
@@ -53,12 +53,12 @@ public class PostRules {
         minecraft.setTitle("MINECRAFT RULES");
         minecraft.setColor(Color.GREEN);
         Map<String, Object> minecraftRules = (Map<String, Object>) getMinecraftRules.get("rules");
-        for (int i = 0 ; i < minecraftRules.size() ; i++) {
+        for (int i = 0; i < minecraftRules.size(); i++) {
             ArrayList nestedArray = (ArrayList) minecraftRules.get(i);
             Map<String, Object> rule = (Map<String, Object>) nestedArray.get(0);
-            minecraft.addField("","#"+(i+1) + " " + rule.get("name").toString(), true);
+            minecraft.addField("", "#" + (i + 1) + " " + rule.get("name").toString(), true);
             Map<Integer, String> details = (Map<Integer, String>) rule.get("details");
-            for (int x = 1 ; x <= details.size() ; x++) {
+            for (int x = 1; x <= details.size(); x++) {
                 minecraft.addField("", "* " + details.get(x), false);
             }
         }

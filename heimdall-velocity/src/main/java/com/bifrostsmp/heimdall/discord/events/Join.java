@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class Join extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        TextChannel channel = event.getGuild().getTextChannelsByName(ConfigParser.getHowdyChannel(), true).get(0);
+        TextChannel channel = event.getGuild().getTextChannelById(ConfigParser.getHowdyChannel());
         Member member = event.getMember();
         String[] greeting = {
                 "[member] just joined the server - glhf!",
@@ -51,7 +51,7 @@ public class Join extends ListenerAdapter {
 
         EmbedBuilder join = new EmbedBuilder();
         join.setColor(Color.yellow);
-        join.setDescription(greeting[number].replace("[member]",member.getAsMention()));
+        join.setDescription(greeting[number].replace("[member]", member.getAsMention()));
 
         channel.sendMessageEmbeds(join.build()).queue();
     }

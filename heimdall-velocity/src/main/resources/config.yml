@@ -1,31 +1,33 @@
 ## This is the main plugin configuration file
 #This is your bot token
-DISCORD_TOKEN: ""
-#This is the discord guild ID.  Get this while in dev mode by right clicking the discord server and selecting "Copy ID"
-DISCORD_ID: ""
-BOT_CLIENT_ID: ""
-#Discord roll name for adding perms.  These roles are required for bot permissions, however, they can be changed to anything you want.
-STAFF_ROLE: "Staff"  ##Members with this role can use all discord commands
-APPLICANT_ROLE: "Applicant"   ##Only members with this role can use the apply command
-#Application Channel names, these can be changed to whatever channel(s) you've created in your discord, they just can't be blank.
+discordToken:
+#This is the discord guild ID.  Get this while in dev mode by right-clicking the discord server and selecting "Copy ID"
+discordId:
+botClientId:
+#Discord roll ID's for adding perms.  These roles are required for bot permissions, however, they can be changed to anything you want.
+##Members with this role can use all discord commands
+staffRole:
+##Only members with this role can use the apply command
+appRole:
 
 ##CHANNELS##
-appPending: "pending-applications"
-appAccepted: "accepted-applications"
-appDenied: "denied-applications"
-#Welcome Channel name
-welcomeChannel: "welcome"
-#Howdy Channel name
-howdyChannel: "howdy"
-#rules Channel name
-rulesChannel: "rules"
+#Application Channel ID's
+appPending:
+appAccepted:
+appDenied:
+#Welcome Channel ID
+welcomeChannel:
+#Howdy Channel ID
+howdyChannel:
+#rules Channel ID
+rulesChannel:
 #Set whether you want Heimdall to welcome members to your server (default: true)
 
 ##CATEGORIES##
-staffCategory: "═══════  Staff   ═══════"
-WelcomeMessages: true
+staffCategory:
 
-
+#Set whether you want Heimdall to welcome members to your server (default: true)
+welcomeMessages: true
 
 
 ## MySQL database connection info
