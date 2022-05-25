@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.minecraft;
+package com.bifrostsmp.heimdall.minecraft.commands;
 
 import com.bifrostsmp.heimdall.HeimdallPaper;
 import com.bifrostsmp.heimdall.database.ConnectDB;

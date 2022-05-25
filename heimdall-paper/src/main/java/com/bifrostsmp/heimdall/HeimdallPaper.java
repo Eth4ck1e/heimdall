@@ -4,7 +4,7 @@ import com.bifrostsmp.heimdall.database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
 import com.bifrostsmp.heimdall.database.Query;
-import com.bifrostsmp.heimdall.minecraft.Whitelist;
+import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
