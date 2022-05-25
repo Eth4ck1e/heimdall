@@ -45,18 +45,18 @@ public class Questions extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
-        if(i>getQuestions.size()+1) return;
-        if(e.getAuthor().isBot()) return;
-        if(!(e.getChannel().getIdLong() == channel)) return;
-        if(!(e.getAuthor().getIdLong()==userID)) return;
-        if(e.getMessage().getContentRaw().equalsIgnoreCase("!cancel")) {
-            i=99;
+        if (i > getQuestions.size() + 1) return;
+        if (e.getAuthor().isBot()) return;
+        if (!(e.getChannel().getIdLong() == channel)) return;
+        if (!(e.getAuthor().getIdLong() == userID)) return;
+        if (e.getMessage().getContentRaw().equalsIgnoreCase("!cancel")) {
+            i = 99;
             e.getChannel().sendMessage("Your application has been canceled").queue();
             return;
         }
         Guild guild = e.getJDA().getGuildById(getDiscordId());
         assert guild != null;
-        MessageChannel tc = guild.getTextChannelsByName(ConfigParser.getAppPending(), true).get(0);
+        MessageChannel tc = guild.getTextChannelById(ConfigParser.getAppPending());
         User author = e.getAuthor();
         switch (checkIGN) {
             case 0 -> {
@@ -124,7 +124,7 @@ public class Questions extends ListenerAdapter {
         answers.add(e.getMessage().getContentRaw());
         if (answers.size() == getQuestions.size()) {
             e.getChannel().sendMessage("Thank you! Your application has been submitted").queue();
-            i=99;
+            i = 99;
             EmbedBuilder app = new EmbedBuilder();
             app.setFooter(String.valueOf(userID));
             //app.setTitle("Application");
@@ -144,11 +144,11 @@ public class Questions extends ListenerAdapter {
                     System.out.println(counter);
                     counter++;
                     Query.updateApp(userID, String.valueOf(application), counter);
-                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"),Button.primary("Deny", "Deny")).queue();
+                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
                 } else {
                     int counter = 1;
                     Query.insertApp(userID, IGN, uuid, String.valueOf(application), counter);
-                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"),Button.primary("Deny", "Deny")).queue();
+                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
                 }
                 //e.getChannel().sendMessageEmbeds(app.build()).queue();
                 //System.out.println(answers);
@@ -158,7 +158,7 @@ public class Questions extends ListenerAdapter {
             }
             app.clear();
         }
-        if (i<1) {
+        if (i < 1) {
             i++;
             getDetails = (Map<Integer, Object>) getQuestions.get(i);
             e.getChannel().sendMessage(getDetails.get(1).toString()).queue();
@@ -167,7 +167,8 @@ public class Questions extends ListenerAdapter {
             getDetails = (Map<Integer, Object>) getQuestions.get(i);
             e.getChannel().sendMessage(getDetails.get(1).toString()).queue();
         }
-}
+    }
+
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;

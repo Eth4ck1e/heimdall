@@ -9,11 +9,9 @@ import java.util.concurrent.TimeUnit;
 public class TicketClose extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if(!event.getButton().getLabel().equalsIgnoreCase("close")) return;
-
-        event.deferReply().queue();
+        if (!event.getButton().getLabel().equalsIgnoreCase("close")) return;
+        event.reply("Your ticket will be close shortly, if you have any further issues please don't hesitate to reach out!").queue();
         InteractionHook hook = event.getHook();
-        hook.sendMessage("Your ticket will be close shortly, if you have any further issues please don't hesitate to reach out!").queue();
         event.getChannel().delete().queueAfter(10, TimeUnit.SECONDS);
     }
 }
