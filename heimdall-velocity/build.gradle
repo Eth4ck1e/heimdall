@@ -27,12 +27,12 @@ dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.10")
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.30'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.4'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
 }
 

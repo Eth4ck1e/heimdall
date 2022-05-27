@@ -2,8 +2,7 @@ package com.bifrostsmp.heimdall;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.config.CreateConfig;
-import com.bifrostsmp.heimdall.database.ConnectDB;
-import com.bifrostsmp.heimdall.database.CreateDB;
+import database.CreateDB;
 import com.bifrostsmp.heimdall.discord.buttons.RulesClickMe;
 import com.bifrostsmp.heimdall.discord.buttons.TicketClose;
 import com.bifrostsmp.heimdall.discord.buttons.application.Accept;
@@ -80,8 +79,6 @@ public class HeimdallVelocity extends ListenerAdapter {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-
-        ConnectDB.connection(dataDirectory); // init DB connection
 
         CreateDB.create(); // create DB if not exist
 

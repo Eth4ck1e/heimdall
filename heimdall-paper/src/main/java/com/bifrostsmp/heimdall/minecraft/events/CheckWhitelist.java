@@ -1,17 +1,11 @@
 package com.bifrostsmp.heimdall.minecraft.events;
 
-import com.bifrostsmp.heimdall.database.Query;
-import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Color;
+import database.Query;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.net.InetAddress;
-import java.util.UUID;
 
 public class CheckWhitelist extends Event {
 

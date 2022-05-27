@@ -1,8 +1,8 @@
 package com.bifrostsmp.heimdall.discord.applications;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
-import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -137,26 +136,22 @@ public class Questions extends ListenerAdapter {
             assert tc != null;
 
 
-            try {
-                if (Query.checkForApp(userID)) {
-                    //System.out.println(Query.checkForApp(userID));
-                    int counter = Query.getAppCounter(userID);
-                    System.out.println(counter);
-                    counter++;
-                    Query.updateApp(userID, String.valueOf(application), counter);
-                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
-                } else {
-                    int counter = 1;
-                    Query.insertApp(userID, IGN, uuid, String.valueOf(application), counter);
-                    tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
-                }
-                //e.getChannel().sendMessageEmbeds(app.build()).queue();
-                //System.out.println(answers);
-                return;
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            if (Query.checkForApp(userID)) {
+                //System.out.println(Query.checkForApp(userID));
+                int counter = Query.getAppCounter(userID);
+                System.out.println(counter);
+                counter++;
+                Query.updateApp(userID, String.valueOf(application), counter);
+                tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
+            } else {
+                int counter = 1;
+                Query.insertApp(userID, IGN, uuid, String.valueOf(application), counter);
+                tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
             }
+            //e.getChannel().sendMessageEmbeds(app.build()).queue();
+            //System.out.println(answers);
             app.clear();
+            return;
         }
         if (i < 1) {
             i++;

@@ -1,9 +1,9 @@
 package com.bifrostsmp.heimdall;
 
-import com.bifrostsmp.heimdall.database.ConnectDB;
+import database.ConnectDB;
 import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
-import com.bifrostsmp.heimdall.database.Query;
+import database.Query;
 import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
 import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
@@ -47,7 +47,7 @@ public final class HeimdallPaper extends JavaPlugin {
             getLogger().warning(ChatColor.RED + "Could not connect to database");
         }
         CreateDB.createDB();
-        if (Query.insert(server)) {
+        if (Query.insertServer(server)) {
             getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
         } else {
             getLogger()

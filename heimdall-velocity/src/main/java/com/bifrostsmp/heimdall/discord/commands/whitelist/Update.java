@@ -6,10 +6,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
-import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
+import static database.Query.updateTrigger;
 
 public class Update extends ListenerAdapter {
     public static void update(SlashCommandInteractionEvent event) {
@@ -17,11 +16,7 @@ public class Update extends ListenerAdapter {
         InteractionHook hook = event.getHook();
         hook.setEphemeral(false);
 
-        try {
-            updateTrigger();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        updateTrigger();
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle("Whitelist");
         info.setDescription("Whitelist update started");

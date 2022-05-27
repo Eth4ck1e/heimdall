@@ -1,18 +1,16 @@
 package com.bifrostsmp.heimdall.discord.commands.whitelist;
 
-import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.awt.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
-import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
+import static database.Query.updateTrigger;
 
 public class Add extends ListenerAdapter {
     public static void add(SlashCommandInteractionEvent event) {
@@ -21,7 +19,7 @@ public class Add extends ListenerAdapter {
         hook.setEphemeral(false);
         String name;
         String id;
-        ResultSet result;
+        boolean result;
 
         name = event.getOption("player").getAsString();
         id = NameToID.nameToID(name);
@@ -39,37 +37,33 @@ public class Add extends ListenerAdapter {
             info.clear(); // clear embed from memory
             return;
         }
-        try {
-            result = Query.checkPlayers(id);
-            if (!result.next()) {
-                Query.insertPlayers(name, id);
-                updateTrigger();
-                // success embed block
-                EmbedBuilder info = new EmbedBuilder();
-                info.setTitle("Whitelist");
-                info.setDescription(name + " has been added to the whitelist");
-                info.setColor(Color.GREEN);
-                hook.sendMessageEmbeds(info.build())
-                        .queue(
-                                message -> {
-                                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                                }); // send embed to message channel
-                info.clear(); // clear embed from memory
-            } else {
-                // success embed block
-                EmbedBuilder info = new EmbedBuilder();
-                info.setTitle("Whitelist");
-                info.setDescription(name + " is already whitelisted");
-                info.setColor(Color.RED);
-                hook.sendMessageEmbeds(info.build())
-                        .queue(
-                                message -> {
-                                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                                }); // send embed to message channel
-                info.clear(); // clear embed from memory
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        result = Query.checkPlayer(id);
+        if (!result) {
+            Query.insertPlayer(name, id);
+            updateTrigger();
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(name + " has been added to the whitelist");
+            info.setColor(Color.GREEN);
+            hook.sendMessageEmbeds(info.build())
+                    .queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            }); // send embed to message channel
+            info.clear(); // clear embed from memory
+        } else {
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(name + " is already whitelisted");
+            info.setColor(Color.RED);
+            hook.sendMessageEmbeds(info.build())
+                    .queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            }); // send embed to message channel
+            info.clear(); // clear embed from memory
         }
     }
 }

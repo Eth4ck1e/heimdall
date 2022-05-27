@@ -1,5 +1,6 @@
 package com.bifrostsmp.heimdall.database;
 
+import database.Query;
 import org.bukkit.ChatColor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ public class FirstRunWhitelistParser {
             JSONObject object = array.getJSONObject(i);
             String name = object.getString("name");
             String uuid = object.getString("uuid");
-            Query.insertPlayers(name, uuid);
+            Query.insertPlayer(name, uuid);
             // getLogger().log(INFO, ChatColor.GREEN + "Player: " + name + " " + uuid + " has been added
             // to database");
         }

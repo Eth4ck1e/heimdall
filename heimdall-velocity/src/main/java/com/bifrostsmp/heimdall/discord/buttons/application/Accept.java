@@ -1,9 +1,9 @@
 package com.bifrostsmp.heimdall.discord.buttons.application;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
-import com.bifrostsmp.heimdall.database.Query;
 import com.bifrostsmp.heimdall.discord.HasRole;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -12,13 +12,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.awt.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
-import static com.bifrostsmp.heimdall.database.Query.updateTrigger;
+import static database.Query.updateTrigger;
 
 public class Accept extends ListenerAdapter {
     @Override
@@ -33,7 +31,7 @@ public class Accept extends ListenerAdapter {
         }
         InteractionHook hook = event.getHook();
         hook.setEphemeral(true);
-        ResultSet result;
+        boolean result;
         Guild guild = event.getGuild();
         assert guild != null;
         Member member = hook.getInteraction().getMember(); //gets the member details of the button clicker
@@ -44,41 +42,37 @@ public class Accept extends ListenerAdapter {
         User user = hook.getJDA().retrieveUserById(discordID).complete();  //stores the applicant user data in user.  Must use retrieve do to caching.  Using complete to ensure this action completes synchronously.
         String IGN = embed.getFields().get(0).getValue();
         String ID = NameToID.nameToID(IGN);
-        try {
-            result = Query.checkPlayers(ID);
-            if (!result.next()) {
-                Query.insertPlayers(IGN, ID);
-                updateTrigger();
-                // success embed block
-                EmbedBuilder info = new EmbedBuilder();
-                info.setTitle("Whitelist");
-                info.setDescription(IGN + " has been added to the whitelist");
-                info.setColor(Color.GREEN);
-                event
-                        .getChannel()
-                        .sendMessageEmbeds(info.build())
-                        .queue(
-                                message -> {
-                                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                                }); // send embed to message channel
-                info.clear(); // clear embed from memory
-            } else {
-                // success embed block
-                EmbedBuilder info = new EmbedBuilder();
-                info.setTitle("Whitelist");
-                info.setDescription(IGN + " is already whitelisted");
-                info.setColor(Color.RED);
-                event
-                        .getChannel()
-                        .sendMessageEmbeds(info.build())
-                        .queue(
-                                message -> {
-                                    message.delete().queueAfter(30, TimeUnit.SECONDS);
-                                }); // send embed to message channel
-                info.clear(); // clear embed from memory
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        result = Query.checkPlayer(ID);
+        if (!result) {
+            Query.insertPlayer(IGN, ID);
+            updateTrigger();
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(IGN + " has been added to the whitelist");
+            info.setColor(Color.GREEN);
+            event
+                    .getChannel()
+                    .sendMessageEmbeds(info.build())
+                    .queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            }); // send embed to message channel
+            info.clear(); // clear embed from memory
+        } else {
+            // success embed block
+            EmbedBuilder info = new EmbedBuilder();
+            info.setTitle("Whitelist");
+            info.setDescription(IGN + " is already whitelisted");
+            info.setColor(Color.RED);
+            event
+                    .getChannel()
+                    .sendMessageEmbeds(info.build())
+                    .queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            }); // send embed to message channel
+            info.clear(); // clear embed from memory
         }
 
         java.util.List<Role> guildRoles = guild.getRoles();

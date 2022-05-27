@@ -2,7 +2,7 @@ package com.bifrostsmp.heimdall.minecraft.commands;
 
 import com.bifrostsmp.heimdall.HeimdallPaper;
 import com.bifrostsmp.heimdall.database.ConnectDB;
-import com.bifrostsmp.heimdall.database.Query;
+import database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -26,7 +26,7 @@ public class Whitelist implements CommandExecutor {
                     HeimdallPaper.instance.getUser(),
                     HeimdallPaper.instance.getPassword(),
                     HeimdallPaper.instance.getUrl());
-            Query.update();
+            Query.updateTrigger();
             sender.sendMessage(ChatColor.GREEN + "Whitelist update started(Takes up to 30 Seconds)");
         } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             HeimdallPaper.instance.getServer().reloadWhitelist();
@@ -39,14 +39,14 @@ public class Whitelist implements CommandExecutor {
                 if (Query.checkPlayer(id)) {
                     sender.sendMessage(ChatColor.RED + name + " is already Whitelisted");
                 } else {
-                    int result = Query.insertPlayers(name, id);
+                    int result = Query.insertPlayer(name, id);
                     // System.out.println(result);
                     if (result == 0) {
                         sender.sendMessage(
                                 ChatColor.RED + "[ERROR] " + name + " could not be added to the database");
                     } else {
                         sender.sendMessage(ChatColor.GREEN + name + " has been added to the Whitelist");
-                        Query.update();
+                        Query.updateTrigger();
                     }
                 }
             }
@@ -54,13 +54,13 @@ public class Whitelist implements CommandExecutor {
                 String name = args[1];
                 String id = NameToID.nameToID(name);
                 if (Query.checkPlayer(id)) {
-                    int result = Query.removePlayers(id);
+                    int result = Query.removePlayer(id);
                     if (result == 0) {
                         sender.sendMessage(
                                 ChatColor.RED + "[ERROR] " + name + " could not be removed from the database");
                     } else {
                         sender.sendMessage(ChatColor.GREEN + name + " has been removed from the Whitelist");
-                        Query.update();
+                        Query.updateTrigger();
                     }
                 }
             }

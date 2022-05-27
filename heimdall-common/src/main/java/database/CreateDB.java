@@ -1,12 +1,13 @@
-package com.bifrostsmp.heimdall.database;
+package database;
 
-import com.bifrostsmp.heimdall.HeimdallVelocity;
-
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CreateDB {
     public static void create() {
+        Connection connection = ConnectDB.connection;
+
         // Create SQL DB tables if not exist
         String players =
                 "CREATE TABLE IF NOT EXISTS players("
@@ -25,13 +26,14 @@ public class CreateDB {
                         + "counter integer NOT NULL DEFAULT 1, "
                         + "PRIMARY KEY (discordID)"
                         + ");";
+
         //  prepare the statements to be executed
         try {
-            PreparedStatement playersDB = HeimdallVelocity.connection.prepareStatement(players);
+            PreparedStatement playersDB = connection.prepareStatement(players);
             playersDB.executeUpdate();
-            PreparedStatement serversDB = HeimdallVelocity.connection.prepareStatement(servers);
+            PreparedStatement serversDB = connection.prepareStatement(servers);
             serversDB.executeUpdate();
-            PreparedStatement appDB = HeimdallVelocity.connection.prepareStatement(applications);
+            PreparedStatement appDB = connection.prepareStatement(applications);
             appDB.executeUpdate();
             // use executeUpdate() to update the database table
         } catch (SQLException e) {
