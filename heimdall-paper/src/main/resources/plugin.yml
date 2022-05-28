@@ -10,7 +10,7 @@ databse: true
 commands:
   whitelist:
     description: Main whitelist command
-    usage: "Syntax error! Usage: /<command> add/remove [player] or /<command> update or /<command> reload"
+    usage: "Syntax error! Usage: /<command> add/remove [player] or /<command> backup or /<command> reload"
     aliases: wl
     permission: heimdall.whitelist
     permission-message: You do not have /<permission> permissions

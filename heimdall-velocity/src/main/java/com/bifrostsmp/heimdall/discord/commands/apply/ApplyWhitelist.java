@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands.apply;
 
-import com.bifrostsmp.heimdall.common.YamlParser;
+import common.YamlParser;
 import com.bifrostsmp.heimdall.discord.applications.Questions;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

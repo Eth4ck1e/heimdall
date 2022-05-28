@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
-public class WelcomeChannel extends ListenerAdapter {
+public class SetWelcomeChannel extends ListenerAdapter {
     public static void welcome(SlashCommandInteractionEvent event) {
         ConfigParser.setWelcomeChannel(event.getChannel().getId());
         ConfigParser.build();

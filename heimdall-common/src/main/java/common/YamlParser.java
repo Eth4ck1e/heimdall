@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.common;
+package common;
 
 import org.yaml.snakeyaml.Yaml;
 

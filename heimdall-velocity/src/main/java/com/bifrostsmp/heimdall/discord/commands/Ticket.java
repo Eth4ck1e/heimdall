@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.*;
 import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffCategory;
 
-public class TicketCommand extends ListenerAdapter {
+public class Ticket extends ListenerAdapter {
     static DecimalFormat df = new DecimalFormat("0000");
 
     public static void ticket(SlashCommandInteractionEvent event) {
@@ -32,10 +32,12 @@ public class TicketCommand extends ListenerAdapter {
                 .getGuild()
                 .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
                 .syncPermissionOverrides()
-                .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL), null)
-                .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_HISTORY), null)
-                .addPermissionOverride(member, EnumSet.of(Permission.MESSAGE_SEND), null)
-                .complete();
+                .complete()
+                .upsertPermissionOverride(member)
+                .setPermissions(EnumSet.of(Permission.VIEW_CHANNEL), null)
+                .setPermissions(EnumSet.of(Permission.MESSAGE_HISTORY), null)
+                .setPermissions(EnumSet.of(Permission.MESSAGE_SEND), null)
+                .queue();
         TextChannel channel = event.getGuild().getTextChannelsByName(channelName, true).get(0);
         EmbedBuilder ticket = new EmbedBuilder();
         ticket.setTitle("Ticket");

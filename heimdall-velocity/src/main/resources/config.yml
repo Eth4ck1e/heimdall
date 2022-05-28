@@ -27,7 +27,7 @@ rulesChannel:
 staffCategory:
 
 #Set whether you want Heimdall to welcome members to your server (default: true)
-welcomeMessages: true
+welcomeMessages: false
 
 
 ## MySQL database connection info

@@ -1,9 +1,8 @@
 package com.bifrostsmp.heimdall.minecraft.commands;
 
 import com.bifrostsmp.heimdall.HeimdallPaper;
-import com.bifrostsmp.heimdall.database.ConnectDB;
-import database.Query;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import database.Query;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class Whitelist implements CommandExecutor {
+
+    String name;
+    String id;
 
     @Override
     public boolean onCommand(
@@ -20,22 +22,20 @@ public class Whitelist implements CommandExecutor {
             @NotNull String[] args) {
 
         if (!cmd.getName().equalsIgnoreCase("whitelist")) return false;
-        // TODO code for whitelisting
-        if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
-            ConnectDB.connectDB(
-                    HeimdallPaper.instance.getUser(),
-                    HeimdallPaper.instance.getPassword(),
-                    HeimdallPaper.instance.getUrl());
-            Query.updateTrigger();
-            sender.sendMessage(ChatColor.GREEN + "Whitelist update started(Takes up to 30 Seconds)");
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            HeimdallPaper.instance.getServer().reloadWhitelist();
-            sender.sendMessage(ChatColor.GREEN + "Reloaded Whitelist");
-        } else if (args.length == 2
-                && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {
-            if (args[0].equalsIgnoreCase("add")) {
-                String name = args[1];
-                String id = NameToID.nameToID(name);
+
+        String command = args[0].toLowerCase();
+
+        switch (command) {
+            case "backup" -> {
+                //TODO remove the update command arg to be replaced with backup.  This will dump the whitelist to a local whitelist.json file.
+            }
+            case "reload" -> {
+                HeimdallPaper.instance.getServer().reloadWhitelist();
+                sender.sendMessage(ChatColor.GREEN + "Reloaded Whitelist");
+            }
+            case "add" -> {
+                name = args[1];
+                id = NameToID.nameToID(name);
                 if (Query.checkPlayer(id)) {
                     sender.sendMessage(ChatColor.RED + name + " is already Whitelisted");
                 } else {
@@ -50,9 +50,9 @@ public class Whitelist implements CommandExecutor {
                     }
                 }
             }
-            if (args[0].equalsIgnoreCase("remove")) {
-                String name = args[1];
-                String id = NameToID.nameToID(name);
+            case "remove" -> {
+                name = args[1];
+                id = NameToID.nameToID(name);
                 if (Query.checkPlayer(id)) {
                     int result = Query.removePlayer(id);
                     if (result == 0) {
@@ -64,8 +64,9 @@ public class Whitelist implements CommandExecutor {
                     }
                 }
             }
-        } else {
-            sender.sendMessage("improper syntax");
+            default -> {
+                sender.sendMessage("improper syntax");
+            }
         }
         return true;
     }

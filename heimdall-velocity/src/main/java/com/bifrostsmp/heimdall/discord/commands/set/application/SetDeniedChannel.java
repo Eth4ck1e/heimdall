@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.discord.commands.set;
+package com.bifrostsmp.heimdall.discord.commands.set.application;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -6,11 +6,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
-public class Howdy extends ListenerAdapter {
-    public static void howdy(SlashCommandInteractionEvent event) {
-        ConfigParser.setHowdyChannel(event.getChannel().getId());
+public class SetDeniedChannel extends ListenerAdapter {
+    public static void denied(SlashCommandInteractionEvent event) {
+        ConfigParser.setAppDenied(event.getChannel().getId());
         ConfigParser.build();
-        event.reply("Members welcome messages will be displayed in this channel [requires welcome messages to be enabled]").queue(
+        event.reply("Denied applications are assigned to this channel").queue(
                 message -> {
                     message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                 });

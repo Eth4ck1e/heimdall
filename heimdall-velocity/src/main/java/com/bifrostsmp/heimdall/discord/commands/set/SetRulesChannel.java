@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.discord.commands.set.application;
+package com.bifrostsmp.heimdall.discord.commands.set;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -6,11 +6,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
-public class Accepted extends ListenerAdapter {
-    public static void accepted(SlashCommandInteractionEvent event) {
-        ConfigParser.setAppAccepted(event.getChannel().getId());
+public class SetRulesChannel extends ListenerAdapter {
+    public static void rules(SlashCommandInteractionEvent event) {
+        ConfigParser.setRulesChannel(event.getChannel().getId());
         ConfigParser.build();
-        event.reply("Accepted applications are assigned to this channel").queue(
+        event.reply("Rules will be posted to this channel").queue(
                 message -> {
                     message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                 });

@@ -9,13 +9,13 @@ import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.discord.buttons.application.Deny.send;
 
-public class ResponseHandler extends ListenerAdapter {
+public class DenyResponseHandler extends ListenerAdapter {
     private final long applicant;
     private final long member;
     private final MessageEmbed embed;
     private int i;
 
-    public ResponseHandler(long applicant, long member, MessageEmbed embed) {
+    public DenyResponseHandler(long applicant, long member, MessageEmbed embed) {
         this.applicant = applicant;
         this.member = member;
         this.embed = embed;

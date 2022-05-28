@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 
 import java.util.List;
 
-public class Ticket extends ListenerAdapter {
+public class SetTicketCategory extends ListenerAdapter {
     public static void ticket(SlashCommandInteractionEvent event) {
         List<Category> categories = event.getHook().getJDA().getCategories();
         ReplyCallbackAction reply = event.reply("Choose the category where tickets will be created");

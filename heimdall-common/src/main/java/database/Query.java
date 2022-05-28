@@ -19,8 +19,7 @@ public class Query {
             // database
             String insertSQL = "INSERT IGNORE INTO servers(server) VALUE (?);";
             //  prepare the statements to be executed
-            try {
-                Connection connection = ConnectDB.connection;
+            try (Connection connection = ConnectDB.getConnection()) {
                 PreparedStatement insertServer = connection.prepareStatement(insertSQL);
                 insertServer.setString(1, server);
                 insertServer.executeUpdate();
@@ -34,8 +33,7 @@ public class Query {
 
     public static int insertPlayer(String name, String id) {
         String insertSQL = "INSERT IGNORE INTO players(name, uuid) VALUES (?,?);";
-        try {
-            Connection connection = ConnectDB.connection;
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement insertUser = connection.prepareStatement(insertSQL);
             insertUser.setString(1, name);
             insertUser.setString(2, id);
@@ -49,8 +47,7 @@ public class Query {
 
     public static int removePlayer(String id) {
         String deleteSQL = "DELETE FROM players WHERE uuid = ?;";
-        try {
-            Connection connection = ConnectDB.connection;
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement removeUser = connection.prepareStatement(deleteSQL);
             removeUser.setString(1, id);
             return removeUser.executeUpdate();
@@ -61,27 +58,27 @@ public class Query {
     }
 
     public static boolean checkPlayer(String id) {
-        String checkSQL = "SELECT * FROM players WHERE uuid=?;";
-        boolean ResultSet;
-        try (Connection connection = ConnectDB.connection) {
+        String checkSQL = "SELECT EXISTS(SELECT * FROM players WHERE uuid=?);";
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement checkPlayer = connection.prepareStatement(checkSQL);
             checkPlayer.setString(1,id);
-            ResultSet = checkPlayer.execute();
+            ResultSet result = checkPlayer.executeQuery();
+            if (result.next()) {
+                return result.getBoolean(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
-        return ResultSet;
+        return false;
     }
 
     public static boolean check(String server) {
         boolean value = false;
         String query = "SELECT JSONUpdated FROM servers WHERE server = ?;";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement check = connection.prepareStatement(query);
             check.setString(1, server);
             ResultSet result = check.executeQuery();
-            result.next();
             value = result.getObject(1, Boolean.class);
             // getLogger().log(INFO, ChatColor.YELLOW + "[Heimdall] current JSONUpdated value from check:
             // " + value);
@@ -94,7 +91,7 @@ public class Query {
 
     public static void updateTrigger() {
         String query = "UPDATE servers SET JSONUpdated = false WHERE JSONUpdated = true;";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -104,7 +101,7 @@ public class Query {
 
     public static void updated(String server) {
         String query = "UPDATE servers SET JSONUpdated = true WHERE server=?;";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, server);
             stmt.executeUpdate();
@@ -119,7 +116,7 @@ public class Query {
         String query = "SELECT name, uuid FROM players;";
         JSONObject obj = new JSONObject();
         JSONArray array = new JSONArray();
-        try (Statement stmt = ConnectDB.connection.createStatement()) {
+        try (Statement stmt = ConnectDB.getConnection().createStatement()) {
             array = new JSONArray();
             result = stmt.executeQuery(query);
             while (result.next()) {
@@ -137,7 +134,7 @@ public class Query {
 
     public static int getAppCounter(long discordID) {
         String get = "SELECT counter FROM applications WHERE discordID = ?;";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement getAppCounter  = connection.prepareStatement(get);
             getAppCounter.setString(1, String.valueOf(discordID));
             ResultSet rs = getAppCounter.executeQuery();
@@ -152,7 +149,7 @@ public class Query {
     public static void insertApp(long discordID, String ign, String uuid, String app, int counter) {
         String insertApp =
                 "INSERT INTO applications(discordID, ign, uuid, app, counter) VALUES (?, ?, ?, ?, ?);";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement insert = connection.prepareStatement(insertApp);
             insert.setString(1, String.valueOf(discordID));
             insert.setString(2, ign);
@@ -168,7 +165,7 @@ public class Query {
 
     public static void updateApp(long discordID, String app, int counter) {
         String updateApp = "UPDATE applications SET app=?, counter=? WHERE discordID=?;";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement update = connection.prepareStatement(updateApp);
             update.setString(1, app);
             update.setInt(2, counter);
@@ -181,7 +178,7 @@ public class Query {
 
     public static boolean checkForApp(long discordID) {
         String check = "SELECT * FROM applications WHERE discordID = " + discordID + ";";
-        try (Connection connection = ConnectDB.connection) {
+        try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement checkForApp = connection.prepareStatement(check);
             return checkForApp.executeQuery().next();
         } catch (SQLException e) {

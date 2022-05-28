@@ -17,6 +17,8 @@ public class SlashCommands extends ListenerAdapter {
         long memberID = event.getMember().getIdLong();
         long guildID = event.getGuild().getIdLong();
         // Only accept commands from guilds
+        String requiredStaffRole = "You must have " + event.getGuild().getRoleById(ConfigParser.getStaffRole()).getName() + " role to use this command!";
+        String requiredAppRole = "You must have " + event.getGuild().getRoleById(ConfigParser.getAppRole()).getName() + " role to use this command!";
 
         String command = event.getName().toLowerCase();
         switch (command) {
@@ -27,7 +29,7 @@ public class SlashCommands extends ListenerAdapter {
             }
             case "whitelist" -> {
                 if (!HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
@@ -41,12 +43,11 @@ public class SlashCommands extends ListenerAdapter {
                 if (HasRole.hasRole(memberID, guildID, ConfigParser.getAppRole()) || HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
                     Apply.apply(event);
                 } else {
-                    event.reply("You do not have the applicant role!").queue(
+                    event.reply(requiredAppRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
                 }
-
             }
             case "info" -> {
                 Info.info(event);
@@ -55,11 +56,11 @@ public class SlashCommands extends ListenerAdapter {
                 PingPong.pingPong(event);
             }
             case "ticket" -> {
-                TicketCommand.ticket(event);
+                Ticket.ticket(event);
             }
             case "invite" -> {
                 if (!HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
@@ -71,7 +72,7 @@ public class SlashCommands extends ListenerAdapter {
                 if (HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole()) || event.getGuild().getOwner().equals(event.getMember())) {
                     Set.set(event);
                 } else {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
@@ -79,7 +80,7 @@ public class SlashCommands extends ListenerAdapter {
             }
             case "welcome" -> {
                 if (!HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
@@ -89,7 +90,7 @@ public class SlashCommands extends ListenerAdapter {
             }
             case "reload" -> {
                 if (!HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole())) {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });
@@ -102,7 +103,7 @@ public class SlashCommands extends ListenerAdapter {
                 if (HasRole.hasRole(memberID, guildID, ConfigParser.getStaffRole()) || event.getGuild().getOwner().equals(event.getMember())) {
                     Setup.setup(event);
                 } else {
-                    event.reply("You must have Staff or above role to use this command!").queue(
+                    event.reply(requiredStaffRole).queue(
                             message -> {
                                 message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
                             });

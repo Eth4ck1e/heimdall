@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.rules;
 
-import com.bifrostsmp.heimdall.common.YamlParser;
+import common.YamlParser;
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;

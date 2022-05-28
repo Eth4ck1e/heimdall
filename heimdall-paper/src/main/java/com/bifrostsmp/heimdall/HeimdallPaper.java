@@ -1,11 +1,11 @@
 package com.bifrostsmp.heimdall;
 
-import database.ConnectDB;
-import com.bifrostsmp.heimdall.database.CreateDB;
 import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
-import database.Query;
 import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
-import com.bifrostsmp.heimdall.scheduler.ScheduledTask;
+import com.bifrostsmp.heimdall.minecraft.events.PreLoginWhitelistCheck;
+import database.ConnectDB;
+import database.CreateDB;
+import database.Query;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -14,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.Objects;
-import java.util.Timer;
 
 public final class HeimdallPaper extends JavaPlugin {
 
@@ -46,7 +45,7 @@ public final class HeimdallPaper extends JavaPlugin {
         } else {
             getLogger().warning(ChatColor.RED + "Could not connect to database");
         }
-        CreateDB.createDB();
+        CreateDB.create(user, password, url);
         if (Query.insertServer(server)) {
             getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
         } else {
@@ -70,21 +69,22 @@ public final class HeimdallPaper extends JavaPlugin {
                                 public void run() {
                                     ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                                     Bukkit.dispatchCommand(console, "whitelist reload");
-                                    Bukkit.dispatchCommand(console, "whitelist on");
+                                    //Bukkit.dispatchCommand(console, "whitelist on");
                                 }
                             },
                             20L); // 20 Tick (1 Second) delay before run() is called
         }
         getCommand("whitelist").setExecutor(new Whitelist());
-        Timer time = new Timer();
-        ScheduledTask st = new ScheduledTask(server);
-        time.schedule(st, 0, 30000);
+        getServer().getPluginManager().registerEvents(new PreLoginWhitelistCheck(), this);
+//        Timer time = new Timer();
+//        ScheduledTask st = new ScheduledTask(server);
+//        time.schedule(st, 0, 30000);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Connection connection = ConnectDB.connection;
+        Connection connection = ConnectDB.getConnection();
 
         try {
             if (connection != null && !connection.isClosed()) {

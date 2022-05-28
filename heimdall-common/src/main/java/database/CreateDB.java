@@ -1,12 +1,12 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CreateDB {
-    public static void create() {
-        Connection connection = ConnectDB.connection;
+    public static void create(String user, String password, String url) {
 
         // Create SQL DB tables if not exist
         String players =
@@ -29,6 +29,7 @@ public class CreateDB {
 
         //  prepare the statements to be executed
         try {
+            Connection connection = DriverManager.getConnection(url, user, password);
             PreparedStatement playersDB = connection.prepareStatement(players);
             playersDB.executeUpdate();
             PreparedStatement serversDB = connection.prepareStatement(servers);

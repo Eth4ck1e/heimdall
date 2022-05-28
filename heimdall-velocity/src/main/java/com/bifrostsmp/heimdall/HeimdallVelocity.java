@@ -9,7 +9,7 @@ import com.bifrostsmp.heimdall.discord.buttons.application.Accept;
 import com.bifrostsmp.heimdall.discord.buttons.application.Deny;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.commands.Welcome;
-import com.bifrostsmp.heimdall.discord.commands.set.Ticket;
+import com.bifrostsmp.heimdall.discord.commands.set.SetTicketCategory;
 import com.bifrostsmp.heimdall.discord.events.Join;
 import com.google.inject.Inject;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -40,7 +40,7 @@ import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 import java.sql.Connection;
 
-import static com.bifrostsmp.heimdall.config.ConfigParser.getWelcomeMessages;
+import static com.bifrostsmp.heimdall.config.ConfigParser.*;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 @Plugin(
@@ -79,8 +79,15 @@ public class HeimdallVelocity extends ListenerAdapter {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
-        CreateDB.create(); // create DB if not exist
+        ConfigParser.parse(getDataDirectory());
+
+        CreateDB.create(getUser(), getPassword(), getUrl()); // create DB if not exist
 
         logger.info(
                 "Starting Discord Bot"); // send message to console with plugin name, logger tags with
@@ -130,10 +137,7 @@ public class HeimdallVelocity extends ListenerAdapter {
                                 new SubcommandData(
                                         "remove", "remove player from whitelist. /whitelist remove player")
                                         .addOptions(
-                                                new OptionData(STRING, "player", "player to be removed").setRequired(true)))
-                        .addSubcommands(
-                                new SubcommandData(
-                                        "update", "updates whitelist to ensure servers are in sync with database")));
+                                                new OptionData(STRING, "player", "player to be removed").setRequired(true))));
         commands.addCommands(
                 Commands.slash("apply", "command to apply to the server")
                         .addSubcommands(new SubcommandData("staff", "apply for staff"))
@@ -185,7 +189,7 @@ public class HeimdallVelocity extends ListenerAdapter {
                 new Deny(),
                 new RulesClickMe(),
                 new TicketClose(),
-                new Ticket(),
+                new SetTicketCategory(),
                 new Welcome()
         );
         if (getWelcomeMessages()) {
