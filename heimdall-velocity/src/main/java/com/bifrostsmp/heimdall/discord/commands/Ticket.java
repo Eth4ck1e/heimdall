@@ -31,13 +31,10 @@ public class Ticket extends ListenerAdapter {
         event
                 .getGuild()
                 .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
-                .syncPermissionOverrides()
-                .complete()
-                .upsertPermissionOverride(member)
-                .setPermissions(EnumSet.of(Permission.VIEW_CHANNEL), null)
-                .setPermissions(EnumSet.of(Permission.MESSAGE_HISTORY), null)
-                .setPermissions(EnumSet.of(Permission.MESSAGE_SEND), null)
+                .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND), null)
                 .queue();
+
         TextChannel channel = event.getGuild().getTextChannelsByName(channelName, true).get(0);
         EmbedBuilder ticket = new EmbedBuilder();
         ticket.setTitle("Ticket");
