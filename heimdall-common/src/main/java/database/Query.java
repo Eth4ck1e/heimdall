@@ -61,7 +61,7 @@ public class Query {
         String checkSQL = "SELECT EXISTS(SELECT * FROM players WHERE uuid=?);";
         try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement checkPlayer = connection.prepareStatement(checkSQL);
-            checkPlayer.setString(1,id);
+            checkPlayer.setString(1, id);
             ResultSet result = checkPlayer.executeQuery();
             if (result.next()) {
                 return result.getBoolean(1);
@@ -135,7 +135,7 @@ public class Query {
     public static int getAppCounter(long discordID) {
         String get = "SELECT counter FROM applications WHERE discordID = ?;";
         try (Connection connection = ConnectDB.getConnection()) {
-            PreparedStatement getAppCounter  = connection.prepareStatement(get);
+            PreparedStatement getAppCounter = connection.prepareStatement(get);
             getAppCounter.setString(1, String.valueOf(discordID));
             ResultSet rs = getAppCounter.executeQuery();
             if (!rs.next()) return 0;
@@ -182,7 +182,30 @@ public class Query {
             PreparedStatement checkForApp = connection.prepareStatement(check);
             return checkForApp.executeQuery().next();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static int getTicketNum() {
+        String ticketNum = "select max(ticketNum) from tickets;";
+        try (Connection connection = ConnectDB.getConnection()) {
+            PreparedStatement getTicketNum = connection.prepareStatement(ticketNum);
+            return getTicketNum.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public static void newTicket(String name) {
+        String insert = "insert into tickets(name) values(?);";
+        try (Connection connection = ConnectDB.getConnection()) {
+            PreparedStatement newTicket = connection.prepareStatement(insert);
+            newTicket.setString(1, name);
+            newTicket.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.bifrostsmp.heimdall.discord.rules;
 
-import common.YamlParser;
 import com.bifrostsmp.heimdall.config.ConfigParser;
+import common.YamlParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -82,20 +82,20 @@ public class PostRules {
         );
     }
 
-    private static void setDiscordMessage(Message message) {
-        PostRules.discordMessage = message;
-    }
-
     public static Message getDiscordMessage() {
         return discordMessage;
     }
 
-    public static void setMinecraftMessage(Message minecraftMessage) {
-        PostRules.minecraftMessage = minecraftMessage;
+    private static void setDiscordMessage(Message message) {
+        PostRules.discordMessage = message;
     }
 
     public static Message getMinecraftMessage() {
         return minecraftMessage;
+    }
+
+    public static void setMinecraftMessage(Message minecraftMessage) {
+        PostRules.minecraftMessage = minecraftMessage;
     }
 
     public static Message getFinalMessage() {

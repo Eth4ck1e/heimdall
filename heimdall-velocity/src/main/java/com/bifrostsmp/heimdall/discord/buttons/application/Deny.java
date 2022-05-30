@@ -24,6 +24,37 @@ public class Deny extends ListenerAdapter {
     User applicant;
     MessageEmbed embed;
 
+    public static void send(String applicant, Member member, MessageEmbed embed, Event event, String response) {
+        event.getJDA()
+                .openPrivateChannelById(applicant)
+                .queue(
+                        message -> {
+                            EmbedBuilder deny = new EmbedBuilder();
+                            deny.setTitle("Your Bifrost Application has been Denied");
+                            deny.addField("Reason: ", response, false);
+                            deny.setDescription("Please review the rules");
+                            deny.setFooter("Applicants can be banned after three denied applications");
+                            message.sendMessageEmbeds(deny.build()).queue();
+                        });
+
+        List<MessageEmbed.Field> fields = embed.getFields();
+        EmbedBuilder denyEmbed = new EmbedBuilder();
+        denyEmbed.setTitle(embed.getTitle());
+        for (MessageEmbed.Field field : fields) {
+            denyEmbed.addField(field);
+        }
+        denyEmbed.setFooter("Denied by " + member.getEffectiveName() + ".\nReason: " + response);
+
+        MessageChannel denyChannel =
+                event.getJDA()
+                        .getGuildById(ConfigParser.getDiscordId())
+                        .getTextChannelById(ConfigParser.getAppDenied());
+        denyChannel
+                .sendMessageEmbeds(denyEmbed.build())
+                .queue();
+
+    }
+
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getComponentId().equals("Deny")) return;
@@ -67,36 +98,5 @@ public class Deny extends ListenerAdapter {
                     });
         }
         event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-    }
-
-    public static void send(String applicant, Member member, MessageEmbed embed, Event event, String response) {
-        event.getJDA()
-                .openPrivateChannelById(applicant)
-                .queue(
-                        message -> {
-                            EmbedBuilder deny = new EmbedBuilder();
-                            deny.setTitle("Your Bifrost Application has been Denied");
-                            deny.addField("Reason: ", response, false);
-                            deny.setDescription("Please review the rules");
-                            deny.setFooter("Applicants can be banned after three denied applications");
-                            message.sendMessageEmbeds(deny.build()).queue();
-                        });
-
-        List<MessageEmbed.Field> fields = embed.getFields();
-        EmbedBuilder denyEmbed = new EmbedBuilder();
-        denyEmbed.setTitle(embed.getTitle());
-        for (MessageEmbed.Field field : fields) {
-            denyEmbed.addField(field);
-        }
-        denyEmbed.setFooter("Denied by " + member.getEffectiveName() + ".\nReason: " + response);
-
-        MessageChannel denyChannel =
-                event.getJDA()
-                        .getGuildById(ConfigParser.getDiscordId())
-                        .getTextChannelById(ConfigParser.getAppDenied());
-        denyChannel
-                .sendMessageEmbeds(denyEmbed.build())
-                .queue();
-
     }
 }

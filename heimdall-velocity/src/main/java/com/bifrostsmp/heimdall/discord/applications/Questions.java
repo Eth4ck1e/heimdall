@@ -21,17 +21,17 @@ import static com.bifrostsmp.heimdall.config.ConfigParser.getDiscordId;
 public class Questions extends ListenerAdapter {
     private final Long userID;
     private final long channel;
-    private long messageID;
     private final Map<Integer, Object> getQuestions;
     private final ArrayList<String> answers = new ArrayList<>();
     private final ArrayList<String> application = new ArrayList<>();
-    private int i;
     int checkIGN;
     int count;
     String IGN;
     String uuid;
     String type;
     Map<Integer, Object> getDetails;
+    private long messageID;
+    private int i;
 
     public Questions(Long userID, long ch, Map<Integer, Object> getApp) {
         this.userID = userID;
@@ -40,6 +40,18 @@ public class Questions extends ListenerAdapter {
         i = 0;
         checkIGN = 0;
         count = 0;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Long d = Long.parseLong(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -162,17 +174,5 @@ public class Questions extends ListenerAdapter {
             getDetails = (Map<Integer, Object>) getQuestions.get(i);
             e.getChannel().sendMessage(getDetails.get(1).toString()).queue();
         }
-    }
-
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            Long d = Long.parseLong(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
     }
 }

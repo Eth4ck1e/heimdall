@@ -40,20 +40,20 @@ public class ConnectDB {
         return user;
     }
 
-    public static String getPassword() {
-        return password;
-    }
-
-    public static String getUrl() {
-        return url;
-    }
-
     public static void setUser(String user) {
         ConnectDB.user = user;
     }
 
+    public static String getPassword() {
+        return password;
+    }
+
     public static void setPassword(String password) {
         ConnectDB.password = password;
+    }
+
+    public static String getUrl() {
+        return url;
     }
 
     public static void setUrl(String url) {

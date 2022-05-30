@@ -1,5 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
+import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -15,7 +16,7 @@ import java.text.DecimalFormat;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
-import static com.bifrostsmp.heimdall.HeimdallVelocity.*;
+import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffCategory;
 
 public class Ticket extends ListenerAdapter {
@@ -26,8 +27,8 @@ public class Ticket extends ListenerAdapter {
         event.deferReply().queue();
         Member member = event.getMember();
         InteractionHook hook = event.getHook();
-        int ticketNumber = getTicketNumber();
-        String channelName = "Ticket-" + df.format(ticketNumber);
+        int ticketNumber = Query.getTicketNum() + 1;
+        String channelName = "Ticket-" + df.format(ticketNumber) + " " + member.getNickname();
         event
                 .getGuild()
                 .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
@@ -46,6 +47,6 @@ public class Ticket extends ListenerAdapter {
                 });
         channel.sendMessageEmbeds(ticket.build()).setActionRow(Button.primary("Close", "Close").withEmoji(Emoji.fromUnicode("U+1F512"))).queue();
         ticket.clear();
-        setTicketNumber(ticketNumber + 1);
+        Query.newTicket(member.getEffectiveName());
     }
 }

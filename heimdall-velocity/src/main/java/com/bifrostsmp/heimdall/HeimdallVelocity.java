@@ -2,7 +2,6 @@ package com.bifrostsmp.heimdall;
 
 import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.config.CreateConfig;
-import database.CreateDB;
 import com.bifrostsmp.heimdall.discord.buttons.RulesClickMe;
 import com.bifrostsmp.heimdall.discord.buttons.TicketClose;
 import com.bifrostsmp.heimdall.discord.buttons.application.Accept;
@@ -12,7 +11,6 @@ import com.bifrostsmp.heimdall.discord.commands.Welcome;
 import com.bifrostsmp.heimdall.discord.commands.set.SetTicketCategory;
 import com.bifrostsmp.heimdall.discord.events.Join;
 import com.google.inject.Inject;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -20,6 +18,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import database.CreateDB;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -51,19 +50,16 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
         url = "bifrostsmp.com",
         authors = {"Eth4ck1e", "HunnaG"})
 public class HeimdallVelocity extends ListenerAdapter {
-    private static final EventWaiter eventWaiter = new EventWaiter();
-    private final ProxyServer proxy;
-    private final Yaml config;
-
-    static HeimdallVelocity instance;
     public static Logger logger;
     public static Connection connection; // This is the variable used to connect to the DB
+    static HeimdallVelocity instance;
     @Getter
     private static JDA discordBot;
     private static Path dataDirectory = null;
     private static Guild guild;
-
     private static int ticketNumber = 1;
+    private final ProxyServer proxy;
+    private final Yaml config;
 
     @Inject
     public HeimdallVelocity(
@@ -75,6 +71,14 @@ public class HeimdallVelocity extends ListenerAdapter {
         logger.info(
                 "Heimdall uses a mysql database to sync the vanilla minecraft whitelist between all servers on your network."
                         + "This requires the heimdall plugin to also be installed on each backend server.");
+    }
+
+    public static Path getDataDirectory() {
+        return dataDirectory;
+    }
+
+    public static Guild getGuild() {
+        return guild;
     }
 
     @Subscribe
@@ -180,6 +184,10 @@ public class HeimdallVelocity extends ListenerAdapter {
                 Commands.slash("setup",
                         "Run command to setup the bot (you must be owner if this is the first time)")
         );
+        commands.addCommands(
+                Commands.slash("reload",
+                        "reloads the bot config in memory after manual config changes")
+        );
         //END SLASH COMMANDS
 
         // Register event listeners
@@ -223,25 +231,5 @@ public class HeimdallVelocity extends ListenerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static Path getDataDirectory() {
-        return dataDirectory;
-    }
-
-    public static EventWaiter getEventWaiter() {
-        return eventWaiter;
-    }
-
-    public static Guild getGuild() {
-        return guild;
-    }
-
-    public static void setTicketNumber(int ticketNumber) {
-        HeimdallVelocity.ticketNumber = ticketNumber;
-    }
-
-    public static int getTicketNumber() {
-        return ticketNumber;
     }
 }

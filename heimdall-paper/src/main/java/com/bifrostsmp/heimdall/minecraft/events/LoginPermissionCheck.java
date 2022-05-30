@@ -12,6 +12,7 @@ public class LoginPermissionCheck extends Event implements Listener {
     public @NotNull HandlerList getHandlers() {
         return null;
     }
+
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         //TODO use another plugin or write the code myself

@@ -1,8 +1,8 @@
 package com.bifrostsmp.heimdall.scheduler;
 
 import com.bifrostsmp.heimdall.HeimdallPaper;
-import database.Query;
 import com.bifrostsmp.heimdall.json.WhitelistBuilder;
+import database.Query;
 import org.json.simple.JSONArray;
 
 import java.util.Date;

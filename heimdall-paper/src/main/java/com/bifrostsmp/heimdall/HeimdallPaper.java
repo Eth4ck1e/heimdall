@@ -1,25 +1,21 @@
 package com.bifrostsmp.heimdall;
 
-import com.bifrostsmp.heimdall.database.FirstRunWhitelistParser;
 import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
 import com.bifrostsmp.heimdall.minecraft.events.PreLoginWhitelistCheck;
 import database.ConnectDB;
 import database.CreateDB;
 import database.Query;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
-import java.util.Objects;
 
 public final class HeimdallPaper extends JavaPlugin {
 
     public static Plugin plugin;
+    public static HeimdallPaper instance;
     private final String firstRun = getConfig().getString("firstRun");
-
     private final String user = getConfig().getString("database.user");
     private final String password = getConfig().getString("database.password");
     private final String url =
@@ -30,7 +26,14 @@ public final class HeimdallPaper extends JavaPlugin {
                     + "/"
                     + getConfig().getString("database.database");
     private final String server = getConfig().getString("server");
-    public static HeimdallPaper instance;
+
+    public static HeimdallPaper getInstance() {
+        return instance;
+    }
+
+    public static Plugin getPlugin() {
+        return plugin;
+    }
 
     @Override
     public void onEnable() {
@@ -55,25 +58,25 @@ public final class HeimdallPaper extends JavaPlugin {
                                     + "Could not insert into database. Please make sure you have updated the config and changed your server name from default to a unique identifier(different from any other server you have connected to the database");
         }
 
-        if (Objects.equals(firstRun, "true")) {
-            FirstRunWhitelistParser.parser();
-            getConfig().options().copyDefaults(true);
-            getConfig().set("firstRun", false);
-            saveConfig();
-
-            Bukkit.getScheduler()
-                    .scheduleSyncDelayedTask(
-                            instance,
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                                    Bukkit.dispatchCommand(console, "whitelist reload");
-                                    //Bukkit.dispatchCommand(console, "whitelist on");
-                                }
-                            },
-                            20L); // 20 Tick (1 Second) delay before run() is called
-        }
+//        if (Objects.equals(firstRun, "true")) {
+//            FirstRunWhitelistParser.parser();
+//            getConfig().options().copyDefaults(true);
+//            getConfig().set("firstRun", false);
+//            saveConfig();
+//
+//            Bukkit.getScheduler()
+//                    .scheduleSyncDelayedTask(
+//                            instance,
+//                            new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+//                                    Bukkit.dispatchCommand(console, "whitelist reload");
+//                                    //Bukkit.dispatchCommand(console, "whitelist on");
+//                                }
+//                            },
+//                            20L); // 20 Tick (1 Second) delay before run() is called
+//        }
         getCommand("whitelist").setExecutor(new Whitelist());
         getServer().getPluginManager().registerEvents(new PreLoginWhitelistCheck(), this);
 //        Timer time = new Timer();
@@ -108,13 +111,5 @@ public final class HeimdallPaper extends JavaPlugin {
 
     public String getUrl() {
         return url;
-    }
-
-    public static HeimdallPaper getInstance() {
-        return instance;
-    }
-
-    public static Plugin getPlugin() {
-        return plugin;
     }
 }

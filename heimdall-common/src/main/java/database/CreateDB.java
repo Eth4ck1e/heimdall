@@ -26,6 +26,12 @@ public class CreateDB {
                         + "counter integer NOT NULL DEFAULT 1, "
                         + "PRIMARY KEY (discordID)"
                         + ");";
+        String tickets =
+                "CREATE TABLE IF NOT EXISTS tickets (\n" +
+                        "ticketNum MEDIUMINT AUTO_INCREMENT," +
+                        "name CHAR(30) NOT NULL," +
+                        "PRIMARY KEY (ticketNum)" +
+                        ");";
 
         //  prepare the statements to be executed
         try {
@@ -36,6 +42,8 @@ public class CreateDB {
             serversDB.executeUpdate();
             PreparedStatement appDB = connection.prepareStatement(applications);
             appDB.executeUpdate();
+            PreparedStatement ticketDB = connection.prepareStatement(tickets);
+            ticketDB.executeUpdate();
             // use executeUpdate() to update the database table
         } catch (SQLException e) {
             e.printStackTrace();

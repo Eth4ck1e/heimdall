@@ -52,7 +52,7 @@ public class ConfigParser {
         user = (String) getData.get("user");
         password = (String) getData.get("password");
         host = (String) getData.get("host");
-        port = (String) getData.get("port");
+        port = String.valueOf(getData.get("port"));
         database = (String) getData.get("database");
         url =
                 "jdbc:mysql://"
@@ -115,64 +115,128 @@ public class ConfigParser {
         return user;
     }
 
+    public static void setUser(String user) {
+        ConfigParser.user = user;
+    }
+
     public static String getPassword() {
         return password;
+    }
+
+    public static void setPassword(String password) {
+        ConfigParser.password = password;
     }
 
     public static String getUrl() {
         return url;
     }
 
+    public static void setUrl(String url) {
+        ConfigParser.url = url;
+    }
+
     public static String getDiscordToken() {
         return discordToken;
+    }
+
+    public static void setDiscordToken(String discordToken) {
+        ConfigParser.discordToken = discordToken;
     }
 
     public static String getStaffRole() {
         return staffRole;
     }
 
+    public static void setStaffRole(String staffRole) {
+        ConfigParser.staffRole = staffRole;
+    }
+
     public static String getAppRole() {
         return appRole;
+    }
+
+    public static void setAppRole(String appRole) {
+        ConfigParser.appRole = appRole;
     }
 
     public static String getBotClientId() {
         return botClientId;
     }
 
+    public static void setBotClientId(String botClientId) {
+        ConfigParser.botClientId = botClientId;
+    }
+
     public static String getDiscordId() {
         return discordId;
+    }
+
+    public static void setDiscordId(String discordId) {
+        ConfigParser.discordId = discordId;
     }
 
     public static String getAppPending() {
         return appPending;
     }
 
+    public static void setAppPending(String appPending) {
+        ConfigParser.appPending = appPending;
+    }
+
     public static String getAppAccepted() {
         return appAccepted;
+    }
+
+    public static void setAppAccepted(String appAccepted) {
+        ConfigParser.appAccepted = appAccepted;
     }
 
     public static String getAppDenied() {
         return appDenied;
     }
 
+    public static void setAppDenied(String appDenied) {
+        ConfigParser.appDenied = appDenied;
+    }
+
     public static String getWelcomeChannel() {
         return welcomeChannel;
+    }
+
+    public static void setWelcomeChannel(String welcomeChannel) {
+        ConfigParser.welcomeChannel = welcomeChannel;
     }
 
     public static String getHowdyChannel() {
         return howdyChannel;
     }
 
+    public static void setHowdyChannel(String howdyChannel) {
+        ConfigParser.howdyChannel = howdyChannel;
+    }
+
     public static String getRulesChannel() {
         return rulesChannel;
+    }
+
+    public static void setRulesChannel(String rulesChannel) {
+        ConfigParser.rulesChannel = rulesChannel;
     }
 
     public static boolean getWelcomeMessages() {
         return welcomeMessages;
     }
 
+    public static void setWelcomeMessages(boolean welcomeMessages) {
+        ConfigParser.welcomeMessages = welcomeMessages;
+    }
+
     public static String getStaffCategory() {
         return staffCategory;
+    }
+
+    public static void setStaffCategory(String staffCategory) {
+        ConfigParser.staffCategory = staffCategory;
     }
 
     public static String getDatabase() {
@@ -187,71 +251,7 @@ public class ConfigParser {
         return port;
     }
 
-    public static void setStaffCategory(String staffCategory) {
-        ConfigParser.staffCategory = staffCategory;
-    }
-
-    public static void setWelcomeMessages(boolean welcomeMessages) {
-        ConfigParser.welcomeMessages = welcomeMessages;
-    }
-
-    public static void setRulesChannel(String rulesChannel) {
-        ConfigParser.rulesChannel = rulesChannel;
-    }
-
-    public static void setWelcomeChannel(String welcomeChannel) {
-        ConfigParser.welcomeChannel = welcomeChannel;
-    }
-
-    public static void setHowdyChannel(String howdyChannel) {
-        ConfigParser.howdyChannel = howdyChannel;
-    }
-
-    public static void setAppDenied(String appDenied) {
-        ConfigParser.appDenied = appDenied;
-    }
-
-    public static void setAppAccepted(String appAccepted) {
-        ConfigParser.appAccepted = appAccepted;
-    }
-
-    public static void setAppPending(String appPending) {
-        ConfigParser.appPending = appPending;
-    }
-
-    public static void setDiscordId(String discordId) {
-        ConfigParser.discordId = discordId;
-    }
-
-    public static void setBotClientId(String botClientId) {
-        ConfigParser.botClientId = botClientId;
-    }
-
-    public static void setAppRole(String appRole) {
-        ConfigParser.appRole = appRole;
-    }
-
-    public static void setStaffRole(String staffRole) {
-        ConfigParser.staffRole = staffRole;
-    }
-
     public static void setInputStream(InputStream inputStream) {
         ConfigParser.inputStream = inputStream;
-    }
-
-    public static void setDiscordToken(String discordToken) {
-        ConfigParser.discordToken = discordToken;
-    }
-
-    public static void setUrl(String url) {
-        ConfigParser.url = url;
-    }
-
-    public static void setPassword(String password) {
-        ConfigParser.password = password;
-    }
-
-    public static void setUser(String user) {
-        ConfigParser.user = user;
     }
 }

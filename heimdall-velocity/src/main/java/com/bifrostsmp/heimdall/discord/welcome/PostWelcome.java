@@ -35,11 +35,11 @@ public class PostWelcome {
         );
     }
 
-    private static void setWelcomeMessage(Message message) {
-        welcomeMessage = message;
-    }
-
     public static Message getWelcomeMessage() {
         return welcomeMessage;
+    }
+
+    private static void setWelcomeMessage(Message message) {
+        welcomeMessage = message;
     }
 }
