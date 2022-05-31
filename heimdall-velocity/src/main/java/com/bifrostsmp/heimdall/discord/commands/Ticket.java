@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -27,26 +26,25 @@ public class Ticket extends ListenerAdapter {
         event.deferReply().queue();
         Member member = event.getMember();
         InteractionHook hook = event.getHook();
-        int ticketNumber = Query.getTicketNum() + 1;
-        String channelName = "Ticket-" + df.format(ticketNumber) + " " + member.getNickname();
+        long ticketNumber = Query.getTicketNum() + 1;
+        String channelName = "Ticket-" + df.format(ticketNumber) + " " + member.getEffectiveName();
         event
                 .getGuild()
                 .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
                 .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                 .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND), null)
-                .queue();
-
-        TextChannel channel = event.getGuild().getTextChannelsByName(channelName, true).get(0);
-        EmbedBuilder ticket = new EmbedBuilder();
-        ticket.setTitle("Ticket");
-        ticket.setColor(Color.ORANGE);
-        ticket.addField("Welcome", event.getUser().getAsMention() + "\nPlease give us a brief explanation of your issue\nand support will be with you shortly", false);
-        hook.sendMessage("Your Ticket has been created look for channel " + channelName).queue(
-                message -> {
-                    message.delete().queueAfter(30, TimeUnit.SECONDS);
+                .queue(ticketChannel-> {
+                    EmbedBuilder ticket = new EmbedBuilder();
+                    ticket.setTitle("Ticket");
+                    ticket.setColor(Color.ORANGE);
+                    ticket.addField("Welcome", event.getUser().getAsMention() + "\nPlease give us a brief explanation of your issue\nand support will be with you shortly", false);
+                    hook.sendMessage("Your Ticket has been created look for channel " + channelName).queue(
+                            message -> {
+                                message.delete().queueAfter(30, TimeUnit.SECONDS);
+                            });
+                    ticketChannel.sendMessageEmbeds(ticket.build()).setActionRow(Button.primary("Close", "Close").withEmoji(Emoji.fromUnicode("U+1F512"))).queue();
+                    ticket.clear();
                 });
-        channel.sendMessageEmbeds(ticket.build()).setActionRow(Button.primary("Close", "Close").withEmoji(Emoji.fromUnicode("U+1F512"))).queue();
-        ticket.clear();
         Query.newTicket(member.getEffectiveName());
     }
 }

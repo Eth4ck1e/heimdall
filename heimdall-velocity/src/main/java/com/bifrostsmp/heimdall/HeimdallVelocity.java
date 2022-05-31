@@ -18,6 +18,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import database.ConnectDB;
 import database.CreateDB;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
@@ -90,6 +91,10 @@ public class HeimdallVelocity extends ListenerAdapter {
         }
 
         ConfigParser.parse(getDataDirectory());
+
+        ConnectDB.setUrl(getUrl());
+        ConnectDB.setUser(getUser());
+        ConnectDB.setPassword(getPassword());
 
         CreateDB.create(getUser(), getPassword(), getUrl()); // create DB if not exist
 

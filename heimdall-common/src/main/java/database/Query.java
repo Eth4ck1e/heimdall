@@ -187,15 +187,16 @@ public class Query {
         return false;
     }
 
-    public static int getTicketNum() {
+    public static long getTicketNum() {
         String ticketNum = "select max(ticketNum) from tickets;";
         try (Connection connection = ConnectDB.getConnection()) {
             PreparedStatement getTicketNum = connection.prepareStatement(ticketNum);
-            return getTicketNum.executeUpdate();
+            ResultSet result = getTicketNum.executeQuery();
+            if (result.next()) return result.getLong(1);
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0;
         }
+        return 0;
     }
 
     public static void newTicket(String name) {

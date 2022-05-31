@@ -44,6 +44,9 @@ public final class HeimdallPaper extends JavaPlugin {
         saveDefaultConfig();
 
         if (ConnectDB.connectDB(user, password, url)) {
+            ConnectDB.setUser(user);
+            ConnectDB.setPassword(password);
+            ConnectDB.setUrl(url);
             getLogger().info(ChatColor.GREEN + "mySQL database connection successful!");
         } else {
             getLogger().warning(ChatColor.RED + "Could not connect to database");
