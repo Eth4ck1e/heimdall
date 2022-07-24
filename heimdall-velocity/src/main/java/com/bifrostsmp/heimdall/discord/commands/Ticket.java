@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
 import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffCategory;
+import static com.bifrostsmp.heimdall.config.ConfigParser.getStaffRole;
 
 public class Ticket extends ListenerAdapter {
     static DecimalFormat df = new DecimalFormat("0000");
@@ -26,6 +28,7 @@ public class Ticket extends ListenerAdapter {
         event.deferReply().queue();
         Member member = event.getMember();
         InteractionHook hook = event.getHook();
+        Role staff = event.getGuild().getRolesByName(getStaffRole(), true).get(0);
         long ticketNumber = Query.getTicketNum() + 1;
         String channelName = "Ticket-" + df.format(ticketNumber) + " " + member.getEffectiveName();
         event
@@ -33,7 +36,8 @@ public class Ticket extends ListenerAdapter {
                 .createTextChannel(channelName, getGuild().getCategoryById(getStaffCategory()))
                 .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                 .addPermissionOverride(member, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND), null)
-                .queue(ticketChannel-> {
+                .addPermissionOverride(staff, EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND), null)
+                .queue(ticketChannel -> {
                     EmbedBuilder ticket = new EmbedBuilder();
                     ticket.setTitle("Ticket");
                     ticket.setColor(Color.ORANGE);

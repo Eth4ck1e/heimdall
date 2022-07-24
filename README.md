@@ -36,7 +36,7 @@ DISCORD_TOKEN: ""
 host:  # host of your database
 port:  # default port for MariaDB and MySQL
 database:  # name of your database. 
-user: 
+user:
 password: 
 ```
 
@@ -44,8 +44,8 @@ password:
 
 ```java
 /info        //returns basic plugin/bot information
-/ping        //returns Pong!
-/whitelist add <ign>    //adds player to whitelist database and initiates whitelist sync
+        /ping        //returns Pong!
+        /whitelist add<ign>    //adds player to whitelist database and initiates whitelist sync
 ```
 
 ## Contributing
