@@ -61,7 +61,7 @@ shadowJar {
             //exclude(project(':heimdall-common'))
             exclude(dependency('com.velocitypowered:velocity-api:3.1.0'))
             //exclude(dependency('net.dv8tion:JDA:5.0.0-alpha.10'))
-            exclude(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
+            //exclude(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
             exclude(dependency('org.projectlombok:lombok:1.18.22'))
             exclude(dependency('org.yaml:snakeyaml:1.30'))
             exclude(dependency('org.postgresql:postgresql:42.3.4'))
