@@ -1,5 +1,7 @@
 package com.bifrostsmp.heimdall.config;
 
+import org.checkerframework.checker.units.qual.C;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -9,34 +11,34 @@ import java.util.Map;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getDataDirectory;
 
-public class ConfigParser {
 
+public class Config {
+
+    private static boolean debug;
     private static String user;
     private static String password;
-    private static String url;
-    private static String discordToken;
-    private static InputStream inputStream;
-    private static String staffRole;
-    private static String appRole;
-    private static String botClientId;
-    private static String discordId;
-    private static String appPending;
-    private static String appAccepted;
-    private static String appDenied;
-
-    private static String howdyChannel;
-
-    private static String welcomeChannel;
-
-    private static String rulesChannel;
-
-    private static boolean welcomeMessages;
-
-    private static String staffCategory;
-
     private static String host;
     private static String port;
     private static String database;
+    private static String discordToken;
+    private static String discordId;
+    private static String botClientId;
+    private static String staffRole;
+    private static String appRole;
+    private static String appPending;
+    private static String appAccepted;
+    private static String appDenied;
+    private static String howdyChannel;
+    private static String welcomeChannel;
+    private static String rulesChannel;
+    private static boolean welcomeMessages;
+    private static String staffCategory;
+    private static Map<String, String> applications;
+    private static Map<String, String> applicationDenyOptions;
+
+    //Non-config variables
+    private static InputStream inputStream;
+    private static String url;
 
     public static void parse(Path dataDirectory) {
         // yaml parser for config.yml
@@ -49,6 +51,7 @@ public class ConfigParser {
         Yaml yaml = new Yaml();
         Map<String, Object> getData = yaml.load(inputStream); // map config data to getData object
         // assign variables for MySQL connection
+        debug = (boolean) getData.get("debug");
         user = (String) getData.get("user");
         password = (String) getData.get("password");
         host = (String) getData.get("host");
@@ -74,37 +77,76 @@ public class ConfigParser {
         rulesChannel = (String) getData.get("rulesChannel");
         welcomeMessages = (boolean) getData.get("welcomeMessages");
         staffCategory = (String) getData.get("staffCategory");
+        applications = (Map<String, String>) getData.get("applications");
+        applicationDenyOptions = (Map<String, String>) getData.get("applicationDenyOptions");
     }
 
     public static void build() {
         Map<String, Object> dataMap = new LinkedHashMap<>();
-        dataMap.put("discordToken", getDiscordToken());
-        dataMap.put("discordId", getDiscordId());
-        dataMap.put("botClientId", getBotClientId());
-        dataMap.put("staffRole", getStaffRole());
-        dataMap.put("appRole", getAppRole());
-        dataMap.put("appPending", getAppPending());
-        dataMap.put("appAccepted", getAppAccepted());
-        dataMap.put("appDenied", getAppDenied());
-        dataMap.put("welcomeChannel", getWelcomeChannel());
-        dataMap.put("howdyChannel", getHowdyChannel());
-        dataMap.put("rulesChannel", getRulesChannel());
-        dataMap.put("staffCategory", getStaffCategory());
-        dataMap.put("welcomeMessages", getWelcomeMessages());
+
+        dataMap.put("debug", isHeimdallDebug());
+
+        dataMap.put("user", getUser());
+        dataMap.put("password", getPassword());
         dataMap.put("host", getHost());
         dataMap.put("port", getPort());
         dataMap.put("database", getDatabase());
-        dataMap.put("user", getUser());
-        dataMap.put("password", getPassword());
+
+        dataMap.put("discordToken", getDiscordToken());
+        dataMap.put("discordId", getDiscordId());
+        dataMap.put("botClientId", getBotClientId());
+
+        dataMap.put("staffRole", getStaffRole());
+        dataMap.put("appRole", getAppRole());
+
+        dataMap.put("appPending", getAppPending());
+        dataMap.put("appAccepted", getAppAccepted());
+        dataMap.put("appDenied", getAppDenied());
+
+        dataMap.put("howdyChannel", getHowdyChannel());
+        dataMap.put("welcomeChannel", isWelcomeChannel());
+        dataMap.put("rulesChannel", getRulesChannel());
+
+        dataMap.put("welcomeMessages", getWelcomeMessages());
+        dataMap.put("staffCategory", getStaffCategory());
+
+        dataMap.put("applications", getApplications());
+        dataMap.put("applicationDenyOptions", getApplicationDenyOptions());
+
+
         File file = new File(String.valueOf(getDataDirectory()), "config.yml");
         try {
             PrintWriter writer = new PrintWriter(file);
+            DumperOptions options = new DumperOptions();
+            options.setIndent(2);
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
             Yaml yaml = new Yaml();
             yaml.dump(dataMap, writer);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         parse(getDataDirectory());
+    }
+
+    public static Map<String, String> getApplicationDenyOptions() {
+        return applicationDenyOptions;
+    }
+
+    public static void setApplicationDenyOptions(Map<String, String> applicationDenyOptions) {
+        Config.applicationDenyOptions = applicationDenyOptions;
+    }
+
+    public static Map<String, String> getApplications() {
+        return applications;
+    }
+
+    public static void setApplications(Map<String, String> applications) {
+        Config.applications = applications;
+    }
+
+    public static boolean isHeimdallDebug() {
+        return debug;
     }
 
     public static void reloadConfig() {
@@ -116,7 +158,7 @@ public class ConfigParser {
     }
 
     public static void setUser(String user) {
-        ConfigParser.user = user;
+        Config.user = user;
     }
 
     public static String getPassword() {
@@ -124,7 +166,7 @@ public class ConfigParser {
     }
 
     public static void setPassword(String password) {
-        ConfigParser.password = password;
+        Config.password = password;
     }
 
     public static String getUrl() {
@@ -132,7 +174,7 @@ public class ConfigParser {
     }
 
     public static void setUrl(String url) {
-        ConfigParser.url = url;
+        Config.url = url;
     }
 
     public static String getDiscordToken() {
@@ -140,7 +182,7 @@ public class ConfigParser {
     }
 
     public static void setDiscordToken(String discordToken) {
-        ConfigParser.discordToken = discordToken;
+        Config.discordToken = discordToken;
     }
 
     public static String getStaffRole() {
@@ -148,7 +190,7 @@ public class ConfigParser {
     }
 
     public static void setStaffRole(String staffRole) {
-        ConfigParser.staffRole = staffRole;
+        Config.staffRole = staffRole;
     }
 
     public static String getAppRole() {
@@ -156,7 +198,7 @@ public class ConfigParser {
     }
 
     public static void setAppRole(String appRole) {
-        ConfigParser.appRole = appRole;
+        Config.appRole = appRole;
     }
 
     public static String getBotClientId() {
@@ -164,7 +206,7 @@ public class ConfigParser {
     }
 
     public static void setBotClientId(String botClientId) {
-        ConfigParser.botClientId = botClientId;
+        Config.botClientId = botClientId;
     }
 
     public static String getDiscordId() {
@@ -172,7 +214,7 @@ public class ConfigParser {
     }
 
     public static void setDiscordId(String discordId) {
-        ConfigParser.discordId = discordId;
+        Config.discordId = discordId;
     }
 
     public static String getAppPending() {
@@ -180,7 +222,7 @@ public class ConfigParser {
     }
 
     public static void setAppPending(String appPending) {
-        ConfigParser.appPending = appPending;
+        Config.appPending = appPending;
     }
 
     public static String getAppAccepted() {
@@ -188,7 +230,7 @@ public class ConfigParser {
     }
 
     public static void setAppAccepted(String appAccepted) {
-        ConfigParser.appAccepted = appAccepted;
+        Config.appAccepted = appAccepted;
     }
 
     public static String getAppDenied() {
@@ -196,15 +238,15 @@ public class ConfigParser {
     }
 
     public static void setAppDenied(String appDenied) {
-        ConfigParser.appDenied = appDenied;
+        Config.appDenied = appDenied;
     }
 
-    public static String getWelcomeChannel() {
+    public static String isWelcomeChannel() {
         return welcomeChannel;
     }
 
     public static void setWelcomeChannel(String welcomeChannel) {
-        ConfigParser.welcomeChannel = welcomeChannel;
+        Config.welcomeChannel = welcomeChannel;
     }
 
     public static String getHowdyChannel() {
@@ -212,7 +254,7 @@ public class ConfigParser {
     }
 
     public static void setHowdyChannel(String howdyChannel) {
-        ConfigParser.howdyChannel = howdyChannel;
+        Config.howdyChannel = howdyChannel;
     }
 
     public static String getRulesChannel() {
@@ -220,7 +262,7 @@ public class ConfigParser {
     }
 
     public static void setRulesChannel(String rulesChannel) {
-        ConfigParser.rulesChannel = rulesChannel;
+        Config.rulesChannel = rulesChannel;
     }
 
     public static boolean getWelcomeMessages() {
@@ -228,7 +270,7 @@ public class ConfigParser {
     }
 
     public static void setWelcomeMessages(boolean welcomeMessages) {
-        ConfigParser.welcomeMessages = welcomeMessages;
+        Config.welcomeMessages = welcomeMessages;
     }
 
     public static String getStaffCategory() {
@@ -236,7 +278,7 @@ public class ConfigParser {
     }
 
     public static void setStaffCategory(String staffCategory) {
-        ConfigParser.staffCategory = staffCategory;
+        Config.staffCategory = staffCategory;
     }
 
     public static String getDatabase() {
@@ -252,6 +294,6 @@ public class ConfigParser {
     }
 
     public static void setInputStream(InputStream inputStream) {
-        ConfigParser.inputStream = inputStream;
+        Config.inputStream = inputStream;
     }
 }

@@ -47,7 +47,9 @@ public class Whitelist implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + name + " is already Whitelisted");
                 } else {
                     int result = Query.insertPlayer(name, id);
-                    // System.out.println(result);
+                    if (HeimdallPaper.debug) {
+                        System.out.println("[Heimdall] DEBUG:" + result);
+                    }
                     if (result == 0) {
                         sender.sendMessage(
                                 ChatColor.RED + "[ERROR] " + name + " could not be added to the database");

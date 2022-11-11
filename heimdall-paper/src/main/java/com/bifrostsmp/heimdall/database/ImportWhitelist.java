@@ -1,5 +1,6 @@
 package com.bifrostsmp.heimdall.database;
 
+import com.bifrostsmp.heimdall.HeimdallPaper;
 import database.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,7 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ImportWhitelist {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class ImportWhitelist extends JavaPlugin{
     static String path = "./whitelist.json";
 
     public static void parser() {
@@ -30,7 +33,9 @@ public class ImportWhitelist {
         try {
             str = new String(Files.readAllBytes(Paths.get(path)));
         } catch (IOException e) {
-            System.out.println("error at FirstRunWhitelistParser.readFileAsString");
+            if (HeimdallPaper.debug) {
+                System.out.println("[Heimdall] DEBUG: error at FirstRunWhitelistParser.readFileAsString");
+            }
             e.printStackTrace();
         }
         return str;

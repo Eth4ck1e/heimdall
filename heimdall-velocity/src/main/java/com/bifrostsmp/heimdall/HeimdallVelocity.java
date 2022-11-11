@@ -1,11 +1,12 @@
 package com.bifrostsmp.heimdall;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import com.bifrostsmp.heimdall.config.CreateConfig;
 import com.bifrostsmp.heimdall.discord.buttons.RulesClickMe;
 import com.bifrostsmp.heimdall.discord.buttons.TicketClose;
 import com.bifrostsmp.heimdall.discord.buttons.application.Accept;
 import com.bifrostsmp.heimdall.discord.buttons.application.Deny;
+import com.bifrostsmp.heimdall.discord.commands.Apply;
 import com.bifrostsmp.heimdall.discord.commands.SlashCommands;
 import com.bifrostsmp.heimdall.discord.commands.Welcome;
 import com.bifrostsmp.heimdall.discord.commands.set.SetTicketCategory;
@@ -20,7 +21,6 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import database.ConnectDB;
 import database.CreateDB;
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -40,7 +40,7 @@ import javax.security.auth.login.LoginException;
 import java.nio.file.Path;
 import java.sql.Connection;
 
-import static com.bifrostsmp.heimdall.config.ConfigParser.*;
+import static com.bifrostsmp.heimdall.config.Config.*;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 @Plugin(
@@ -54,7 +54,6 @@ public class HeimdallVelocity extends ListenerAdapter {
     public static Logger logger;
     public static Connection connection; // This is the variable used to connect to the DB
     static HeimdallVelocity instance;
-    @Getter
     private static JDA discordBot;
     private static Path dataDirectory = null;
     private static Guild guild;
@@ -90,7 +89,7 @@ public class HeimdallVelocity extends ListenerAdapter {
             throw new RuntimeException(e);
         }
 
-        ConfigParser.parse(getDataDirectory());
+        Config.parse(getDataDirectory());
 
         ConnectDB.setUrl(getUrl());
         ConnectDB.setUser(getUser());
@@ -101,7 +100,7 @@ public class HeimdallVelocity extends ListenerAdapter {
         logger.info(
                 "Starting Discord Bot"); // send message to console with plugin name, logger tags with
         // plugin name
-        final String discordToken = ConfigParser.getDiscordToken(); // get discord token from config.yml
+        final String discordToken = Config.getDiscordToken(); // get discord token from config.yml
 
         if (discordToken == null) { // check if token exists, if token exists try to initiate bot
             logger.error(
@@ -113,13 +112,14 @@ public class HeimdallVelocity extends ListenerAdapter {
             discordBot =
                     JDABuilder.createDefault(discordToken)
                             .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                            .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                             .setMemberCachePolicy(MemberCachePolicy.ALL)
                             .setActivity(Activity.watching("Everything!"))
                             .build().awaitReady();
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
-        guild = discordBot.getGuildById(ConfigParser.getDiscordId());
+        guild = discordBot.getGuildById(Config.getDiscordId());
         // Event listeners for commands these are standard commands Slash commands are below
         // These commands take up to an hour to be activated after creation/update/delete
         CommandListUpdateAction commands = discordBot.updateCommands();
@@ -148,9 +148,7 @@ public class HeimdallVelocity extends ListenerAdapter {
                                         .addOptions(
                                                 new OptionData(STRING, "player", "player to be removed").setRequired(true))));
         commands.addCommands(
-                Commands.slash("apply", "command to apply to the server")
-                        .addSubcommands(new SubcommandData("staff", "apply for staff"))
-                        .addSubcommands(new SubcommandData("whitelist", "apply for minecraft server")));
+                Commands.slash("apply", "command to apply to the server"));
         commands.addCommands(
                 Commands.slash("info", "replies with info about the bot")
         );
@@ -203,7 +201,8 @@ public class HeimdallVelocity extends ListenerAdapter {
                 new RulesClickMe(),
                 new TicketClose(),
                 new SetTicketCategory(),
-                new Welcome()
+                new Welcome(),
+                new Apply()
         );
         if (getWelcomeMessages()) {
             discordBot.addEventListener(
@@ -236,5 +235,9 @@ public class HeimdallVelocity extends ListenerAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static JDA getDiscordBot() {
+        return discordBot;
     }
 }

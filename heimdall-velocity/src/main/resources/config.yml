@@ -1,4 +1,6 @@
 ## This is the main plugin configuration file
+#DEBUG logging
+debug: false
 #This is your bot token
 discordToken:
 #This is the discord guild ID.  Get this while in dev mode by right-clicking the discord server and selecting "Copy ID"
@@ -29,6 +31,21 @@ staffCategory:
 #Set whether you want Heimdall to welcome members to your server (default: true)
 welcomeMessages: false
 
+#The following options must match the application names in /applications folder exactly (without .yml)
+#Please take care when creating custom applications.  If proper syntax is not followed they will not work.
+applications:
+  1: whitelist
+  2: staff
+  3: family
+
+#These are the options for denying applications.  Each of these will be the choices for the discord dropdown menu
+# as well as the response value that is logged and displayed to the applicant.
+#The 'Other' option is hardcoded into the bot so there will always be the option to provide a response
+# that is not included here.
+application-deny-options:
+  Poor-application: "Poor application, please be more thorough in your responses"
+  Rules: "Please review our rules again"
+  Age: "Unfortunately you do not meat the minimum age requirement"
 
 ## MySQL database connection info
 ## database:

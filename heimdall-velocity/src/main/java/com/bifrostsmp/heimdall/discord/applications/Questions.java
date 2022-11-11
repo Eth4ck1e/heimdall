@@ -1,11 +1,9 @@
 package com.bifrostsmp.heimdall.discord.applications;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -15,8 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static com.bifrostsmp.heimdall.config.ConfigParser.getDiscordId;
+import static com.bifrostsmp.heimdall.config.Config.getDiscordId;
+import static com.bifrostsmp.heimdall.config.Config.isHeimdallDebug;
+import static com.bifrostsmp.heimdall.discord.commands.Apply.getMessage;
 
 public class Questions extends ListenerAdapter {
     private final Long userID;
@@ -67,7 +68,7 @@ public class Questions extends ListenerAdapter {
         }
         Guild guild = e.getJDA().getGuildById(getDiscordId());
         assert guild != null;
-        MessageChannel tc = guild.getTextChannelById(ConfigParser.getAppPending());
+        //MessageChannel tc = guild.getTextChannelById(ConfigParser.getAppPending());
         User author = e.getAuthor();
         switch (checkIGN) {
             case 0 -> {
@@ -79,14 +80,13 @@ public class Questions extends ListenerAdapter {
                     //answers.add(IGN);
                 } else {
                     count++;
-                    e.getChannel()
-                            .sendMessage("Please check the spelling of your IGN and try again")
-                            .queue();
+                    getMessage().editMessage("Please check the spelling of your IGN and try again " + count).queue();
+                    //e.getChannel().sendMessage("Please check the spelling of your IGN and try again").queue();
                     if (count > 3) {
-                        e.getChannel().sendMessage("You have entered an invalid IGN to many times.").queue();
+                        getMessage().editMessage("You have entered an invalid IGN to many times.").queue();
                         i = 99;
-                        return;
                     }
+                    e.getMessage().delete().queue();
                     return;
                 }
             }
@@ -99,11 +99,13 @@ public class Questions extends ListenerAdapter {
                         }
                         count++;
                         if (count > 3) {
-                            e.getChannel().sendMessage("You have entered an invalid number to many times.").queue();
+                            getMessage().editMessage("You have entered an invalid number to many times.").queue();
                             i = 99;
+                            e.getMessage().delete().queue();
                             return;
                         }
-                        e.getChannel().sendMessage("You must enter a valid number").queue();
+                        e.getMessage().delete().queue();
+                        getMessage().editMessage("You must enter a valid number " + count).queue();
                         return;
                     }
                     case "short" -> {
@@ -113,28 +115,38 @@ public class Questions extends ListenerAdapter {
                         }
                         count++;
                         if (count > 3) {
-                            e.getChannel().sendMessage("You have failed to follow instructions, please try again").queue();
+                            getMessage().editMessage("You have failed to follow instructions, please try again").queue();
+                            e.getMessage().delete().queue();
                             i = 99;
                             return;
                         }
-                        e.getChannel().sendMessage("Please keep this response brief (less than 280 characters)").queue();
+                        e.getMessage().delete().queue();
+                        getMessage().editMessage("Please keep this response brief (less than 280 characters) " + count).queue();
                         return;
                     }
                     case "long" -> {
                     }
                     case "choice" -> {
-                        System.out.println("The choice type is not yet implemented");
+                        if (isHeimdallDebug()) {
+                            System.out.println("[Heimdall] DEBUG: The choice type is not yet implemented");
+                        }
                         //e.getChannel().sendMessage("This question has choices, please be a better coder and add them").queue();
                     }
                     default -> {
-                        e.getChannel().sendMessage("There is an error in the application syntax. Please notify an administrator").queue();
+                        getMessage().editMessage("There is an error in the application syntax. Please notify an administrator").queue();
                     }
                 }
             }
         }
         answers.add(e.getMessage().getContentRaw());
+        e.getMessage().delete().queue();
+
         if (answers.size() == getQuestions.size()) {
-            e.getChannel().sendMessage("Thank you! Your application has been submitted").queue();
+            getMessage().editMessage("Thank you! Your application has been submitted").queue(
+                    message -> {
+                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                    }
+            );
             i = 99;
             EmbedBuilder app = new EmbedBuilder();
             app.setFooter(String.valueOf(userID));
@@ -145,34 +157,39 @@ public class Questions extends ListenerAdapter {
                 app.addField(getDetails.get(1).toString(), answers.get(x), false);
                 application.add(getDetails.get(1).toString() + ": " + answers.get(x));
             }
-            assert tc != null;
-
+            //assert tc != null;
 
             if (Query.checkForApp(userID)) {
-                //System.out.println(Query.checkForApp(userID));
+                if (isHeimdallDebug()) {
+                    System.out.println("[Heimdall] DEBUG: " + Query.checkForApp(userID));
+                }
                 int counter = Query.getAppCounter(userID);
-                System.out.println(counter);
+                if (isHeimdallDebug()) {
+                    System.out.println("[Heimdall] DEBUG: " + counter);
+                }
                 counter++;
                 Query.updateApp(userID, String.valueOf(application), counter);
-                tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
+                e.getChannel().sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
             } else {
                 int counter = 1;
                 Query.insertApp(userID, IGN, uuid, String.valueOf(application), counter);
-                tc.sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
+                e.getChannel().sendMessageEmbeds(app.setTitle("Application " + counter + " for " + author.getName()).build()).setActionRow(Button.primary("Accept", "Accept"), Button.primary("Deny", "Deny")).queue();
             }
             //e.getChannel().sendMessageEmbeds(app.build()).queue();
-            //System.out.println(answers);
+            if (isHeimdallDebug()) {
+                System.out.println("[Heimdall] DEBUG: " + answers);
+            }
             app.clear();
             return;
         }
         if (i < 1) {
             i++;
             getDetails = (Map<Integer, Object>) getQuestions.get(i);
-            e.getChannel().sendMessage(getDetails.get(1).toString()).queue();
+            getMessage().editMessage(getDetails.get(1).toString()).queue();
         } else {
             i++;
             getDetails = (Map<Integer, Object>) getQuestions.get(i);
-            e.getChannel().sendMessage(getDetails.get(1).toString()).queue();
+            getMessage().editMessage(getDetails.get(1).toString()).queue();
         }
     }
 }

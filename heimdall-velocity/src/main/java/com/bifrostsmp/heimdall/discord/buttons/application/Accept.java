@@ -1,7 +1,7 @@
 package com.bifrostsmp.heimdall.discord.buttons.application;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
-import com.bifrostsmp.heimdall.discord.HasRole;
+import com.bifrostsmp.heimdall.config.Config;
+import com.bifrostsmp.heimdall.discord.common.HasRole;
 import com.bifrostsmp.heimdall.mojangAPI.NameToID;
 import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,13 +16,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getGuild;
+import static com.bifrostsmp.heimdall.config.Config.isHeimdallDebug;
 import static database.Query.updateTrigger;
 
 public class Accept extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getComponentId().equals("Accept")) return;
-        if (!HasRole.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), ConfigParser.getStaffRole())) {
+        if (!HasRole.hasRole(event.getUser().getIdLong(), getGuild().getIdLong(), Config.getStaffRole())) {
             event.reply("You do not have the Staff role!").queue(
                     message -> {
                         message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
@@ -87,10 +88,18 @@ public class Accept extends ListenerAdapter {
                         .setMentionable(true)
                         .setPermissions(Permission.EMPTY_PERMISSIONS)
                         .complete();
-                System.out.println("Created guild role " + role);
+                if (isHeimdallDebug()) {
+                    System.out.println("[Heimdall] DEBUG: + Created guild role " + role);
+                }
             }
-            if (guildRoles.stream().anyMatch(o -> role.equals(o.getName()))) {
-                guild.addRoleToMember(user, guild.getRolesByName(role, true).get(0)).queue();
+            try {
+                if (guildRoles.stream().anyMatch(o -> role.equals(o.getName()))) {
+                    guild.addRoleToMember(user, guild.getRolesByName(role, true).get(0)).queue();
+                }
+            } catch (Exception e) {
+                if (isHeimdallDebug()) {
+                    System.out.println("[Heimdall] DEBUG: " + role + " cannot be added to this member");
+                }
             }
         }
 
@@ -106,7 +115,7 @@ public class Accept extends ListenerAdapter {
                         });
         event.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
         MessageChannel acceptChannel =
-                event.getGuild().getTextChannelById(ConfigParser.getAppAccepted());
+                event.getGuild().getTextChannelById(Config.getAppAccepted());
         List<MessageEmbed.Field> fields = embed.getFields();
         EmbedBuilder acceptEmbed = new EmbedBuilder();
         acceptEmbed.setTitle(embed.getTitle());

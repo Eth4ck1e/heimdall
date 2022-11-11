@@ -17,8 +17,8 @@ public class Invite extends ListenerAdapter {
                 .getTextChannelsByName(event.getChannel().getName(), true).get(0)
                 .getManager()
                 .getChannel()
-                .createPermissionOverride(event.getOption("user").getAsMember())
-                .setAllow(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND)
+                .upsertPermissionOverride(event.getOption("user").getAsMember())
+                .grant(Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_SEND)
                 .queue();
         event.reply(event.getOption("user").getAsMember().getAsMention() + " has been added to the ticket!").queue(
                 message -> {

@@ -1,6 +1,9 @@
 #This is the main plugin configuration file
 #debug mode
 debug: false
+#Hardcore server mode: If this is enabled players will be temp banned for a number of hours.
+hardcore: false #[default false]
+tempBan: 12 #[default 12]
 firstRun: true
 
 #Server Name (REQUIRED!)

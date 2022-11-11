@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.events;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class Join extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        TextChannel channel = event.getGuild().getTextChannelById(ConfigParser.getHowdyChannel());
-        Member member = event.getMember();
+        TextChannel channel = event.getGuild().getTextChannelById(Config.getHowdyChannel());
+        Member joiningMember = event.getMember();
         String[] greeting = {
                 "[member] just joined the server - glhf!",
                 "[member] is here. Everyone, look busy!",
@@ -51,8 +51,7 @@ public class Join extends ListenerAdapter {
 
         EmbedBuilder join = new EmbedBuilder();
         join.setColor(Color.yellow);
-        join.setDescription(greeting[number].replace("[member]", member.getAsMention()));
-
+        join.setDescription(greeting[number].replace("[member]", joiningMember.getUser().getAsTag()));
         channel.sendMessageEmbeds(join.build()).queue();
     }
 }

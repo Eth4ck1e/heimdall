@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands.set;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
@@ -26,7 +26,7 @@ public class SetTicketCategory extends ListenerAdapter {
     public void onSelectMenuInteraction(SelectMenuInteractionEvent event) {
         if (!event.getComponentId().equals("Choose-Category")) return;
         event.reply("You chose " + event.getValues().get(0)).queue();
-        ConfigParser.setStaffCategory(event.getValues().get(0));
-        ConfigParser.build();
+        Config.setStaffCategory(event.getValues().get(0));
+        Config.build();
     }
 }

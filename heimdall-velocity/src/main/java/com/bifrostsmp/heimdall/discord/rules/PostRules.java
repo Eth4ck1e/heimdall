@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.rules;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import common.YamlParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -31,7 +31,7 @@ public class PostRules {
     private static Message finalMessage;
 
     public static void postRules() {
-        TextChannel channel = getGuild().getTextChannelById(ConfigParser.getRulesChannel());
+        TextChannel channel = getGuild().getTextChannelById(Config.getRulesChannel());
         EmbedBuilder discord = new EmbedBuilder();
         discord.setTitle("DISCORD RULES");
         discord.setColor(Color.BLUE);

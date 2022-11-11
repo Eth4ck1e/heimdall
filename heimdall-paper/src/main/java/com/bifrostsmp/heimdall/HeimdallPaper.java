@@ -1,6 +1,8 @@
 package com.bifrostsmp.heimdall;
 
+import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
+import com.bifrostsmp.heimdall.minecraft.events.HardcoreDeath;
 import com.bifrostsmp.heimdall.minecraft.events.PreLoginWhitelistCheck;
 import database.ConnectDB;
 import database.CreateDB;
@@ -11,22 +13,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 
-public final class HeimdallPaper extends JavaPlugin {
+import static com.bifrostsmp.heimdall.config.ConfigParser.*;
+import static org.bukkit.Bukkit.isHardcore;
 
+public final class HeimdallPaper extends JavaPlugin {
     public static Plugin plugin;
     public static HeimdallPaper instance;
-    private final String firstRun = getConfig().getString("firstRun");
-    private final String user = getConfig().getString("database.user");
-    private final String password = getConfig().getString("database.password");
-    private final String url =
-            "jdbc:mysql://"
-                    + getConfig().getString("database.host")
-                    + ":"
-                    + getConfig().getString("database.port")
-                    + "/"
-                    + getConfig().getString("database.database");
-    private final String server = getConfig().getString("server");
-
+    public static boolean debug;
     public static HeimdallPaper getInstance() {
         return instance;
     }
@@ -34,25 +27,29 @@ public final class HeimdallPaper extends JavaPlugin {
     public static Plugin getPlugin() {
         return plugin;
     }
+    private void setDebug(boolean debug) {
+        HeimdallPaper.debug = debug;
+    }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         super.onEnable();
         instance = this;
+        parse();
 
         saveDefaultConfig();
 
-        if (ConnectDB.connectDB(user, password, url)) {
-            ConnectDB.setUser(user);
-            ConnectDB.setPassword(password);
-            ConnectDB.setUrl(url);
+        if (ConnectDB.connectDB(getUser(), getPassword(), getUrl())) {
+            ConnectDB.setUser(getUser());
+            ConnectDB.setPassword(getPassword());
+            ConnectDB.setUrl(getUrl());
             getLogger().info(ChatColor.GREEN + "mySQL database connection successful!");
         } else {
             getLogger().warning(ChatColor.RED + "Could not connect to database");
         }
-        CreateDB.create(user, password, url);
-        if (Query.insertServer(server)) {
+        CreateDB.create(getUser(), getPassword(), getUrl());
+        if (Query.insertServer(getConfigServer())) {
             getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
         } else {
             getLogger()
@@ -60,31 +57,13 @@ public final class HeimdallPaper extends JavaPlugin {
                             ChatColor.RED
                                     + "Could not insert into database. Please make sure you have updated the config and changed your server name from default to a unique identifier(different from any other server you have connected to the database");
         }
-
-//        if (Objects.equals(firstRun, "true")) {
-//            FirstRunWhitelistParser.parser();
-//            getConfig().options().copyDefaults(true);
-//            getConfig().set("firstRun", false);
-//            saveConfig();
-//
-//            Bukkit.getScheduler()
-//                    .scheduleSyncDelayedTask(
-//                            instance,
-//                            new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-//                                    Bukkit.dispatchCommand(console, "whitelist reload");
-//                                    //Bukkit.dispatchCommand(console, "whitelist on");
-//                                }
-//                            },
-//                            20L); // 20 Tick (1 Second) delay before run() is called
-//        }
         getCommand("whitelist").setExecutor(new Whitelist());
         getServer().getPluginManager().registerEvents(new PreLoginWhitelistCheck(), this);
-//        Timer time = new Timer();
-//        ScheduledTask st = new ScheduledTask(server);
-//        time.schedule(st, 0, 30000);
+        if (isConfigHardcore()) {
+            getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[Heimdall] Hardcore mode is enabled");
+            getServer().getPluginManager().registerEvents(new HardcoreDeath(), this);
+        }
+        setDebug(getConfig().getBoolean("debug"));
     }
 
     @Override
@@ -104,15 +83,4 @@ public final class HeimdallPaper extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[Heimdall] Plugin is disabled");
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUrl() {
-        return url;
-    }
 }

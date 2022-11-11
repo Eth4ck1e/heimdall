@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.welcome;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -18,7 +18,7 @@ public class PostWelcome {
     private static Message welcomeMessage;
 
     public static void postWelcome() {
-        TextChannel channel = getGuild().getTextChannelById(ConfigParser.getWelcomeChannel());
+        TextChannel channel = getGuild().getTextChannelById(Config.isWelcomeChannel());
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.ORANGE);
         embed.setTitle("Welcome!");

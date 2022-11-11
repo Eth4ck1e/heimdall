@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.buttons;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -12,8 +12,8 @@ public class RulesClickMe extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getComponentId().equalsIgnoreCase("click me")) return;
-        getGuild().addRoleToMember(event.getUser(), getGuild().getRolesByName(ConfigParser.getAppRole(), true).get(0)).queue();
-        event.reply("Thank you, you have been given the " + ConfigParser.getAppRole() + " role").queue(
+        getGuild().addRoleToMember(event.getUser(), getGuild().getRolesByName(Config.getAppRole(), true).get(0)).queue();
+        event.reply("Thank you, you have been given the " + Config.getAppRole() + " role").queue(
                 message -> {
                     message.deleteOriginal().queueAfter(5, TimeUnit.SECONDS);
                 }

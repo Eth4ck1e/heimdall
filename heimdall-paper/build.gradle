@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     api project(':heimdall-common')
+    implementation 'org.projectlombok:lombok:1.18.22'
     compileOnly 'io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT'
     //implementation 'com.velocitypowered:velocity-api:3.0.1'
     //annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'

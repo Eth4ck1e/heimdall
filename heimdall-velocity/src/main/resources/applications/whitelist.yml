@@ -1,0 +1,73 @@
+########################
+##  Main Application  ##
+########################
+
+# Questions format  #
+# Questions:        # All questions are numbered under this questions category
+#   1:              # This is the question number
+#     1:            # Put your main question here
+#     2:(type)      # There are four different question types:
+#     3:(options)   # number (for number responses), short (for short responses), long (for long responses), choice (for responses like yes/no or other defined response choices)
+#                   # This is required if you put choice as your question type.  You can put any number of options in square brackets separated by a comma.
+
+Questions:
+  ############################################################
+  ##                    DO NOT CHANGE!                      ##
+  ## Question 0 is required as it is hardcoded into the bot ##
+  ############################################################
+  0:
+    1: "What is your minecraft IGN"
+    2: "short"
+    3: ~
+  ##        You may change anything below this line         ##
+  ############################################################
+  1:
+    1: "How old are you?"
+    2: "number"
+    3: ~
+  2:
+    1: "Where are you from / what is your timezone?"
+    2: "short"
+    3: ~
+  3:
+    1: "Do you plan on using voice chat?"
+    2: "choice"
+    3:
+      - yes
+      - no
+  4:
+    1: "Do you use in game chat regularly?"
+    2: "choice"
+    3:
+      - yes
+      - no
+  5:
+    1: "How did you find us? If through a friend please state their name."
+    2: "short"
+    3: ~
+  6:
+    1: "Tell us a little about yourself. (Dont just write \"I like Minecraft\" tell us more! We want to get to know you!)"
+    2: long
+    3: ~
+  7:
+    1: "What is your main focus here at Bifrost? (Survival, Minigames, Creative, If other please describe in extra things you'd like to add)"
+    2: "choice"
+    3:
+      - Survival
+      - Mini-Games
+      - Creative
+      - Other
+  8:
+    1: "What are some ideas of builds that you would like to create?"
+    2: short
+    3: ~
+  9:
+    1: "Do you have any other questions, concerns or anything extra you'd like to add?"
+    2: "short"
+    3: ~
+  10:
+    1: "Did you read the rules?"
+    2: "choice"
+    3:
+      - yes
+      - no

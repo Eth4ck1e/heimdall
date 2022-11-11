@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
+import com.bifrostsmp.heimdall.config.Config;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -20,7 +20,7 @@ public class Welcome extends ListenerAdapter {
     public void onSelectMenuInteraction(SelectMenuInteractionEvent event) {
         if (!event.getComponentId().equals("boolean")) return;
         event.reply("You chose " + event.getValues().get(0)).queue();
-        ConfigParser.setWelcomeMessages(Boolean.parseBoolean(event.getValues().get(0)));
-        ConfigParser.build();
+        Config.setWelcomeMessages(Boolean.parseBoolean(event.getValues().get(0)));
+        Config.build();
     }
 }
