@@ -2,6 +2,7 @@ package com.bifrostsmp.heimdall.discord.common;
 
 import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -18,7 +19,7 @@ import static com.bifrostsmp.heimdall.config.Config.getStaffCategory;
 public class Tickets {
     static DecimalFormat df = new DecimalFormat("0000");
     private static TextChannel channel;
-    public static TextChannel newTicket(Member member, InteractionHook hook, Role staff, Guild guild, String ticketType, String fieldMessage) {
+    public static TextChannel newTicket(Member member, InteractionHook hook, Role staff, Guild guild, String ticketType, String fieldMessage, MessageBuilder message) {
 
         long ticketNumber = Query.getTicketNum() + 1;
         String channelName = ticketType + "-" + df.format(ticketNumber) + " " + member.getEffectiveName();
@@ -37,8 +38,18 @@ public class Tickets {
                     hook.sendMessage("Your Ticket has been created look for channel " + channelName).queue();
                     ticketChannel.sendMessageEmbeds(ticket.build()).setActionRow(Button.primary("Close", "Close").withEmoji(Emoji.fromUnicode("U+1F512"))).queue();
                     ticket.clear();
+                    if (message != null) ticketChannel.sendMessage(message.build()).queue();
                 });
         Query.newTicket(member.getEffectiveName());
+        message.clear();
+        return channel;
+    }
+
+    public static void setChannel(TextChannel channel) {
+        Tickets.channel = channel;
+    }
+
+    public static TextChannel getChannel() {
         return channel;
     }
 }

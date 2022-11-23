@@ -12,6 +12,8 @@ public class TicketClose extends ListenerAdapter {
         if (!event.getButton().getLabel().equalsIgnoreCase("close")) return;
         event.reply("Your ticket will be close shortly, if you have any further issues please don't hesitate to reach out!").queue();
         InteractionHook hook = event.getHook();
+        hook.setEphemeral(true);
+        hook.sendMessage("!cancel").queue();
         event.getChannel().delete().queueAfter(10, TimeUnit.SECONDS);
     }
 }

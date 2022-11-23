@@ -28,25 +28,25 @@ public class DenyResponseHandler extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent e) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         if (i > 0) return;
-        if (e.getAuthor().isBot()) {
+        if (event.getAuthor().isBot()) {
             if (isHeimdallDebug()) {
                 System.out.println("[Heimdall] DEBUG: Author is a Bot");
             }
             return;
         }
-        if (!e.getChannel().asTextChannel().equals(channel)) {
+        if (!event.getChannel().asTextChannel().equals(channel)) {
             System.out.println("[Heimdall] DEBUG: Event is not registering from the correct ticket channel");
             return;
         }
-        if (!e.isFromGuild()) {
+        if (!event.isFromGuild()) {
             if (isHeimdallDebug()) {
                 System.out.println("[Heimdall] DEBUG: Event is registering from DM not Guild");
             }
             return;
         }
-        if (e.getAuthor().getIdLong() != staff.getIdLong()) {
+        if (event.getAuthor().getIdLong() != staff.getIdLong()) {
             if (isHeimdallDebug()) {
                 System.out.println("[Heimdall] DEBUG: Author is not the Member that denied the Application");
             }
@@ -54,9 +54,9 @@ public class DenyResponseHandler extends ListenerAdapter {
         }
 
 
-        String response = e.getMessage().getContentRaw();
-        e.getMessage().delete().queue();
-        e.getMessage()
+        String response = event.getMessage().getContentRaw();
+        event.getMessage().delete().queue();
+        event.getMessage()
                 .getChannel()
                 .sendMessage("Your reason has been noted: " + response)
                 .queue(
@@ -64,7 +64,8 @@ public class DenyResponseHandler extends ListenerAdapter {
                             message.delete().queueAfter(5, TimeUnit.SECONDS);
                         });
 
-        send(e.getMember().getUser(), embed, channel, response);
+        send(event.getMember().getUser(), embed, channel, response);
         i++;
+        event.getJDA().removeEventListener();
     }
 }

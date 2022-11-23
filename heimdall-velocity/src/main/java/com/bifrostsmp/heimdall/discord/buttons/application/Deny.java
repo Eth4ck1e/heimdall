@@ -99,7 +99,7 @@ public class Deny extends ListenerAdapter {
             send(staff, embed, channel, value);
             event.reply("You choice has been noted").queue(
                     message -> {
-                        message.deleteOriginal().queueAfter(30, TimeUnit.SECONDS);
+                        message.deleteOriginal().queueAfter(5, TimeUnit.SECONDS);
                     });
         } else if (choice.equals("Other")) {
             hook.getInteraction().getJDA().addEventListener(new DenyResponseHandler(staff, embed, channel));

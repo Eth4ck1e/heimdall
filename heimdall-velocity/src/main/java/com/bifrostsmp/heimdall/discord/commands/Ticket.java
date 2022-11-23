@@ -25,6 +25,6 @@ public class Ticket extends ListenerAdapter {
         Role staff = getDiscordBot().getRoleById(getStaffRole());
         Guild guild = event.getGuild();
         String fieldMessage = "Please give us a brief explanation of your issue\nand support will be with you shortly";
-        TextChannel channel = newTicket(member, hook, staff, guild, "ticket", fieldMessage);
+        TextChannel channel = newTicket(member, hook, staff, guild, "ticket", fieldMessage, null);
     }
 }

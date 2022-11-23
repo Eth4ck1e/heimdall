@@ -2,11 +2,13 @@ package com.bifrostsmp.heimdall.discord.commands;
 
 import com.bifrostsmp.heimdall.discord.applications.Questions;
 import common.YamlParser;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
 import java.nio.file.Path;
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getDataDirectory;
 import static com.bifrostsmp.heimdall.HeimdallVelocity.getDiscordBot;
 import static com.bifrostsmp.heimdall.config.Config.*;
+import static com.bifrostsmp.heimdall.discord.common.Tickets.getChannel;
 import static com.bifrostsmp.heimdall.discord.common.Tickets.newTicket;
 
 public class Apply extends ListenerAdapter {
@@ -41,18 +44,21 @@ public class Apply extends ListenerAdapter {
 
         String fieldMessage = "Your application has started\nType '!cancel' at any time to cancel your application";
 
-        TextChannel channel = newTicket(member, hook, staff, guild, "application", fieldMessage);
-
         SelectMenu.Builder menu = SelectMenu.create("Application");
         for (int i = 1; i < getApplications().size()+1; i++) {
             menu
                     .addOption( getApplications().get(i), String.valueOf(i), member.getId());
         }
 
-        channel.sendMessage("Choose Application").setActionRow(menu.build()).queue();
+        MessageBuilder message = new MessageBuilder();
+        message
+                .setContent("Choose Application")
+                .setActionRows(ActionRow.of(menu.build()));
 
-        event.getChannel().sendMessage(user.getName() + " application started.").queue(message -> {
-                    message.delete().queueAfter(15, TimeUnit.SECONDS);
+        newTicket(member, hook, staff, guild, "application", fieldMessage, message);
+
+        event.getChannel().sendMessage(user.getName() + " application started.").queue(m -> {
+                    m.delete().queueAfter(15, TimeUnit.SECONDS);
                 });
 
         
@@ -98,6 +104,7 @@ public class Apply extends ListenerAdapter {
 
         Map<String, Object> getApp = YamlParser.parse(Path.of(getDataDirectory() + "/applications/" + applicationName));
         Map<Integer, Object> getQuestionObjects = (Map<Integer, Object>) getApp.get("Questions");
+
         hook.getInteraction()
                 .getJDA()
                 .addEventListener(new Questions(member.getIdLong(), event.getChannel().getIdLong(), getQuestionObjects));
