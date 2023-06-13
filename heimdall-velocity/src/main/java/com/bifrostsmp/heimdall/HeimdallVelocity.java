@@ -21,6 +21,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import database.ConnectDB;
 import database.CreateDB;
+import io.javalin.Javalin;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -83,6 +84,12 @@ public class HeimdallVelocity extends ListenerAdapter {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        // Set up Javalin
+        Javalin webApp = Javalin.create().start(8080);
+
+        //Define routes
+        webApp.get("/", ctx -> ctx.result("Hello, World!"));  //Example Route
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {

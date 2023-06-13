@@ -48,8 +48,8 @@ application-deny-options:
 
 ## MySQL database connection info
 ## database:
-host:  # host of your database
-port:  # default port for MariaDB and MySQL
-database:  # name of your database. A database server can contain multiple databases
-user:
-password:
+host: dynanode.bloom.host
+port: '3306'
+database: s15445_heimdall-dev-database
+user: u15445_yKonfWr7w2
+password: spnfCgPzcwvQj6GtdTtsSW8B

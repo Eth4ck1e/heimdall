@@ -1,13 +1,12 @@
 plugins {
     id 'java'
-    //id 'eclipse'
     id 'com.github.johnrengelman.shadow'
 }
 
 repositories {
     mavenCentral()
 
-    maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
+    maven {
         url "https://m2.dv8tion.net/releases"
     }
     maven {
@@ -22,19 +21,14 @@ repositories {
 
 dependencies {
     api project(':heimdall-common')
+    implementation 'io.javalin:javalin:5.4.2'
     compileOnly 'com.velocitypowered:velocity-api:3.1.0'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.0'
     implementation('net.dv8tion:JDA:5.0.0-alpha.17')
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    //compileOnly 'com.google.api-client:google-api-client:2.0.0'
-    //implementation group: 'org.yaml', name: 'snakeyaml', version: '1.30'
-    //implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.4'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
-    //testCompileOnly 'org.projectlombok:lombok:1.18.24'
-    //testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
-    //implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
 }
 
 def templateSource = file('src/main/templates')
@@ -53,23 +47,17 @@ def generateTemplates = tasks.register('generateTemplates', Copy) { task ->
 sourceSets.main.java.srcDir(generateTemplates.map { it.outputs })
 
 rootProject.idea.project.settings.taskTriggers.afterSync generateTemplates
-//project.eclipse.synchronizationTasks(generateTemplates)
 
 tasks.build.dependsOn tasks.shadowJar
 shadowJar {
     dependencies {
         {
-            //exclude(project(':heimdall-common'))
             exclude(dependency('com.velocitypowered:velocity-api:3.1.0'))
-            //exclude(dependency('net.dv8tion:JDA:5.0.0-alpha.10'))
-            //exclude(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
             exclude(dependency('org.projectlombok:lombok:1.18.22'))
             exclude(dependency('org.yaml:snakeyaml:1.30'))
             exclude(dependency('org.postgresql:postgresql:42.3.4'))
-            //exclude(dependency('mysql:mysql-connector-java:8.0.29'))
             exclude(dependency('pw.chew:jda-chewtils:2.0-SNAPSHOT'))
         }
     }
     archiveClassifier.set(null)
 }
-

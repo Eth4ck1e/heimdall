@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.javalin:javalin:5.4.2'
     compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
