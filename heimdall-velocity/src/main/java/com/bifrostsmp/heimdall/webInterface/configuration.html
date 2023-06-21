@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/material-darker.min.css">
+    <style>
+        .CodeMirror {
+            font-size: 16px;
+            height: auto;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/yaml/yaml.min.js"></script>
+</head>
+<body>
+<textarea id="editor"></textarea>
+
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        mode: "text/x-yaml",
+        lineNumbers: true,
+        theme: "material-darker"
+    });
+
+    // Fetch the YAML file
+    fetch("config.yml")
+        .then(response => response.text())
+        .then(yamlContent => {
+            // Set the YAML content in the editor
+            editor.setValue(yamlContent);
+
+            // Resize the editor to fit its content
+            editor.setSize("100%", "auto");
+        })
+        .catch(error => {
+            console.error("Error fetching YAML file:", error);
+        });
+</script>
+</body>
+</html>
