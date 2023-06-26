@@ -15,7 +15,7 @@ public class Info extends ListenerAdapter {
         // We don't want to respond to other bot accounts, including ourselves
         // embed block
         EmbedBuilder info = new EmbedBuilder();
-        info.setTitle("🤖 Information 🤖");
+        info.setTitle(":robot: Information :robot:");
         info.setDescription("This bot provides applications, tickets, whitelisting, and welcome functions to your discord\ncheck out the wiki to get started!");
         info.addField("Developers", "Eth4ck1e, HunnaG", false);
         info.setColor(Color.GREEN);
