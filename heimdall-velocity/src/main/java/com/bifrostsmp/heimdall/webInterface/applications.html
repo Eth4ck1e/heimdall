@@ -1,10 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Application Creation</title>
+    <style>
+        body {
+            margin: 50px;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        label, input, select {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], select {
+            height: 30px;
+        }
+
+        textarea {
+            min-height: 30px;
+            height: auto;
+            resize: vertical;
+            width: 100%;
+        }
+
+        #questionContainer {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let questionCounter = 1;
+
+            $('#addQuestion').click(function() {
+                questionCounter++;
+
+                let questionBox = `
+          <div>
+            <label for="question${questionCounter}">Question ${questionCounter}:</label>
+            <textarea id="question${questionCounter}" name="question[]" required></textarea>
+            <select name="responseType[]">
+              <option value="none">None</option>
+              <option value="large">Large</option>
+              <option value="small">Small</option>
+              <option value="number">Number</option>
+              <option value="yesno">Yes/No</option>
+            </select>
+          </div>
+        `;
+
+                $('#questionContainer').append(questionBox);
+            });
+        });
+    </script>
 </head>
 <body>
+<div class="container">
+    <h1>Form Creation</h1>
 
+    <form action="save_form.php" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" name="title" required>
+
+        <div id="questionContainer">
+            <div>
+                <label for="question1">Question 1:</label>
+                <textarea id="question1" name="question[]" required></textarea>
+                <select name="responseType[]">
+                    <option value="none">None</option>
+                    <option value="large">Large</option>
+                    <option value="small">Small</option>
+                    <option value="number">Number</option>
+                    <option value="yesno">Yes/No</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" id="addQuestion">Add Question</button>
+        <button type="submit" name="save">Save</button>
+    </form>
+</div>
 </body>
 </html>
