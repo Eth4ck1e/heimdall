@@ -2,15 +2,15 @@
 #DEBUG logging
 debug: false
 #This is your bot token
-discordToken: MTAzOTY1MDM0Mzc5MDg1MDA0OA.Gia7f0.32M7FOCn-N0Me5m8BEvm38C5YohNl6YY-Ub2DQ
+discordToken: 
 #This is the discord guild ID.  Get this while in dev mode by right-clicking the discord server and selecting "Copy ID"
-discordId: 735659959299211345
-botClientId: 1039650343790850048
+discordId: 
+botClientId: 
 #Discord roll ID's for adding perms.  These roles are required for bot permissions, however, they can be changed to anything you want.
 ##Members with this role can use all discord commands
-staffRole: 965079894985957406
+staffRole: 
 ##Only members with this role can use the apply command
-appRole: 971954231659622460
+appRole: 
 
 ##CHANNELS##
 #Application Channel ID's
@@ -48,8 +48,8 @@ application-deny-options:
 
 ## MySQL database connection info
 ## database:
-host: dynanode.bloom.host
-port: '3306'
-database: s15445_heimdall-dev-database
-user: u15445_yKonfWr7w2
-password: spnfCgPzcwvQj6GtdTtsSW8B
+host: 
+port: ''
+database: 
+user: 
+password: 
