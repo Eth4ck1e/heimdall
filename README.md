@@ -13,7 +13,7 @@ embedded database.
 
 Heimdall is a plugin made by the dev team from bifrostsmp.com:
 
-@Eth4ck1e @HunnaG
+@Eth4ck1e
 
 ## Installation
 
@@ -43,9 +43,9 @@ password:
 ## Discord Commands
 
 ```java
-/info        //returns basic plugin/bot information
-        /ping        //returns Pong!
-        /whitelist add<ign>    //adds player to whitelist database and initiates whitelist sync
+/info                  //returns basic plugin/bot information
+/ping                  //returns Pong!
+/whitelist add<ign>    //adds player to whitelist database and initiates whitelist sync
 ```
 
 ## Contributing
