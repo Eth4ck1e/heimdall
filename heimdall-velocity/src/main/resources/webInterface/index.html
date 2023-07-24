@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Javalin Landing Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/material-darker.min.css">
+    <style>
+        form {
+            width: 100%;
+        }
+
+        label, input, select {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], select {
+            height: 30px;
+        }
+
+        textarea {
+            min-height: 30px;
+            height: auto;
+            resize: vertical;
+            width: 100%;
+        }
+
+        #questionContainer {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        body {
+            background-color: #1e1e1e;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /*.container {*/
+        /*    max-width: 600px;*/
+        /*    margin: 0 auto;*/
+        /*    padding: 20px;*/
+        /*}*/
+
+        h1 {
+            text-align: center;
+        }
+
+        .CodeMirror {
+            font-size: 16px;
+            height: auto;
+        }
+
+        #saveButton {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #saveButton:hover {
+            background-color: #45a049;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            z-index: 9999;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .nav-link {
+            color: #fff;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .about-content,
+        .config-content {
+            margin-top: 20px;
+            color: #ddd;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/yaml/yaml.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let questionCounter = 1;
+
+            $('#addQuestion').click(function() {
+                questionCounter++;
+
+                let questionBox = `
+                    <div>
+                        <label for="question${questionCounter}">Question ${questionCounter}:</label>
+                        <textarea id="question${questionCounter}" name="question[]" required></textarea>
+                        <select name="responseType[]">
+                            <option value="none">None</option>
+                            <option value="large">Large</option>
+                            <option value="small">Small</option>
+                            <option value="number">Number</option>
+                            <option value="yesno">Yes/No</option>
+                        </select>
+                    </div>
+                `;
+
+                $('#questionContainer').append(questionBox);
+            });
+        });
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-tab="about">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-tab="applications">Applications</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-tab="configuration">Configuration</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div id="contentContainer" class="container content">
+    <div id="about" class="tab-content active">
+        <div class="about-content">
+            <h2>About</h2>
+            <p>
+                This plugin is designed to provide ticket and applications management functionality for Discord
+                while also synchronizing whitelists between Paper/Spigot servers and Velocity proxy servers.
+                It utilizes a MySQL database for data storage and offers additional features for seamless integration
+                with both Paper/Spigot and Velocity servers.
+            </p>
+            <p>
+                For more information and detailed documentation, please refer to the official project documentation
+                or the plugin's GitHub repository.
+            </p>
+        </div>
+    </div>
+
+    <div id="applications" class="tab-content">
+        <div class="container">
+            <h1>Form Creation</h1>
+
+            <form action="save_form.php" method="POST">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+
+                <div id="questionContainer">
+                    <div>
+                        <label for="question1">Question 1:</label>
+                        <textarea id="question1" name="question[]" required></textarea>
+                        <select name="responseType[]">
+                            <option value="none">None</option>
+                            <option value="large">Large</option>
+                            <option value="small">Small</option>
+                            <option value="number">Number</option>
+                            <option value="yesno">Yes/No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" id="addQuestion">Add Question</button>
+                <button type="submit" name="save">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="configuration" class="tab-content">
+        <div class="container">
+            <h1>Velocity Config</h1>
+            <textarea id="editor"></textarea>
+            <button id="saveButton">Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        mode: "text/x-yaml",
+        lineNumbers: true,
+        theme: "material-darker"
+    });
+
+    // Fetch the YAML file
+    fetch("/config")
+        .then(response => response.text())
+        .then(yamlContent => {
+            // Set the YAML content in the editor
+            editor.setValue(yamlContent);
+
+            // Resize the editor to fit its content
+            editor.setSize("100%", "auto");
+        })
+        .catch(error => {
+            console.error("Error fetching YAML file:", error);
+        });
+
+    // Save button event handler
+    var saveButton = document.getElementById("saveButton");
+    saveButton.addEventListener("click", function() {
+        var yamlContent = editor.getValue();
+
+        // Save the YAML content
+        fetch("/save-config", {
+            method: "POST",
+            body: yamlContent
+        })
+            .then(response => {
+                if (response.ok) {
+                    showNotification("Configuration saved successfully");
+                } else {
+                    showNotification("Error saving configuration");
+                }
+            })
+            .catch(error => {
+                showNotification("Error saving configuration");
+                console.error("Error saving configuration:", error);
+            });
+    });
+
+    // Function to show notification
+    function showNotification(message) {
+        var notification = document.createElement("div");
+        notification.textContent = message;
+        notification.className = "notification";
+        document.body.appendChild(notification);
+
+        setTimeout(function() {
+            document.body.removeChild(notification);
+        }, 3000);
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        // Hide all tab contents except for the active tab
+        $('.tab-content').hide();
+        $('.tab-content.active').show();
+
+        $('.nav-link').click(function(e) {
+            e.preventDefault();
+            var tab = $(this).data('tab');
+
+            // Hide all tab contents
+            $('.tab-content').hide();
+
+            // Show the selected tab content
+            $('#' + tab).show();
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -41,7 +41,6 @@ public class Tickets {
                     if (message != null) ticketChannel.sendMessage(message.build()).queue();
                 });
         Query.newTicket(member.getEffectiveName());
-        message.clear();
         return channel;
     }
 

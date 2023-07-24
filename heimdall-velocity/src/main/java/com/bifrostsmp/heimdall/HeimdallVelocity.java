@@ -34,14 +34,21 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
-import java.nio.file.Path;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.*;
 import java.sql.Connection;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.bifrostsmp.heimdall.config.Config.*;
+import static com.bifrostsmp.heimdall.html.CreateHTML.loadHTML;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 @Plugin(
@@ -50,7 +57,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
         version = BuildConstants.VERSION,
         description = "Main plugin which includes discord bot",
         url = "bifrostsmp.com",
-        authors = {"Eth4ck1e", "HunnaG"})
+        authors = {"Eth4ck1e"})
 public class HeimdallVelocity extends ListenerAdapter {
     public static Logger logger;
     public static Connection connection; // This is the variable used to connect to the DB
@@ -72,6 +79,7 @@ public class HeimdallVelocity extends ListenerAdapter {
         logger.info(
                 "Heimdall uses a mysql database to sync the vanilla minecraft whitelist between all servers on your network."
                         + "This requires the heimdall plugin to also be installed on each backend server.");
+        loadHTML(dataDirectory, "webInterface", "index.html");
     }
 
     public static Path getDataDirectory() {
@@ -84,11 +92,34 @@ public class HeimdallVelocity extends ListenerAdapter {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        // Set up Javalin
-        Javalin webApp = Javalin.create().start(8080);
 
-        //Define routes
-        webApp.get("/", ctx -> ctx.result("Hello, World!"));  //Example Route
+        // Create a new Javalin instance
+        Javalin app = Javalin.create().start(8080);
+
+        // Endpoint for serving the config file
+        app.get("/config", ctx -> {
+           // Read the content of the config file
+           Path configFilePath = Path.of(dataDirectory + "/config.yml");
+           String yamlContent = Files.readString(configFilePath);
+
+           //Set the response content type
+           ctx.contentType("application/yaml");
+
+           // Return the config file content
+           ctx.result(yamlContent);
+        });
+
+        // Define a route that serves the index.html file
+        app.get("/", ctx -> {
+            try {
+                Path filePath = Path.of(dataDirectory.toString(), "webInterface", "index.html");
+                InputStream inputStream = new FileInputStream(filePath.toFile());
+                ctx.contentType("text/html").result(inputStream);
+            } catch (FileNotFoundException | SecurityException e) {
+                e.printStackTrace();
+                ctx.status(404); // Set a 404 status code if the file is not found
+            }
+        });
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
