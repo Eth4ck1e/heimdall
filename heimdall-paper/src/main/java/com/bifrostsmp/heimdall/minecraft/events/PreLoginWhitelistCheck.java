@@ -17,7 +17,7 @@ public class PreLoginWhitelistCheck extends Event implements Listener {
 
     @EventHandler
     public void onLogin(AsyncPlayerPreLoginEvent event) {
-        if (!Query.checkPlayer(String.valueOf(event.getUniqueId())))
+        if (!Query.checkWhitelisted(String.valueOf(event.getUniqueId())))
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, "You are not whitelisted");
     }
 

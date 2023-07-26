@@ -13,25 +13,12 @@ public class CreateDB {
                 "CREATE TABLE IF NOT EXISTS players("
                         + "name char(64) NOT NULL,"
                         + "uuid varchar(64) NOT NULL,"
+                        + "whitelisted boolean default false,"
+                        + "discordID varchar(64),"
                         + "PRIMARY KEY(uuid)"
                         + ");";
         String servers =
                 "CREATE TABLE IF NOT EXISTS servers(server varchar(64) NOT NULL, JSONUpdated boolean DEFAULT true, PRIMARY KEY(server));";
-        String applications =
-                "CREATE TABLE IF NOT EXISTS applications ("
-                        + "discordID varchar(64) NOT NULL, "
-                        + "ign varchar(64) NOT NULL, "
-                        + "uuid varchar(64) NOT NULL, "
-                        + "app JSON NOT NULL, "
-                        + "counter integer NOT NULL DEFAULT 1, "
-                        + "PRIMARY KEY (discordID)"
-                        + ");";
-        String tickets =
-                "CREATE TABLE IF NOT EXISTS tickets (\n" +
-                        "ticketNum MEDIUMINT AUTO_INCREMENT," +
-                        "name CHAR(30) NOT NULL," +
-                        "PRIMARY KEY (ticketNum)" +
-                        ");";
 
         //  prepare the statements to be executed
         try {
@@ -40,10 +27,6 @@ public class CreateDB {
             playersDB.executeUpdate();
             PreparedStatement serversDB = connection.prepareStatement(servers);
             serversDB.executeUpdate();
-            PreparedStatement appDB = connection.prepareStatement(applications);
-            appDB.executeUpdate();
-            PreparedStatement ticketDB = connection.prepareStatement(tickets);
-            ticketDB.executeUpdate();
             // use executeUpdate() to update the database table
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.bifrostsmp.heimdall.config;
 
-import org.checkerframework.checker.units.qual.C;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -24,17 +23,6 @@ public class Config {
     private static String discordId;
     private static String botClientId;
     private static String staffRole;
-    private static String appRole;
-    private static String appPending;
-    private static String appAccepted;
-    private static String appDenied;
-    private static String howdyChannel;
-    private static String welcomeChannel;
-    private static String rulesChannel;
-    private static boolean welcomeMessages;
-    private static String staffCategory;
-    private static Map<String, String> applications;
-    private static Map<String, String> applicationDenyOptions;
 
     //Non-config variables
     private static InputStream inputStream;
@@ -66,19 +54,8 @@ public class Config {
                         + database;
         discordToken = (String) getData.get("discordToken");
         staffRole = (String) getData.get("staffRole");
-        appRole = (String) getData.get("appRole");
         botClientId = (String) getData.get("botClientId");
         discordId = (String) getData.get("discordId");
-        appPending = (String) getData.get("appPending");
-        appAccepted = (String) getData.get("appAccepted");
-        appDenied = (String) getData.get("appDenied");
-        howdyChannel = (String) getData.get("howdyChannel");
-        welcomeChannel = (String) getData.get("welcomeChannel");
-        rulesChannel = (String) getData.get("rulesChannel");
-        welcomeMessages = (boolean) getData.get("welcomeMessages");
-        staffCategory = (String) getData.get("staffCategory");
-        applications = (Map<String, String>) getData.get("applications");
-        applicationDenyOptions = (Map<String, String>) getData.get("applicationDenyOptions");
     }
 
     public static void build() {
@@ -97,22 +74,6 @@ public class Config {
         dataMap.put("botClientId", getBotClientId());
 
         dataMap.put("staffRole", getStaffRole());
-        dataMap.put("appRole", getAppRole());
-
-        dataMap.put("appPending", getAppPending());
-        dataMap.put("appAccepted", getAppAccepted());
-        dataMap.put("appDenied", getAppDenied());
-
-        dataMap.put("howdyChannel", getHowdyChannel());
-        dataMap.put("welcomeChannel", isWelcomeChannel());
-        dataMap.put("rulesChannel", getRulesChannel());
-
-        dataMap.put("welcomeMessages", getWelcomeMessages());
-        dataMap.put("staffCategory", getStaffCategory());
-
-        dataMap.put("applications", getApplications());
-        dataMap.put("applicationDenyOptions", getApplicationDenyOptions());
-
 
         File file = new File(String.valueOf(getDataDirectory()), "config.yml");
         try {
@@ -127,22 +88,6 @@ public class Config {
             e.printStackTrace();
         }
         parse(getDataDirectory());
-    }
-
-    public static Map<String, String> getApplicationDenyOptions() {
-        return applicationDenyOptions;
-    }
-
-    public static void setApplicationDenyOptions(Map<String, String> applicationDenyOptions) {
-        Config.applicationDenyOptions = applicationDenyOptions;
-    }
-
-    public static Map<String, String> getApplications() {
-        return applications;
-    }
-
-    public static void setApplications(Map<String, String> applications) {
-        Config.applications = applications;
     }
 
     public static boolean isHeimdallDebug() {
@@ -193,14 +138,6 @@ public class Config {
         Config.staffRole = staffRole;
     }
 
-    public static String getAppRole() {
-        return appRole;
-    }
-
-    public static void setAppRole(String appRole) {
-        Config.appRole = appRole;
-    }
-
     public static String getBotClientId() {
         return botClientId;
     }
@@ -215,70 +152,6 @@ public class Config {
 
     public static void setDiscordId(String discordId) {
         Config.discordId = discordId;
-    }
-
-    public static String getAppPending() {
-        return appPending;
-    }
-
-    public static void setAppPending(String appPending) {
-        Config.appPending = appPending;
-    }
-
-    public static String getAppAccepted() {
-        return appAccepted;
-    }
-
-    public static void setAppAccepted(String appAccepted) {
-        Config.appAccepted = appAccepted;
-    }
-
-    public static String getAppDenied() {
-        return appDenied;
-    }
-
-    public static void setAppDenied(String appDenied) {
-        Config.appDenied = appDenied;
-    }
-
-    public static String isWelcomeChannel() {
-        return welcomeChannel;
-    }
-
-    public static void setWelcomeChannel(String welcomeChannel) {
-        Config.welcomeChannel = welcomeChannel;
-    }
-
-    public static String getHowdyChannel() {
-        return howdyChannel;
-    }
-
-    public static void setHowdyChannel(String howdyChannel) {
-        Config.howdyChannel = howdyChannel;
-    }
-
-    public static String getRulesChannel() {
-        return rulesChannel;
-    }
-
-    public static void setRulesChannel(String rulesChannel) {
-        Config.rulesChannel = rulesChannel;
-    }
-
-    public static boolean getWelcomeMessages() {
-        return welcomeMessages;
-    }
-
-    public static void setWelcomeMessages(boolean welcomeMessages) {
-        Config.welcomeMessages = welcomeMessages;
-    }
-
-    public static String getStaffCategory() {
-        return staffCategory;
-    }
-
-    public static void setStaffCategory(String staffCategory) {
-        Config.staffCategory = staffCategory;
     }
 
     public static String getDatabase() {

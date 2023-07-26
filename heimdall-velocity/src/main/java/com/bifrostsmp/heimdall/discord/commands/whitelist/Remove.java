@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands.whitelist;
 
-import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import mojangAPI.NameToID;
 import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -10,8 +10,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
-import static database.Query.removePlayer;
-import static database.Query.updateTrigger;
+import static database.Query.*;
 
 public class Remove extends ListenerAdapter {
     public static void remove(SlashCommandInteractionEvent event) {
@@ -26,8 +25,7 @@ public class Remove extends ListenerAdapter {
         id = NameToID.nameToID(name);
         result = Query.checkPlayer(id);
         if (result) {
-            removePlayer(id);
-            updateTrigger();
+            updateWhitelist(id, false);
             // success embed block
             EmbedBuilder info = new EmbedBuilder();
             info.setTitle("Whitelist");

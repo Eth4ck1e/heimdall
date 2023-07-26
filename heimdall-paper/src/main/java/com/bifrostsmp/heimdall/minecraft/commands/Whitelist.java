@@ -1,9 +1,9 @@
 package com.bifrostsmp.heimdall.minecraft.commands;
 
 import com.bifrostsmp.heimdall.HeimdallPaper;
-import com.bifrostsmp.heimdall.database.ImportWhitelist;
-import com.bifrostsmp.heimdall.minecraft.whitelist.Backup;
-import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import database.ImportWhitelist;
+import whitelist.BackupWhitelist;
+import mojangAPI.NameToID;
 import database.Query;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,9 +32,8 @@ public class Whitelist implements CommandExecutor {
 
         switch (command) {
             case "backup" -> {
-                Backup.backup();
+                BackupWhitelist.backup();
                 sender.sendMessage(ChatColor.GREEN + "Whitelist.json created from database");
-                //TODO remove the update command arg to be replaced with backup.  This will dump the whitelist to a local whitelist.json file.
             }
             case "reload" -> {
                 HeimdallPaper.instance.getServer().reloadWhitelist();
@@ -43,10 +42,10 @@ public class Whitelist implements CommandExecutor {
             case "add" -> {
                 name = args[1];
                 id = NameToID.nameToID(name);
-                if (Query.checkPlayer(id)) {
+                if (Query.checkWhitelisted(id)) {
                     sender.sendMessage(ChatColor.RED + name + " is already Whitelisted");
                 } else {
-                    int result = Query.insertPlayer(name, id);
+                    int result = Query.updateWhitelist(id, true);
                     if (HeimdallPaper.debug) {
                         System.out.println("[Heimdall] DEBUG:" + result);
                     }
@@ -55,7 +54,6 @@ public class Whitelist implements CommandExecutor {
                                 ChatColor.RED + "[ERROR] " + name + " could not be added to the database");
                     } else {
                         sender.sendMessage(ChatColor.GREEN + name + " has been added to the Whitelist");
-                        Query.updateTrigger();
                     }
                 }
             }
@@ -63,13 +61,12 @@ public class Whitelist implements CommandExecutor {
                 name = args[1];
                 id = NameToID.nameToID(name);
                 if (Query.checkPlayer(id)) {
-                    int result = Query.removePlayer(id);
+                    int result = Query.updateWhitelist(id, true);
                     if (result == 0) {
                         sender.sendMessage(
                                 ChatColor.RED + "[ERROR] " + name + " could not be removed from the database");
                     } else {
                         sender.sendMessage(ChatColor.GREEN + name + " has been removed from the Whitelist");
-                        Query.updateTrigger();
                     }
                 }
             }

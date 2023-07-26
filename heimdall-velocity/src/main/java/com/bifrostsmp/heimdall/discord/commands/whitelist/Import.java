@@ -1,5 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands.whitelist;
 
+import database.ImportWhitelist;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -8,18 +9,17 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
-import static database.Query.updateTrigger;
-
-public class Update extends ListenerAdapter {
-    public static void update(SlashCommandInteractionEvent event) {
+public class Import extends ListenerAdapter {
+    public static void importWhitelist(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         InteractionHook hook = event.getHook();
         hook.setEphemeral(false);
 
-        updateTrigger();
+        ImportWhitelist.parser();
+
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle("Whitelist");
-        info.setDescription("Whitelist update started");
+        info.setDescription("Database has been updated using the Whitelist.json");
         info.setColor(Color.GREEN);
         hook.sendMessageEmbeds(info.build())
                 .queue(

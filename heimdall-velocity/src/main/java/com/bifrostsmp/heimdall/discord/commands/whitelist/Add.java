@@ -1,6 +1,6 @@
 package com.bifrostsmp.heimdall.discord.commands.whitelist;
 
-import com.bifrostsmp.heimdall.mojangAPI.NameToID;
+import mojangAPI.NameToID;
 import database.Query;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
-
-import static database.Query.updateTrigger;
 
 public class Add extends ListenerAdapter {
     public static void add(SlashCommandInteractionEvent event) {
@@ -37,10 +35,9 @@ public class Add extends ListenerAdapter {
             info.clear(); // clear embed from memory
             return;
         }
-        result = Query.checkPlayer(id);
+        result = Query.checkWhitelisted(id);
         if (!result) {
-            Query.insertPlayer(name, id);
-            updateTrigger();
+            Query.updateWhitelist(id, true);
             // success embed block
             EmbedBuilder info = new EmbedBuilder();
             info.setTitle("Whitelist");

@@ -1,4 +1,4 @@
-package com.bifrostsmp.heimdall.mojangAPI;
+package mojangAPI;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
