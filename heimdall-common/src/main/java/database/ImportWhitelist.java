@@ -1,7 +1,5 @@
 package database;
 
-import database.Query;
-import org.bukkit.ChatColor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,11 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
-import static org.apache.logging.log4j.Level.INFO;
-import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class ImportWhitelist {
     static String path = "./whitelist.json";

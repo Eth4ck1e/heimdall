@@ -11,12 +11,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.javalin:javalin:5.4.2'
-    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    //compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.4'
     implementation group: 'org.json', name: 'json', version: '20220320'
+    implementation 'org.yaml:snakeyaml:1.30'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13.2'

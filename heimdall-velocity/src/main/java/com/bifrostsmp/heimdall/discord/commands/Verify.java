@@ -5,6 +5,7 @@ import mojangAPI.NameToID;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -13,20 +14,17 @@ import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 public class Verify extends ListenerAdapter {
-    private static Message message;
-    private static Member member;
-
-    private static String id;
-    private static String name;
 
     public static void verify(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         InteractionHook hook = event.getHook();
         hook.setEphemeral(true);
-        member = event.getMember();
+        Member member = event.getMember();
 //        Role unverified = getDiscordBot().getRolesByName("unverified", true).get(0);
-        name = event.getOption("ign").getAsString();
-        id = NameToID.nameToID(name);
+        String name = event.getOption("ign").getAsString();
+        String id = NameToID.nameToID(name);
+        Role addRole = event.getGuild().getRolesByName("verified", true).get(0);
+        Role removeRole = event.getGuild().getRolesByName("Unverified", true).get(0);
         EmbedBuilder info = new EmbedBuilder();
         if (id == null) {
             // success embed block
@@ -42,8 +40,10 @@ public class Verify extends ListenerAdapter {
             return;
         }
         Query.insertPlayer(name, id, event.getMember().getId());
+        hook.getInteraction().getGuild().addRoleToMember(member.getUser(), addRole).queue();
+        hook.getInteraction().getGuild().removeRoleFromMember(member.getUser(), removeRole).queue();
         info.setTitle("IGN Verification");
-        info.setDescription(name + " is valid.  Please continue by reading the discord rules");
+        info.setDescription(name + " is valid. You should now have the Verified Role. Please continue following the instructions in the welcome channel");
         info.setColor(Color.GREEN);
         hook.sendMessageEmbeds(info.build())
                 .queue(
@@ -51,7 +51,5 @@ public class Verify extends ListenerAdapter {
                             message.delete().queueAfter(10, TimeUnit.SECONDS);
                         }); // send embed to message channel
         info.clear(); // clear embed from memory
-
-
     }
 }

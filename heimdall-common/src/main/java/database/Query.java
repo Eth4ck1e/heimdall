@@ -1,15 +1,11 @@
 package database;
 
-import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.sql.*;
 import java.util.List;
 import java.util.Objects;
-
-import static java.util.logging.Level.INFO;
-import static org.bukkit.Bukkit.getLogger;
 
 public class Query {
 
@@ -105,7 +101,6 @@ public class Query {
             insertUser.setString(3, discordID);
             return insertUser.executeUpdate();
         } catch (SQLException e) {
-            getLogger().log(INFO, ChatColor.YELLOW + "Error at Query.insertPlayers");
             e.printStackTrace();
         }
         return 0;

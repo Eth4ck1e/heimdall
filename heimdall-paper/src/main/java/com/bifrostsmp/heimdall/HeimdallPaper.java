@@ -1,12 +1,9 @@
 package com.bifrostsmp.heimdall;
 
-import com.bifrostsmp.heimdall.config.ConfigParser;
 import com.bifrostsmp.heimdall.minecraft.commands.Whitelist;
 import com.bifrostsmp.heimdall.minecraft.events.HardcoreDeath;
 import com.bifrostsmp.heimdall.minecraft.events.PreLoginWhitelistCheck;
 import database.ConnectDB;
-import database.CreateDB;
-import database.Query;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 
 import static com.bifrostsmp.heimdall.config.ConfigParser.*;
+import static database.ConnectDB.connectDB;
+import static database.ConnectDB.getConnection;
+import static database.CreateDB.create;
+import static database.Query.insertServer;
 import static org.bukkit.Bukkit.isHardcore;
 
 public final class HeimdallPaper extends JavaPlugin {
@@ -40,7 +41,13 @@ public final class HeimdallPaper extends JavaPlugin {
 
         saveDefaultConfig();
 
-        if (ConnectDB.connectDB(getUser(), getPassword(), getUrl())) {
+//        try {
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        if (connectDB(getUser(), getPassword(), getUrl())) {
             ConnectDB.setUser(getUser());
             ConnectDB.setPassword(getPassword());
             ConnectDB.setUrl(getUrl());
@@ -48,8 +55,8 @@ public final class HeimdallPaper extends JavaPlugin {
         } else {
             getLogger().warning(ChatColor.RED + "Could not connect to database");
         }
-        CreateDB.create(getUser(), getPassword(), getUrl());
-        if (Query.insertServer(getConfigServer())) {
+        create(getUser(), getPassword(), getUrl());
+        if (insertServer(getConfigServer())) {
             getLogger().info(ChatColor.GREEN + "MySQL insert successful!");
         } else {
             getLogger()
@@ -69,7 +76,7 @@ public final class HeimdallPaper extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Connection connection = ConnectDB.getConnection();
+        Connection connection = getConnection();
 
         try {
             if (connection != null && !connection.isClosed()) {
